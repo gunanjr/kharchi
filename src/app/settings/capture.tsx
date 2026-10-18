@@ -6,7 +6,7 @@ import { SubScreen, Card, Text, Button, Field, Row } from '@/components/ui';
 import { ToastHost, toast } from '@/components/Toast';
 import { useDb, bumpData } from '@/db/provider';
 import { useSettings } from '@/store/settings';
-import { appVariant, isExpoGo, isNativeAvailable, native, isSmsCapable } from '@/features/native/module';
+import { appVariant, experimentalEnabled, isExpoGo, isNativeAvailable, native, isSmsCapable } from '@/features/native/module';
 import { smsPermissionStatus } from '@/features/native/sms';
 import { syncNativeSettings } from '@/features/native/sync';
 import { ingestSharedText } from '@/features/native/share';
@@ -73,6 +73,7 @@ export default function Capture() {
         <Text v="small" color={colors.textMuted}>Comma separated. Empty means every bank/UPI sender is considered.</Text>
       </Card>
 
+      {experimentalEnabled && (
       <Card style={{ gap: space.md }}>
         <Row style={{ justifyContent: 'space-between' }}>
           <View style={{ flex: 1 }}>
@@ -91,6 +92,8 @@ export default function Capture() {
           />
         </Row>
       </Card>
+
+      )}
 
       <Card style={{ gap: space.md }}>
         <Text v="h2">No permission? Still works.</Text>

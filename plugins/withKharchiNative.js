@@ -35,6 +35,8 @@ function upsertComponent(list, node) {
 
 module.exports = function withKharchiNative(config, props = {}) {
   const variant = props.variant === 'lite' ? 'lite' : 'full';
+  // Experimental = notification listener + double-tap detector. Off for store builds (Play policy risk), on for dev/sideload.
+  const experimental = variant === 'full' && props.experimental === true;
   const scheme = config.scheme || 'kharchi';
   const pkg = config.android && config.android.package;
 
@@ -100,8 +102,6 @@ module.exports = function withKharchiNative(config, props = {}) {
 
     if (variant === 'full') {
       addPermission(manifest, 'android.permission.RECEIVE_SMS');
-      addPermission(manifest, 'android.permission.FOREGROUND_SERVICE');
-      addPermission(manifest, 'android.permission.FOREGROUND_SERVICE_SPECIAL_USE');
 
       upsertComponent(app.receiver, {
         $: {
@@ -116,6 +116,10 @@ module.exports = function withKharchiNative(config, props = {}) {
           },
         ],
       });
+    }
+    if (experimental) {
+      addPermission(manifest, 'android.permission.FOREGROUND_SERVICE');
+      addPermission(manifest, 'android.permission.FOREGROUND_SERVICE_SPECIAL_USE');
       upsertComponent(app.service, {
         $: {
           'android:name': 'expo.modules.kharchinative.NotificationCaptureService',
@@ -140,13 +144,19 @@ module.exports = function withKharchiNative(config, props = {}) {
           },
         ],
       });
-    } else {
+    }
+    if (variant === 'lite') {
       // make sure nothing SMS/notification-listener related survives from a previous prebuild
       const strip = (list, names) => list.filter((x) => !names.includes(x.$['android:name']));
       app.receiver = strip(app.receiver, ['expo.modules.kharchinative.SmsReceiver']);
-      app.service = strip(app.service, ['expo.modules.kharchinative.NotificationCaptureService', 'expo.modules.kharchinative.DoubleTapService']);
       manifest['uses-permission'] = (manifest['uses-permission'] || []).filter(
         (p) => !['android.permission.RECEIVE_SMS', 'android.permission.READ_SMS'].includes(p.$['android:name']),
+      );
+    }
+    if (!experimental) {
+      app.service = app.service.filter((x) => !['expo.modules.kharchinative.NotificationCaptureService', 'expo.modules.kharchinative.DoubleTapService'].includes(x.$['android:name']));
+      manifest['uses-permission'] = (manifest['uses-permission'] || []).filter(
+        (p) => !['android.permission.FOREGROUND_SERVICE', 'android.permission.FOREGROUND_SERVICE_SPECIAL_USE'].includes(p.$['android:name']),
       );
     }
     return c;

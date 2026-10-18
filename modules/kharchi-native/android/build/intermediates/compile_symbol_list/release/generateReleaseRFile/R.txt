@@ -1,0 +1,5 @@
+int drawable ic_tile_add 0x0
+int drawable widget_bg 0x0
+int id kharchi_widget_root 0x0
+int layout kharchi_widget 0x0
+int xml kharchi_widget_info 0x0

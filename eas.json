@@ -5,12 +5,12 @@
       "developmentClient": true,
       "distribution": "internal",
       "android": { "buildType": "apk" },
-      "env": { "APP_VARIANT": "full" }
+      "env": { "APP_VARIANT": "full", "EXPERIMENTAL": "1" }
     },
     "preview": {
       "distribution": "internal",
       "android": { "buildType": "apk" },
-      "env": { "APP_VARIANT": "full" }
+      "env": { "APP_VARIANT": "full", "EXPERIMENTAL": "1" }
     },
     "preview-lite": {
       "extends": "preview",
@@ -26,5 +26,5 @@
       "env": { "APP_VARIANT": "lite" }
     }
   },
-  "submit": { "production": {} }
+  "submit": { "production": { "android": { "track": "internal", "releaseStatus": "draft" } } }
 }

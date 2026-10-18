@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { SubScreen, Card, Text, Button, Row } from '@/components/ui';
 import { Slider } from '@/components/Slider';
 import { ToastHost, toast } from '@/components/Toast';
-import { native, appVariant, isExpoGo } from '@/features/native/module';
+import { native, appVariant, isExpoGo, experimentalEnabled } from '@/features/native/module';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useSettings } from '@/store/settings';
 import { useDb } from '@/db/provider';
@@ -62,7 +62,7 @@ export default function QuickAddSettings() {
         ))}
       </Card>
 
-      {appVariant === 'full' && (
+      {appVariant === 'full' && experimentalEnabled && (
         <Card style={{ gap: space.md, borderColor: colors.warn }}>
           <Text v="h2">4. Experimental detector</Text>
           <Text color={colors.textMuted}>An always-on motion listener that tries to catch a double tap. It can misfire and it uses battery because it keeps a foreground service running. Off by default.</Text>

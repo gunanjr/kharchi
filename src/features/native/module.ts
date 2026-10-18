@@ -42,3 +42,4 @@ export const appVariant: 'full' | 'lite' = (Constants.expoConfig?.extra?.appVari
 export const isNativeAvailable = !!native;
 export const isSmsCapable = () => !!native?.smsReceiverCompiledIn?.() && appVariant === 'full';
 export const isExpoGo = Constants.executionEnvironment === 'storeClient';
+export const experimentalEnabled: boolean = !!Constants.expoConfig?.extra?.experimental;

@@ -1,3 +1,5 @@
+> **Start with `docs/PUBLISH_GUIDE.md`**: the beginner step-by-step. This file is the short expert checklist.
+
 # Release checklist (manual steps for you)
 
 ## A. Try it on your phone today

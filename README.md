@@ -6,6 +6,8 @@ Headline features: automatic capture of bank/UPI SMS (on-device) with a "What wa
 
 Rename the product in one place: `src/config/app.json` (then `npx expo prebuild --clean`).
 
+**Publishing to Google Play:** follow `docs/PUBLISH_GUIDE.md`.
+
 ## Run it: two modes
 
 ### Mode A: Expo Go (instant, on your phone)
