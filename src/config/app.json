@@ -1,0 +1,8 @@
+{
+  "appName": "Kharchi",
+  "slug": "kharchi",
+  "scheme": "kharchi",
+  "androidPackage": "app.kharchi.tracker",
+  "iosBundleId": "app.kharchi.tracker",
+  "defaultCurrency": "INR"
+}
