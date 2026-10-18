@@ -1,5 +1,4 @@
-import type { ExpenseLike } from '../balances';
-import { applyTransfers, computeBalances, greedySettle, pairwiseDebts, simplifyDebts, toGroupCurrency, type Balances } from '../balances';
+import { applyTransfers, computeBalances, greedySettle, pairwiseDebts, simplifyDebts, toGroupCurrency, type Balances, type ExpenseLike } from '../balances';
 import { upiLink } from '../upi';
 
 const sum = (b: Balances) => Object.values(b).reduce((a, c) => a + c, 0);

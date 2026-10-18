@@ -4,12 +4,14 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { Icon, type IconName } from '@/components/Icon';
 import { useT } from '@/i18n';
 import { fonts } from '@/theme/tokens';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const tab = (name: string, key: Parameters<ReturnType<typeof useT>>[0], icon: IconName) => ({ name, key, icon });
 
 export default function TabsLayout() {
   const { colors } = useTheme();
   const t = useT();
+  const insets = useSafeAreaInsets();
   const items = [
     tab('index', 'tab.home', 'home'),
     tab('activity', 'tab.activity', 'list'),
@@ -23,7 +25,7 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border, height: 64, paddingTop: 6, paddingBottom: 8 },
+        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border, height: 60 + Math.max(insets.bottom, 20), paddingTop: 6, paddingBottom: 6 + Math.max(insets.bottom, 20) },
         tabBarLabelStyle: { fontFamily: fonts.bodyMedium, fontSize: 11 },
         sceneStyle: { backgroundColor: colors.bg },
       }}

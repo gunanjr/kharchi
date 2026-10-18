@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View , Modal } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Screen, Header, Text, Card, Row, Button, Enter, Field, Chip, MoneyText } from '@/components/ui';
 import { EmptyState, SkeletonList } from '@/components/Feedback';
@@ -10,7 +10,6 @@ import { addPerson, createGroup, ensureSelf, friendBalances, groupSummary, listG
 import { formatMoney } from '@/domain/money';
 import { useTheme } from '@/theme/ThemeProvider';
 import { space } from '@/theme/tokens';
-import { Modal } from 'react-native';
 
 const ICONS = ['👥', '✈️', '🏠', '🍽️', '🎉', '💼', '🏖️', '🎬'];
 

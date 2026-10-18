@@ -35,6 +35,11 @@ export default function Developer() {
         <Text v="small" color={colors.textMuted}>Variant: {appVariant} · Native module: {isNativeAvailable ? 'present' : 'absent'} · {isExpoGo ? 'Expo Go' : 'standalone/dev build'}</Text>
       </Card>
       <Card style={{ gap: space.md }}>
+        <Text v="h2">Demo data</Text>
+        <Button title="Generate 3 months of spending" onPress={async () => { const n = await seedDemoData(db); bumpData(); toast(`Added ${n} transactions`); }} />
+        <Button title="Generate demo groups" kind="secondary" onPress={async () => { await seedGroupDemo(db); bumpData(); toast('Groups added'); }} />
+      </Card>
+      <Card style={{ gap: space.md }}>
         <Text v="h2">Simulate incoming bank SMS</Text>
         <Text v="small" color={colors.textMuted}>Runs the exact pipeline the real receiver uses: parse, filter, dedupe, pending card, then “What was this for?”.</Text>
         <Field label="Sender" value={sender} onChangeText={setSender} autoCapitalize="characters" />
@@ -47,11 +52,6 @@ export default function Developer() {
             <Chip key={s.name} label={s.name} onPress={() => { setBody(s.body); setSender(s.sender); }} />
           ))}
         </View>
-      </Card>
-      <Card style={{ gap: space.md }}>
-        <Text v="h2">Demo data</Text>
-        <Button title="Generate 3 months of spending" onPress={async () => { const n = await seedDemoData(db); bumpData(); toast(`Added ${n} transactions`); }} />
-        <Button title="Generate demo groups" kind="secondary" onPress={async () => { await seedGroupDemo(db); bumpData(); toast('Groups added'); }} />
       </Card>
       <ToastHost />
     </SubScreen>

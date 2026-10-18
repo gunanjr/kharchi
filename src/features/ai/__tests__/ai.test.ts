@@ -1,8 +1,7 @@
 import { createTestDb } from '@/db/testDb';
-import { seedDefaults, addTransaction, setBudget } from '@/features/tracker/repo';
+import { seedDefaults, addTransaction, setBudget , listCategories } from '@/features/tracker/repo';
 import { LocalRulesProvider, detectIntent, findCategory } from '../local';
 import { parsePeriod } from '../period';
-import { listCategories } from '@/features/tracker/repo';
 import { createGroup, ensureSelf, addPerson, addGroupExpense } from '@/features/groups/repo';
 import { DAY } from '@/lib/date';
 
