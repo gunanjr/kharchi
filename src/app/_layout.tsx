@@ -14,6 +14,8 @@ import { useSettings } from '@/store/settings';
 import { ErrorBoundary, SkeletonList } from '@/components/Feedback';
 import { BiometricGate } from '@/features/security/BiometricGate';
 import { useAppBootstrap } from '@/features/bootstrap';
+import '@/features/native/headless';
+import { quitIfQuickLaunch } from '@/features/native/quickAdd';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -26,6 +28,7 @@ function Shell() {
 
   useEffect(() => {
     const inOnboarding = segments[0] === 'onboarding';
+    if (quitIfQuickLaunch()) return; // quick-add host: never redirect
     if (!onboarded && !inOnboarding) router.replace('/onboarding');
     if (onboarded && inOnboarding) router.replace('/');
   }, [onboarded, segments, router]);
@@ -33,7 +36,7 @@ function Shell() {
   return (
     <BiometricGate>
       <StatusBar style={dark ? 'light' : 'dark'} />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg }, animation: 'fade_from_bottom' }}>
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: quitIfQuickLaunch() ? 'transparent' : colors.bg }, animation: 'fade_from_bottom' }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
         <Stack.Screen name="add" options={{ presentation: 'transparentModal', animation: 'slide_from_bottom' }} />

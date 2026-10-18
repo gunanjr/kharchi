@@ -18,6 +18,7 @@ export interface NativeQueueItem {
 export interface KharchiNativeModule {
   smsReceiverCompiledIn(): boolean; // false in the `lite` variant
   hasSmsPermission(): boolean;
+  consumeSharedText(): string | null;
   drainQueue(): string; // JSON NativeQueueItem[]
   ackQueue(ids: string[]): void;
   setSenderAllowlist(list: string[]): void;
@@ -25,11 +26,13 @@ export interface KharchiNativeModule {
   isNotificationListenerEnabled(): boolean;
   openNotificationListenerSettings(): void;
   openAppSettings(): void;
-  consumeLaunchMode(): string | null; // 'quick' when started from the tile / shortcut / widget
+  consumeLaunchMode(): string | null; // 'quick' when this JS root belongs to the QuickAddActivity
+  finishQuickAdd(): void;
+  notificationListenerCompiledIn(): boolean;
   setDoubleTapEnabled(enabled: boolean, sensitivity: number): boolean;
   setPersistentAddNotification(enabled: boolean): void;
   requestAddTile(): void;
-  pinWidget(): boolean;
+  pinWidget(): boolean | void;
 }
 
 export const native: Partial<KharchiNativeModule> | null =

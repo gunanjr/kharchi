@@ -6,3 +6,5 @@ export function quitIfQuickLaunch(): boolean {
   if (quick === null) quick = native?.consumeLaunchMode?.() === 'quick';
   return quick;
 }
+
+export const finishQuickAdd = () => native?.finishQuickAdd?.();

@@ -27,6 +27,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     predictiveBackGestureEnabled: true,
     permissions: ['POST_NOTIFICATIONS', 'USE_BIOMETRIC'],
+    blockedPermissions: ['android.permission.RECORD_AUDIO', 'android.permission.READ_EXTERNAL_STORAGE', 'android.permission.WRITE_EXTERNAL_STORAGE', 'android.permission.USE_FINGERPRINT'],
   },
   plugins: [
     'expo-router',

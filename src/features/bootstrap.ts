@@ -4,6 +4,8 @@ import { useDb, bumpData } from '@/db/provider';
 import { materializeDue } from '@/features/tracker/recurring';
 import { drainAndIngest } from '@/features/native/drain';
 import { materializeSharedDue } from '@/features/groups/recurring';
+import { consumeAndIngestShared } from '@/features/native/share';
+import { syncNativeSettings } from '@/features/native/sync';
 
 /** Work at app start and every time the app returns to the foreground. */
 export function useAppBootstrap() {
@@ -13,8 +15,10 @@ export function useAppBootstrap() {
       try {
         const a = await materializeDue(db);
         const b = await materializeSharedDue(db);
+        syncNativeSettings();
         const c = await drainAndIngest(db);
-        if (a + b + c.created + c.saved > 0) bumpData();
+        const sh = await consumeAndIngestShared(db);
+        if (a + b + c.created + c.saved + sh > 0) bumpData();
       } catch (e) {
         console.warn('bootstrap failed', e);
       }

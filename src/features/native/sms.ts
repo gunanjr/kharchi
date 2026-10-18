@@ -11,12 +11,9 @@ export function smsPermissionStatus(): SmsPermission {
 /** Shows the standard Android runtime dialog. Call ONLY after the in-app disclosure screen was accepted. */
 export async function requestSmsPermission(): Promise<SmsPermission> {
   if (!isSmsCapable() || Platform.OS !== 'android') return 'unavailable';
-  const r = await PermissionsAndroid.requestMultiple([
-    PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
-    PermissionsAndroid.PERMISSIONS.READ_SMS,
-  ]);
-  const ok = r['android.permission.RECEIVE_SMS'] === 'granted';
-  return ok ? 'granted' : 'denied';
+  // RECEIVE_SMS is all the receiver needs; READ_SMS is deliberately not requested (least privilege).
+  const r = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECEIVE_SMS);
+  return r === 'granted' ? 'granted' : 'denied';
 }
 
 export function drainNativeQueue(): NativeQueueItem[] {

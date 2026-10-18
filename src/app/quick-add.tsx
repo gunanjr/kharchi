@@ -1,16 +1,15 @@
 import React from 'react';
-import { BackHandler } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Sheet } from '@/components/Sheet';
 import { Text } from '@/components/ui';
 import { AddExpenseForm } from '@/features/tracker/ui/AddExpenseForm';
-import { quitIfQuickLaunch } from '@/features/native/quickAdd';
+import { quitIfQuickLaunch, finishQuickAdd } from '@/features/native/quickAdd';
 
 /** Top-anchored drop-down panel: amount, what-for, Save. Opened by the Quick Settings tile / shortcut / widget. */
 export default function QuickAdd() {
   const router = useRouter();
   const close = () => {
-    if (quitIfQuickLaunch()) return BackHandler.exitApp();
+    if (quitIfQuickLaunch()) return finishQuickAdd();
     router.canGoBack() ? router.back() : router.replace('/');
   };
   return (
