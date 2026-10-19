@@ -1,7 +1,7 @@
 import type { Db } from '@/db/types';
 import type { Person, SplitType, Frequency } from '@/domain/types';
 import { insertRow, softDelete, updateRow } from '@/db/rows';
-import { formatMoney } from '@/domain/money';
+import { formatMoney, isValidMinor } from '@/domain/money';
 import { computeShares, validatePayers, type SplitInput } from './split';
 import { computeBalances, pairwiseDebts, simplifyDebts, type Balances, type ExpenseLike, type SettlementLike, type Transfer } from './balances';
 import { addTransaction } from '@/features/tracker/repo';
@@ -102,6 +102,8 @@ export interface StoredExpense {
   deleted_at: number | null;
   payers: Record<string, number>;
   shares: Record<string, number>;
+  /** The numbers the user typed for percent / shares splits (null for other split types). */
+  inputs: Record<string, number | null>;
 }
 
 async function writePayersShares(db: Db, expenseId: string, payers: Record<string, number>, shares: Record<string, number>, split: SplitInput) {
@@ -177,6 +179,7 @@ async function hydrate(db: Db, rows: any[]): Promise<StoredExpense[]> {
     ...r,
     payers: Object.fromEntries(payers.filter((p) => p.expense_id === r.id).map((p) => [p.person_id, p.amount])),
     shares: Object.fromEntries(shares.filter((s) => s.expense_id === r.id).map((s) => [s.person_id, s.amount])),
+    inputs: Object.fromEntries(shares.filter((s) => s.expense_id === r.id).map((s) => [s.person_id, s.input_value ?? null])),
   }));
 }
 
@@ -204,7 +207,7 @@ export const listSettlements = (db: Db, groupId: string | null) =>
   );
 
 export async function recordSettlement(db: Db, s: { groupId: string | null; from: string; to: string; amount: number; currency?: string; method?: 'cash' | 'upi' | 'other'; note?: string }) {
-  if (!Number.isInteger(s.amount) || s.amount <= 0) throw new Error('Enter a valid amount');
+  if (!isValidMinor(s.amount)) throw new Error('Enter a valid amount');
   if (s.from === s.to) throw new Error('Choose two different people');
   const id = await insertRow(db, 'settlements', { group_id: s.groupId, from_person: s.from, to_person: s.to, amount: s.amount, currency: s.currency ?? 'INR', method: s.method ?? 'cash', note: s.note ?? null, occurred_at: Date.now() });
   const [a, b] = await Promise.all([db.get<Person>(`SELECT name FROM people WHERE id=?`, [s.from]), db.get<Person>(`SELECT name FROM people WHERE id=?`, [s.to])]);

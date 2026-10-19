@@ -42,3 +42,6 @@ export function formatTime(t: number): string {
   const h = d.getHours();
   return `${h % 12 || 12}:${String(d.getMinutes()).padStart(2, '0')} ${h < 12 ? 'am' : 'pm'}`;
 }
+
+/** A believable entry date: 1970 to about 2100. Anything else (NaN, far future) is rejected rather than stored. */
+export const isValidDate = (t: unknown): t is number => typeof t === 'number' && Number.isFinite(t) && t >= 0 && t <= 4.1e12;

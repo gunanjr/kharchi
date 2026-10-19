@@ -8,7 +8,8 @@ import { confirmPending, listPending, markNotMine, skipPending, setAlwaysCategor
 import { formatMoney } from '@/domain/money';
 import { formatDay, formatTime } from '@/lib/date';
 import { useTheme } from '@/theme/ThemeProvider';
-import { space } from '@/theme/tokens';
+import { categoryGlyph } from '@/components/glyphs';
+import { layout, space, toneOf } from '@/theme/tokens';
 import { haptic } from '@/lib/haptics';
 import { toast } from '@/components/Toast';
 import type { PendingTx } from '@/domain/types';
@@ -34,20 +35,20 @@ export function PendingStack() {
 
   return (
     <View style={{ gap: space.sm }}>
-      <Row style={{ justifyContent: 'space-between', paddingHorizontal: space.lg }}>
-        <Text v="h2">Needs your input</Text>
+      <Row style={{ justifyContent: 'space-between', paddingHorizontal: layout.gutter }}>
+        <Text v="h3">Needs your input</Text>
         {data?.length ? <Text v="small" color={colors.textMuted}>{data.length} waiting</Text> : null}
       </Row>
       {offer && (
-        <Card style={{ marginHorizontal: space.lg, backgroundColor: colors.primarySoft, gap: space.sm }}>
+        <Card style={{ marginHorizontal: layout.gutter, backgroundColor: colors.primarySoft, gap: space.sm }}>
           <Text v="title">Always categorise “{offer.merchant}” as {byId.get(offer.categoryId)?.name}?</Text>
-          <Row>
-            <Button title="Yes, always" onPress={async () => { await setAlwaysCategorize(db, offer.merchant, offer.categoryId); setOffer(null); toast('Got it. I’ll remember.'); }} />
+          <Row style={{ gap: space.sm }}>
+            <Button title="Yes, always" size="sm" onPress={async () => { await setAlwaysCategorize(db, offer.merchant, offer.categoryId); setOffer(null); toast('Got it. I’ll remember.'); }} />
             <Button title="Not now" kind="ghost" onPress={() => setOffer(null)} />
           </Row>
         </Card>
       )}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} snapToAlignment="start" decelerationRate="fast" contentContainerStyle={{ paddingHorizontal: space.lg, gap: space.md }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} snapToAlignment="start" decelerationRate="fast" contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingBottom: 14, gap: space.md }} style={{ marginBottom: -14 }}>
         {(data ?? []).map((p, i) => {
           const sug = p.suggested_category_id ? byId.get(p.suggested_category_id) : null;
           const ids = (p.direction === 'debit' ? QUICK_EXPENSE : QUICK_INCOME).filter((id) => id !== p.suggested_category_id);
@@ -64,15 +65,15 @@ export function PendingStack() {
                 </Row>
                 <Text v="small" color={colors.textMuted}>What was this for?</Text>
                 <Row style={{ flexWrap: 'wrap', gap: space.sm }}>
-                  {sug && <Chip label={`${sug.name} ✨`} icon={sug.icon} selected color={sug.color} onPress={() => pick(p, sug.id)} />}
+                  {sug && <Chip label={sug.name} glyph={categoryGlyph(sug) ?? undefined} selected color={toneOf(sug.color)} onPress={() => pick(p, sug.id)} />}
                   {ids.slice(0, sug ? 3 : 4).map((id) => {
                     const c = byId.get(id);
-                    return c ? <Chip key={id} label={c.name} icon={c.icon} onPress={() => pick(p, id)} /> : null;
+                    return c ? <Chip key={id} label={c.name} glyph={categoryGlyph(c) ?? undefined} onPress={() => pick(p, id)} /> : null;
                   })}
                 </Row>
                 <Row style={{ justifyContent: 'space-between' }}>
-                  <Button title="Skip" kind="ghost" onPress={async () => { await skipPending(db, p.id); bumpData(); }} />
-                  <Button title="Isn't mine" kind="ghost" onPress={async () => { await markNotMine(db, p.id); bumpData(); toast('Removed. I won’t ask again.'); }} />
+                  <Button title="Skip" kind="ghost" size="sm" onPress={async () => { await skipPending(db, p.id); bumpData(); }} />
+                  <Button title="Isn't mine" kind="ghost" size="sm" onPress={async () => { await markNotMine(db, p.id); bumpData(); toast('Removed. I won’t ask again.'); }} />
                 </Row>
               </Card>
             </Enter>

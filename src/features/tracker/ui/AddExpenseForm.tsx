@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollView, TextInput, View } from 'react-native';
 import { useDb, bumpData } from '@/db/provider';
-import { Button, Chip, Row, Text } from '@/components/ui';
+import { Button, Chip, Row, Text, Segmented } from '@/components/ui';
 import { CategoryChips } from '@/components/CategoryPicker';
 import { useTheme } from '@/theme/ThemeProvider';
+import { accountGlyph } from '@/components/glyphs';
 import { radius, space, type as T } from '@/theme/tokens';
 import { parseAmountToMinor, formatMoney } from '@/domain/money';
 import { addTransaction } from '@/features/tracker/repo';
+import { parseTags } from '@/features/tracker/tags';
+import { loadFrequent, type Frequent } from '@/features/tracker/frequent';
 import { useAccounts, useCategories } from '@/features/tracker/hooks';
 import { suggestCategory, learnMerchant } from '@/features/parser/merchants';
 import { useSettings } from '@/store/settings';
@@ -31,6 +34,9 @@ export function AddExpenseForm({ compact, onDone, initialType = 'expense' }: { c
   const [accountId, setAccountId] = useState<string | null>(null);
   const [toAccountId, setToAccountId] = useState<string | null>(null);
   const [dayOffset, setDayOffset] = useState(0);
+  const [tagText, setTagText] = useState('');
+  const [frequent, setFrequent] = useState<Frequent[]>([]);
+  useEffect(() => { loadFrequent(db).then(setFrequent).catch(() => {}); }, [db]);
   const [saving, setSaving] = useState(false);
   const amountRef = useRef<React.ComponentRef<typeof TextInput>>(null);
 
@@ -62,7 +68,7 @@ export function AddExpenseForm({ compact, onDone, initialType = 'expense' }: { c
       await addTransaction(db, {
         type, amount: minor, currency, category_id: type === 'transfer' ? null : categoryId,
         account_id: accountId, to_account_id: type === 'transfer' ? toAccountId : null,
-        merchant: what.trim() || null, occurred_at: when, source: compact ? 'quick' : 'manual',
+        merchant: what.trim() || null, tags: parseTags(tagText), occurred_at: when, source: compact ? 'quick' : 'manual',
       });
       if (categoryId && what.trim() && type !== 'transfer') await learnMerchant(db, what.trim(), categoryId);
       haptic.success();
@@ -79,37 +85,44 @@ export function AddExpenseForm({ compact, onDone, initialType = 'expense' }: { c
   return (
     <View style={{ gap: space.md }}>
       {!compact && (
-        <Row>
-          {(['expense', 'income', 'transfer'] as TxType[]).map((k) => (
-            <Chip key={k} label={k[0].toUpperCase() + k.slice(1)} selected={type === k} onPress={() => { setType(k); setCategoryId(null); setTouchedCat(false); }} />
-          ))}
-        </Row>
+        <Segmented
+          options={(['expense', 'income', 'transfer'] as TxType[]).map((k) => ({ key: k, label: k[0].toUpperCase() + k.slice(1) }))}
+          value={type}
+          onChange={(k) => { setType(k); setCategoryId(null); setTouchedCat(false); }}
+        />
       )}
-      <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6 }}>
-        <Text v="h1" color={colors.textMuted}>{currency === 'INR' ? '₹' : currency}</Text>
+      {!compact && frequent.length > 0 && type === 'expense' && !amountText && !what ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: space.sm, paddingRight: space.lg }}>
+          {frequent.map((f) => (
+            <Chip key={f.merchant} label={`${f.merchant} ${formatMoney(f.amount, currency, { trimZeros: true })}`} onPress={() => { setAmountText(String(f.amount / 100)); setWhat(f.merchant); setCategoryId(f.categoryId); setTouchedCat(true); haptic.light(); }} />
+          ))}
+        </ScrollView>
+      ) : null}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: colors.surfaceAlt, borderRadius: radius.lg, paddingHorizontal: space.lg, minHeight: 84 }}>
+        <Text v="h1" color={colors.textSubtle}>{currency === 'INR' ? '₹' : currency}</Text>
         <TextInput
           ref={amountRef}
           value={amountText}
           onChangeText={(t) => setAmountText(t.replace(/[^\d.]/g, ''))}
           keyboardType="decimal-pad"
           placeholder="0"
-          placeholderTextColor={colors.textMuted}
+          placeholderTextColor={colors.textSubtle}
           accessibilityLabel="Amount"
-          style={[T.hero, { color: colors.text, flex: 1, fontVariant: ['tabular-nums'], paddingVertical: 4 }]}
+          style={[T.hero, { color: colors.text, flex: 1, minWidth: 0, fontVariant: ['tabular-nums'], paddingVertical: 4 }]}
         />
       </View>
       <TextInput
         value={what}
         onChangeText={(t) => { setWhat(t); }}
         placeholder={type === 'income' ? 'Where from?' : 'What was this for?'}
-        placeholderTextColor={colors.textMuted}
+        placeholderTextColor={colors.textSubtle}
         accessibilityLabel="What was this for"
         returnKeyType="done"
         onSubmitEditing={save}
-        style={[T.body, { color: colors.text, backgroundColor: colors.surfaceAlt, borderRadius: radius.md, minHeight: 48, paddingHorizontal: space.md }]}
+        style={[T.body, { color: colors.text, backgroundColor: colors.surfaceAlt, borderRadius: radius.md, minHeight: 52, paddingHorizontal: space.lg }]}
       />
       {type !== 'transfer' && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: space.sm }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: space.sm, paddingRight: space.lg }}>
           <CategoryChips categories={kinds} value={categoryId} suggestedId={suggested} onChange={(id) => { setCategoryId(id); setTouchedCat(true); }} />
         </ScrollView>
       )}
@@ -120,10 +133,19 @@ export function AddExpenseForm({ compact, onDone, initialType = 'expense' }: { c
             <Chip label="Yesterday" selected={dayOffset === 1} onPress={() => setDayOffset(1)} />
             <Chip label="2 days ago" selected={dayOffset === 2} onPress={() => setDayOffset(2)} />
           </Row>
+          <TextInput
+            value={tagText}
+            onChangeText={setTagText}
+            placeholder="Tags, e.g. goa trip, work"
+            placeholderTextColor={colors.textSubtle}
+            accessibilityLabel="Tags"
+            autoCapitalize="none"
+            style={[T.body, { color: colors.text, backgroundColor: colors.surfaceAlt, borderRadius: radius.md, minHeight: 52, paddingHorizontal: space.lg }]}
+          />
           <Text v="caps" color={colors.textMuted}>{type === 'transfer' ? 'FROM' : 'ACCOUNT'}</Text>
           <Row style={{ flexWrap: 'wrap', gap: space.sm }}>
             {accounts.map((a) => (
-              <Chip key={a.id} label={a.name} icon={a.icon ?? undefined} selected={accountId === a.id} onPress={() => setAccountId(accountId === a.id ? null : a.id)} />
+              <Chip key={a.id} label={a.name} glyph={accountGlyph(a.type)} selected={accountId === a.id} onPress={() => setAccountId(accountId === a.id ? null : a.id)} />
             ))}
           </Row>
           {type === 'transfer' && (
@@ -131,7 +153,7 @@ export function AddExpenseForm({ compact, onDone, initialType = 'expense' }: { c
               <Text v="caps" color={colors.textMuted}>TO</Text>
               <Row style={{ flexWrap: 'wrap', gap: space.sm }}>
                 {accounts.map((a) => (
-                  <Chip key={a.id} label={a.name} icon={a.icon ?? undefined} selected={toAccountId === a.id} onPress={() => setToAccountId(a.id)} />
+                  <Chip key={a.id} label={a.name} glyph={accountGlyph(a.type)} selected={toAccountId === a.id} onPress={() => setToAccountId(a.id)} />
                 ))}
               </Row>
             </>

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { ScrollView, View , Pressable } from 'react-native';
+import { ScrollView, Switch, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Screen, Text, Button, Row, Field, Chip, Card } from '@/components/ui';
+import { Screen, Text, Button, Row, Field, Card, Money, RoundButton, Tag } from '@/components/ui';
 import { CategoryChips } from '@/components/CategoryPicker';
 import { CategoryDot } from '@/components/TxRow';
-import { Icon } from '@/components/Icon';
 import { ErrorState } from '@/components/Feedback';
+import { ReceiptCard } from '@/features/tracker/ui/ReceiptCard';
+import { setExcluded } from '@/features/tracker/exclude';
 import { ToastHost, toast } from '@/components/Toast';
 import { useDb, useQuery, bumpData } from '@/db/provider';
 import { deleteTransaction, getTransaction, undeleteTransaction, updateTransaction } from '@/features/tracker/repo';
@@ -14,7 +15,8 @@ import { learnMerchant } from '@/features/parser/merchants';
 import { formatMoney, parseAmountToMinor } from '@/domain/money';
 import { formatDay, formatTime } from '@/lib/date';
 import { useTheme } from '@/theme/ThemeProvider';
-import { space } from '@/theme/tokens';
+import { layout, space } from '@/theme/tokens';
+import { parseTags, readTags } from '@/features/tracker/tags';
 
 export default function TxDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -27,6 +29,7 @@ export default function TxDetail() {
   const [amount, setAmount] = useState('');
   const [merchant, setMerchant] = useState('');
   const [note, setNote] = useState('');
+  const [tagText, setTagText] = useState('');
 
   const tx = q.data;
   const back = () => (router.canGoBack() ? router.back() : router.replace('/'));
@@ -45,7 +48,7 @@ export default function TxDetail() {
   async function saveEdit() {
     const m = parseAmountToMinor(amount, tx!.currency);
     if (!m) return toast('Enter a valid amount');
-    await updateTransaction(db, tx!.id, { amount: m, merchant: merchant.trim() || null, note: note.trim() || null });
+    await updateTransaction(db, tx!.id, { amount: m, merchant: merchant.trim() || null, note: note.trim() || null, tags: parseTags(tagText) });
     setEditing(false);
     bumpData();
     toast('Updated');
@@ -60,32 +63,48 @@ export default function TxDetail() {
 
   return (
     <Screen>
-      <Row style={{ padding: space.md, justifyContent: 'space-between' }}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={back} style={{ width: 48, height: 48, justifyContent: 'center' }}>
-          <Icon name="back" color={colors.text} />
-        </Pressable>
-        <Row>
-          {!readOnly && !editing && <Button title="Edit" kind="ghost" onPress={() => { setAmount(String(tx.amount / 100)); setMerchant(tx.merchant ?? ''); setNote(tx.note ?? ''); setEditing(true); }} />}
-          <Button title="Delete" kind="ghost" onPress={remove} />
+      <Row style={{ paddingHorizontal: layout.gutter, paddingVertical: space.sm, justifyContent: 'space-between', minHeight: 64 }}>
+        <RoundButton icon="back" label="Back" onPress={back} />
+        <Row style={{ gap: space.sm }}>
+          {!readOnly && !editing && <Button title="Edit" kind="secondary" size="sm" icon="edit" onPress={() => { setAmount(String(tx.amount / 100)); setMerchant(tx.merchant ?? ''); setNote(tx.note ?? ''); setTagText(readTags(tx.tags).join(', ')); setEditing(true); }} />}
+          <Button title="Delete" kind="danger" size="sm" icon="trash" onPress={remove} />
         </Row>
       </Row>
-      <ScrollView contentContainerStyle={{ padding: space.lg, gap: space.lg }} keyboardShouldPersistTaps="handled">
-        <View style={{ alignItems: 'center', gap: space.sm }}>
-          <CategoryDot cat={cat} size={72} />
-          <Text v="hero" style={{ fontVariant: ['tabular-nums'] }}>{formatMoney(tx.amount, tx.currency, { trimZeros: true })}</Text>
-          <Text v="title">{tx.merchant || tx.note || cat?.name || 'Transaction'}</Text>
-          <Text v="small" color={colors.textMuted}>{tx.type} · {formatDay(tx.occurred_at)} {formatTime(tx.occurred_at)}</Text>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingTop: space.md, paddingBottom: 60, gap: space.lg }} keyboardShouldPersistTaps="handled">
+        <View style={{ alignItems: 'center', gap: space.sm, paddingVertical: space.md }}>
+          <CategoryDot cat={cat} size={76} />
+          <View style={{ alignSelf: 'stretch', marginTop: space.sm }}>
+            <Money size="hero" align="center" color={tx.type === 'income' ? colors.income : colors.text} text={formatMoney(tx.amount, tx.currency, { trimZeros: true })} />
+          </View>
+          <Text v="h3" style={{ textAlign: 'center' }}>{tx.merchant || tx.note || cat?.name || 'Transaction'}</Text>
+          <Row style={{ gap: space.sm }}>
+            <Tag label={tx.type} tone={tx.type === 'income' ? 'income' : 'neutral'} />
+            <Text v="small" color={colors.textMuted}>{formatDay(tx.occurred_at)} · {formatTime(tx.occurred_at)}</Text>
+          </Row>
         </View>
         {editing ? (
           <Card style={{ gap: space.md }}>
             <Field label="Amount" value={amount} onChangeText={setAmount} keyboardType="decimal-pad" />
             <Field label="Merchant" value={merchant} onChangeText={setMerchant} />
             <Field label="Note" value={note} onChangeText={setNote} />
-            <Row><Button title="Save" onPress={saveEdit} /><Button title="Cancel" kind="ghost" onPress={() => setEditing(false)} /></Row>
+            <Field label="Tags (comma separated)" value={tagText} onChangeText={setTagText} autoCapitalize="none" placeholder="goa, trip" />
+            <Row style={{ gap: space.sm }}><Button title="Save" onPress={saveEdit} /><Button title="Cancel" kind="ghost" onPress={() => setEditing(false)} /></Row>
           </Card>
         ) : (
           <>
+            {readTags(tx.tags).length ? <Row style={{ flexWrap: 'wrap', gap: space.sm }}>{readTags(tx.tags).map((t) => <Tag key={t} label={`#${t}`} tone="primary" />)}</Row> : null}
             {tx.note ? <Card><Text v="caps" color={colors.textMuted}>NOTE</Text><Text>{tx.note}</Text></Card> : null}
+            {tx.type !== 'transfer' && (
+              <Card style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+                <View style={{ flex: 1 }}>
+                  <Text v="title">Leave out of my totals</Text>
+                  <Text v="small" color={colors.textMuted}>{tx.excluded ? 'This entry is not counted in your spending, budgets, charts or answers. It stays in your list and in your account balance.' : 'Turn on to keep this entry in your list but out of your spending, budgets, charts and answers.'}</Text>
+                </View>
+                <Switch accessibilityLabel="Leave out of my totals" value={!!tx.excluded} trackColor={{ true: colors.ink, false: colors.track }} thumbColor="#fff"
+                  onValueChange={async (v) => { await setExcluded(db, tx.id, v); bumpData(); toast(v ? 'Left out of your totals' : 'Counted again'); }} />
+              </Card>
+            )}
+            {tx.type !== 'transfer' && <ReceiptCard txId={tx.id} uri={tx.receipt_uri} />}
             {tx.type !== 'transfer' && !readOnly && (
               <View style={{ gap: space.sm }}>
                 <Text v="caps" color={colors.textMuted}>CATEGORY</Text>

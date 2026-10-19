@@ -77,7 +77,7 @@ export default function ScanBill() {
       <Text v="h2" accessibilityRole="header">Scan a bill</Text>
       {savedId ? (
         <View style={{ gap: space.md }}>
-          <Text v="title">Saved ✓</Text>
+          <Text v="title">Saved</Text>
           <Text color={colors.textMuted}>Your bill is waiting on Home. Split it now, or later when everyone’s together.</Text>
           <Row style={{ gap: space.sm }}>
             <Button title="Split now" onPress={splitNow} style={{ flex: 1 }} />
@@ -90,7 +90,7 @@ export default function ScanBill() {
             Snap the bill now. The app reads the items on your phone (no internet) and you choose who had what later.
           </Text>
           <Row style={{ gap: space.sm }}>
-            <Button title="📷  Take photo" onPress={() => grab('camera')} loading={busy} disabled={!native?.captureBillPhoto} style={{ flex: 1 }} />
+            <Button title="Take photo" icon="camera" onPress={() => grab('camera')} loading={busy} disabled={!native?.captureBillPhoto} style={{ flex: 1 }} />
             <Button title="Gallery" kind="secondary" onPress={() => grab('gallery')} disabled={busy || !native?.pickBillPhoto} style={{ flex: 1 }} />
           </Row>
           {!canScanBills() && (

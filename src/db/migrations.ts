@@ -69,4 +69,20 @@ CREATE TABLE bills (
   store TEXT, total INTEGER, items TEXT, bill_date INTEGER, group_expense_id TEXT, ${SYNC});
 CREATE INDEX idx_bills_status ON bills(status);
 `,
+  /* 4: savings goals */ `
+CREATE TABLE goals (
+  id TEXT PRIMARY KEY, name TEXT NOT NULL, icon TEXT NOT NULL DEFAULT 'target', color TEXT NOT NULL DEFAULT '#F0A31B',
+  target INTEGER NOT NULL, deadline INTEGER, achieved_at INTEGER, ${SYNC});
+CREATE TABLE goal_entries (
+  id TEXT PRIMARY KEY, goal_id TEXT NOT NULL, amount INTEGER NOT NULL, note TEXT, occurred_at INTEGER NOT NULL, ${SYNC});
+CREATE INDEX idx_goal_entries ON goal_entries(goal_id);
+`,
+  /* 5: user feedback kept on the phone */ `
+CREATE TABLE feedback (
+  id TEXT PRIMARY KEY, kind TEXT NOT NULL, message TEXT NOT NULL, include_info INTEGER NOT NULL DEFAULT 1,
+  status TEXT NOT NULL DEFAULT 'saved', sent_at INTEGER, ${SYNC});
+`,
+  /* 6: leave a transaction out of totals */ `
+ALTER TABLE transactions ADD COLUMN excluded INTEGER NOT NULL DEFAULT 0;
+`,
 ];

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
-import { SubScreen, Card, Text, Row, Button, Field, Chip } from '@/components/ui';
+import { SubScreen, Card, Text, Row, Button, Field, Chip, GlyphPick, Swatch } from '@/components/ui';
 import { CategoryDot } from '@/components/TxRow';
 import { ToastHost, toast } from '@/components/Toast';
 import { useDb, bumpData } from '@/db/provider';
 import { addCategory, deleteCategory } from '@/features/tracker/repo';
 import { useCategories } from '@/features/tracker/hooks';
+import { emojiGlyph } from '@/components/glyphs';
 import { chartColors, space } from '@/theme/tokens';
 
 const ICONS = ['🍕', '🎮', '🐶', '👶', '🏋️', '💄', '🛠️', '🎓', '🚗', '🎁', '☕', '🍺', '📱', '🧘', '🌱', '💸'];
@@ -24,8 +24,8 @@ export default function Categories() {
         <Text v="h2">New category</Text>
         <Field label="Name" value={name} onChangeText={setName} placeholder="Pets" />
         <Row><Chip label="Expense" selected={kind === 'expense'} onPress={() => setKind('expense')} /><Chip label="Income" selected={kind === 'income'} onPress={() => setKind('income')} /></Row>
-        <Row style={{ flexWrap: 'wrap', gap: space.sm }}>{ICONS.map((i) => <Chip key={i} label="" icon={i} selected={icon === i} onPress={() => setIcon(i)} />)}</Row>
-        <Row style={{ flexWrap: 'wrap', gap: space.sm }}>{chartColors.map((c) => <Chip key={c} label={icon} color={c} selected={color === c} onPress={() => setColor(c)} />)}</Row>
+        <Row style={{ flexWrap: 'wrap', gap: space.sm }}>{ICONS.map((i) => <GlyphPick key={i} label="Icon" glyph={emojiGlyph(i) ?? 'pricetag-outline'} selected={icon === i} onPress={() => setIcon(i)} />)}</Row>
+        <Row style={{ flexWrap: 'wrap', gap: space.sm }}>{chartColors.map((c) => <Swatch key={c} color={c} selected={color === c} onPress={() => setColor(c)} />)}</Row>
         <Button title="Add" onPress={async () => {
           if (!name.trim()) return toast('Give it a name');
           await addCategory(db, { name: name.trim(), icon, color, kind });

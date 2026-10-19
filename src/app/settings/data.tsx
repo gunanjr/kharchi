@@ -13,7 +13,7 @@ export default function DataScreen() {
   const db = useDb();
 
   async function exportCsv() {
-    const [tx, cats, accs] = await Promise.all([listTransactions(db), listCategories(db), listAccounts(db)]);
+    const [tx, cats, accs] = await Promise.all([listTransactions(db, { includeExcluded: true }), listCategories(db), listAccounts(db)]);
     await shareTextFile(`kharchi-transactions-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(tx, cats, Object.fromEntries(accs.map((a) => [a.id, a.name]))), 'text/csv');
   }
   async function importFromCsv() {
@@ -27,7 +27,7 @@ export default function DataScreen() {
       for (const r of rows)
         await addTransaction(db, {
           type: r.type, amount: r.amount, currency: r.currency, occurred_at: r.occurred_at, merchant: r.merchant, note: r.note,
-          category_id: byName.get(r.categoryName.toLowerCase()) ?? null, source: 'import',
+          category_id: byName.get(r.categoryName.toLowerCase()) ?? null, source: 'import', excluded: r.excluded,
         });
     });
     bumpData();

@@ -6,12 +6,11 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
-import { Fraunces_600SemiBold } from '@expo-google-fonts/fraunces/600SemiBold';
-import { Fraunces_700Bold } from '@expo-google-fonts/fraunces/700Bold';
-import { DMSans_400Regular } from '@expo-google-fonts/dm-sans/400Regular';
-import { DMSans_500Medium } from '@expo-google-fonts/dm-sans/500Medium';
-import { DMSans_700Bold } from '@expo-google-fonts/dm-sans/700Bold';
-import { DbProvider, useDb } from '@/db/provider';
+import { Geist_400Regular } from '@expo-google-fonts/geist/400Regular';
+import { Geist_500Medium } from '@expo-google-fonts/geist/500Medium';
+import { Geist_600SemiBold } from '@expo-google-fonts/geist/600SemiBold';
+import { Geist_700Bold } from '@expo-google-fonts/geist/700Bold';
+import { DbProvider } from '@/db/provider';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 import { useSettings } from '@/store/settings';
 import { ErrorBoundary } from '@/components/Feedback';
@@ -63,7 +62,7 @@ function Shell() {
 }
 
 export default function RootLayout() {
-  const [loaded] = useFonts({ Fraunces_600SemiBold, Fraunces_700Bold, DMSans_400Regular, DMSans_500Medium, DMSans_700Bold });
+  const [loaded] = useFonts({ Geist_400Regular, Geist_500Medium, Geist_600SemiBold, Geist_700Bold });
   useEffect(() => {
     if (loaded) SplashScreen.hideAsync().catch(() => {});
   }, [loaded]);

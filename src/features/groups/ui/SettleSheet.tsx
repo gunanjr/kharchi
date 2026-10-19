@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Linking } from 'react-native';
-import { Button, Chip, Field, Row, Text } from '@/components/ui';
+import { Button, Field, Row, Text, Segmented } from '@/components/ui';
 import { toast } from '@/components/Toast';
 import { useDb, bumpData } from '@/db/provider';
 import { recordSettlement } from '../repo';
@@ -44,9 +44,9 @@ export function SettleForm({ groupId, from, to, amount, currency, onDone }: {
     <>
       <Text v="h2">{from.is_self ? 'You pay' : `${from.name} pays`} {to.is_self ? 'you' : to.name}</Text>
       <Field label="Amount" value={text} onChangeText={(t) => setText(t.replace(/[^\d.]/g, ''))} keyboardType="decimal-pad" />
-      <Row><Chip label="Cash" selected={method === 'cash'} onPress={() => setMethod('cash')} /><Chip label="UPI" selected={method === 'upi'} onPress={() => setMethod('upi')} /></Row>
+      <Segmented options={[{ key: 'cash', label: 'Cash' }, { key: 'upi', label: 'UPI' }]} value={method} onChange={setMethod} />
       <Row style={{ gap: space.sm, flexWrap: 'wrap' }}>
-        {from.is_self && currency === 'INR' && <Button title="Pay with UPI app" kind="secondary" onPress={payUpi} />}
+        {from.is_self && currency === 'INR' && <Button title="Pay with UPI app" kind="secondary" icon="send" onPress={payUpi} />}
         <Button title="Record payment" onPress={record} disabled={minor <= 0} />
       </Row>
     </>

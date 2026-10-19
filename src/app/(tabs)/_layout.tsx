@@ -1,45 +1,27 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
+import { FloatingTabBar } from '@/components/FloatingTabBar';
 import { useTheme } from '@/theme/ThemeProvider';
-import { Icon, type IconName } from '@/components/Icon';
 import { useT } from '@/i18n';
-import { fonts } from '@/theme/tokens';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const tab = (name: string, key: Parameters<ReturnType<typeof useT>>[0], icon: IconName) => ({ name, key, icon });
+const ITEMS = [
+  ['index', 'tab.home'],
+  ['activity', 'tab.activity'],
+  ['groups', 'tab.groups'],
+  ['insights', 'tab.insights'],
+  ['more', 'tab.more'],
+] as const;
 
 export default function TabsLayout() {
   const { colors } = useTheme();
   const t = useT();
-  const insets = useSafeAreaInsets();
-  const items = [
-    tab('index', 'tab.home', 'home'),
-    tab('activity', 'tab.activity', 'list'),
-    tab('groups', 'tab.groups', 'users'),
-    tab('insights', 'tab.insights', 'chart'),
-    tab('more', 'tab.more', 'menu'),
-  ];
   return (
     <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border, height: 60 + Math.max(insets.bottom, 20), paddingTop: 6, paddingBottom: 6 + Math.max(insets.bottom, 20) },
-        tabBarLabelStyle: { fontFamily: fonts.bodyMedium, fontSize: 11 },
-        sceneStyle: { backgroundColor: colors.bg },
-      }}
+      tabBar={(p) => <FloatingTabBar {...p} />}
+      screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: colors.bg } }}
     >
-      {items.map((i) => (
-        <Tabs.Screen
-          key={i.name}
-          name={i.name}
-          options={{
-            title: t(i.key),
-            tabBarAccessibilityLabel: t(i.key),
-            tabBarIcon: ({ color, focused }) => <Icon name={i.icon} color={color as string} stroke={focused ? 2.4 : 1.8} />,
-          }}
-        />
+      {ITEMS.map(([name, key]) => (
+        <Tabs.Screen key={name} name={name} options={{ title: t(key), tabBarAccessibilityLabel: t(key) }} />
       ))}
     </Tabs>
   );

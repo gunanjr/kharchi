@@ -44,6 +44,7 @@ export interface Transaction extends SyncMeta {
   note: string | null;
   occurred_at: number;
   payment_method: PaymentMethod | null;
+  excluded: number; // 1 = kept in the list but left out of totals, budgets and insights
   tags: string | null; // JSON string[]
   receipt_uri: string | null;
   source: TxSource;

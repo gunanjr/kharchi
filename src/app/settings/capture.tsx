@@ -47,7 +47,8 @@ export default function Capture() {
     if (!text) return toast('Copy a bank message first, then tap this');
     const r = await ingestSharedText(db, text);
     bumpData();
-    toast(r === 'created' ? 'Found a transaction. Check Home.' : r === 'duplicate' ? 'Already captured' : 'That doesn’t look like a transaction');
+    if (r.status === 'created') router.push({ pathname: '/import-review', params: { id: r.pendingId } });
+    else toast(r.status === 'duplicate' ? 'Already captured' : 'That doesn’t look like a transaction');
   }
 
   return (

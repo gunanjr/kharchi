@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SubScreen, Card, Text, Button } from '@/components/ui';
+import { Emblem } from '@/components/Emblem';
 import { useDb } from '@/db/provider';
 import { useSettings } from '@/store/settings';
 import { requestSmsPermission } from '@/features/native/sms';
@@ -70,8 +71,9 @@ export default function Disclosure() {
 
   return (
     <SubScreen title="Your privacy">
+      <View style={{ alignItems: 'center', paddingVertical: space.sm }}><Emblem icon="shield" size={150} /></View>
       <Text v="h1" accessibilityRole="header">{c.title}</Text>
-      <Text>{c.lead}</Text>
+      <Text color={colors.textMuted}>{c.lead}</Text>
       {c.points.map(([h, b]) => (
         <Card key={h} style={{ gap: space.xs }}>
           <Text v="title">{h}</Text>

@@ -15,7 +15,12 @@ const dec = (c: string) => CURRENCIES[c]?.decimals ?? 2;
 const sym = (c: string) => CURRENCIES[c]?.symbol ?? `${c} `;
 
 /** Parse "1,299.50" / "1299.5" / "₹ 450" to minor units. Returns null if invalid. */
+/** Largest single amount the app accepts (₹10,000 crore in paise): far beyond any real entry, safely inside exact integer range. */
+export const MAX_MINOR = 1e12;
+export const isValidMinor = (n: unknown): n is Minor => typeof n === 'number' && Number.isSafeInteger(n) && n > 0 && n <= MAX_MINOR;
+
 export function parseAmountToMinor(input: string, currency = 'INR'): Minor | null {
+  if (/\d\s*e\s*[+-]?\d/i.test(input)) return null; // "1e30" is not 130
   const cleaned = input.replace(/[^\d.,]/g, '');
   if (!cleaned) return null;
   const d = dec(currency);
@@ -27,7 +32,7 @@ export function parseAmountToMinor(input: string, currency = 'INR'): Minor | nul
   let frac = (parts[1] ?? '').slice(0, d);
   frac = frac.padEnd(d, '0');
   const n = Number(whole) * 10 ** d + (d ? Number(frac) : 0);
-  return Number.isFinite(n) ? n : null;
+  return Number.isFinite(n) && n <= MAX_MINOR ? n : null;
 }
 
 /** Indian digit grouping for INR (12,34,567), western for others. */

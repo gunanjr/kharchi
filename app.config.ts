@@ -26,7 +26,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     package: appConfig.androidPackage,
     adaptiveIcon: {
-      backgroundColor: '#F4EBDD',
+      backgroundColor: '#F3F1EC',
       foregroundImage: './assets/android-icon-foreground.png',
       backgroundImage: './assets/android-icon-background.png',
       monochromeImage: './assets/android-icon-monochrome.png',
@@ -55,7 +55,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-font',
     'expo-localization',
     'expo-asset',
-    ['expo-splash-screen', { backgroundColor: '#F4EBDD', image: './assets/splash-icon.png', imageWidth: 180 }],
+    ['expo-splash-screen', { backgroundColor: '#F3F1EC', image: './assets/splash-icon.png', imageWidth: 180 }],
     ['expo-build-properties', { android: { minSdkVersion: 26, compileSdkVersion: 36, targetSdkVersion: 36 } }],
     ['./plugins/withKharchiNative', { variant, experimental }],
   ],

@@ -83,7 +83,7 @@ export class LocalRulesProvider implements AiProvider {
     switch (intent) {
       case 'owe': {
         const fb = (await friendBalances(db)).filter((f) => f.net !== 0);
-        if (!fb.length) return { text: 'You’re all settled up. Nobody owes you and you owe nobody. 🎉' };
+        if (!fb.length) return { text: 'You’re all settled up. Nobody owes you and you owe nobody.' };
         const owe = fb.filter((f) => f.net < 0).sort((a, b) => a.net - b.net);
         const owed = fb.filter((f) => f.net > 0).sort((a, b) => b.net - a.net);
         const lines = [

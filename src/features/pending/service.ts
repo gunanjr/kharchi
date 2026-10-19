@@ -158,6 +158,9 @@ export async function confirmPending(
     categoryId: string | null;
     note?: string | null;
     accountId?: string | null;
+    /** Corrections made on the review screen; the parsed values are used when omitted. */
+    amount?: number;
+    merchant?: string | null;
   },
 ): Promise<ConfirmResult> {
   const p = await db.get<PendingTx>(
@@ -168,11 +171,11 @@ export async function confirmPending(
   if (p.status === "saved") throw new Error("already saved");
   const txId = await addTransaction(db, {
     type: p.direction === "debit" ? "expense" : "income",
-    amount: p.amount,
+    amount: opts.amount ?? p.amount,
     currency: p.currency,
     category_id: opts.categoryId,
     account_id: opts.accountId ?? null,
-    merchant: p.merchant,
+    merchant: opts.merchant !== undefined ? opts.merchant : p.merchant,
     note: opts.note ?? null,
     occurred_at: p.occurred_at,
     payment_method: p.upi_ref ? "upi" : null,
@@ -186,7 +189,7 @@ export async function confirmPending(
   });
   await updateRow(db, "pending_transactions", id, { status: "saved" });
   let offerAlways: ConfirmResult["offerAlways"] = null;
-  const learnFrom = p.merchant ?? opts.note ?? null;
+  const learnFrom = (opts.merchant !== undefined ? opts.merchant : p.merchant) ?? opts.note ?? null;
   if (opts.categoryId && learnFrom && merchantKey(learnFrom)) {
     const l = await learnMerchant(db, learnFrom, opts.categoryId);
     if (l.offerAlways)

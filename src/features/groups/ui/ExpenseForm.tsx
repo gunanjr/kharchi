@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, TextInput, View } from 'react-native';
-import { Button, Card, Chip, Field, Row, Text, MoneyText } from '@/components/ui';
+import { Button, Card, Chip, Field, Row, Text, Money } from '@/components/ui';
 import { CategoryChips } from '@/components/CategoryPicker';
 import { toast } from '@/components/Toast';
 import { useCategories } from '@/features/tracker/hooks';
@@ -12,6 +12,8 @@ import type { Person, SplitType } from '@/domain/types';
 import { useTheme } from '@/theme/ThemeProvider';
 import { space, radius, type as T } from '@/theme/tokens';
 import { haptic } from '@/lib/haptics';
+import { Comments } from './Comments';
+import { prefillSplit } from '../editPrefill';
 
 type Item = { desc: string; amount: string; who: string[] };
 
@@ -27,9 +29,10 @@ export function GroupExpenseForm({ groupId, members, groupCurrency, existing, on
   const [currency, setCurrency] = useState(existing?.currency ?? groupCurrency);
   const [rateText, setRateText] = useState(existing && existing.rate !== 1 ? String(existing.rate) : '');
   const [cat, setCat] = useState<string | null>(existing?.category_id ?? null);
-  const [type, setType] = useState<SplitType>((existing?.split_type as SplitType) ?? 'equal');
+  const prefill = useMemo(() => (existing ? prefillSplit(existing) : null), [existing]);
+  const [type, setType] = useState<SplitType>(prefill?.type ?? 'equal');
   const [who, setWho] = useState<string[]>(existing ? Object.keys(existing.shares) : members.map((m) => m.id));
-  const [vals, setVals] = useState<Record<string, string>>({});
+  const [vals, setVals] = useState<Record<string, string>>(prefill?.vals ?? {});
   const [payerIds, setPayerIds] = useState<string[]>(existing ? Object.keys(existing.payers) : []);
   const [payerVals, setPayerVals] = useState<Record<string, string>>({});
   const [items, setItems] = useState<Item[]>([{ desc: '', amount: '', who: members.map((m) => m.id) }]);
@@ -102,11 +105,11 @@ export function GroupExpenseForm({ groupId, members, groupCurrency, existing, on
     }
   }
 
-  const inputStyle = [T.body, { color: colors.text, backgroundColor: colors.surfaceAlt, borderRadius: radius.md, minHeight: 44, paddingHorizontal: space.md, minWidth: 90, textAlign: 'right' as const }];
+  const inputStyle = [T.body, { color: colors.text, backgroundColor: colors.surfaceAlt, borderRadius: radius.md, minHeight: 48, paddingHorizontal: space.md, minWidth: 96, textAlign: 'right' as const }];
   const hint = type === 'exact' ? 'amount' : type === 'percent' ? '%' : type === 'shares' ? 'shares' : type === 'adjustment' ? '+/− extra' : '';
 
   return (
-    <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: space.md, paddingBottom: space.xl }}>
+    <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: space.md, paddingTop: space.sm, paddingBottom: 60 }}>
       <Field label="Description" value={desc} onChangeText={setDesc} placeholder="Dinner at Fisherman's Wharf" />
       {type !== 'itemized' && (
         <View style={{ flexDirection: 'row', gap: space.sm, alignItems: 'flex-end' }}>
@@ -126,7 +129,7 @@ export function GroupExpenseForm({ groupId, members, groupCurrency, existing, on
       {payerIds.length > 1 && payerIds.map((id) => (
         <Row key={id} style={{ justifyContent: 'space-between' }}>
           <Text>{id === meId ? 'You' : nameOf(id)} paid</Text>
-          <TextInput accessibilityLabel={`${nameOf(id)} paid`} value={payerVals[id] ?? ''} onChangeText={(t) => setPayerVals({ ...payerVals, [id]: t.replace(/[^\d.]/g, '') })} keyboardType="decimal-pad" placeholder="0" placeholderTextColor={colors.textMuted} style={inputStyle} />
+          <TextInput accessibilityLabel={`${nameOf(id)} paid`} value={payerVals[id] ?? ''} onChangeText={(t) => setPayerVals({ ...payerVals, [id]: t.replace(/[^\d.]/g, '') })} keyboardType="decimal-pad" placeholder="0" placeholderTextColor={colors.textSubtle} style={inputStyle} />
         </Row>
       ))}
 
@@ -143,9 +146,9 @@ export function GroupExpenseForm({ groupId, members, groupCurrency, existing, on
               <Row key={m.id} style={{ justifyContent: 'space-between', minHeight: 48 }}>
                 <Chip label={m.id === meId ? 'You' : m.name} selected={on} onPress={() => setWho(toggle(who, m.id))} />
                 {on && type !== 'equal' ? (
-                  <TextInput accessibilityLabel={`${m.name} ${hint}`} value={vals[m.id] ?? (type === 'shares' ? '1' : '')} onChangeText={(t) => setVals({ ...vals, [m.id]: t.replace(/[^\d.-]/g, '') })} keyboardType="numbers-and-punctuation" placeholder={hint} placeholderTextColor={colors.textMuted} style={inputStyle} />
+                  <TextInput accessibilityLabel={`${m.name} ${hint}`} value={vals[m.id] ?? (type === 'shares' ? '1' : '')} onChangeText={(t) => setVals({ ...vals, [m.id]: t.replace(/[^\d.-]/g, '') })} keyboardType="numbers-and-punctuation" placeholder={hint} placeholderTextColor={colors.textSubtle} style={inputStyle} />
                 ) : on && preview.shares ? (
-                  <MoneyText v="body">{formatMoney(preview.shares[m.id] ?? 0, currency, { trimZeros: true })}</MoneyText>
+                  <Money size="sm" align="right" text={formatMoney(preview.shares[m.id] ?? 0, currency, { trimZeros: true })} />
                 ) : null}
               </Row>
             );
@@ -166,15 +169,16 @@ export function GroupExpenseForm({ groupId, members, groupCurrency, existing, on
               </Row>
             </Card>
           ))}
-          <Row><Button title="+ Add item" kind="secondary" onPress={() => setItems([...items, { desc: '', amount: '', who: members.map((m) => m.id) }])} /></Row>
+          <Row><Button title="Add item" icon="plus" kind="secondary" size="sm" onPress={() => setItems([...items, { desc: '', amount: '', who: members.map((m) => m.id) }])} /></Row>
           <Field label="Tax / tip / service charge (split in proportion)" value={extraText} onChangeText={(t) => setExtraText(t.replace(/[^\d.]/g, ''))} keyboardType="decimal-pad" />
           <Text v="title">Total {formatMoney(itemizedTotal, currency)}</Text>
-          {preview.shares && <Card>{Object.entries(preview.shares).map(([id, v]) => <Row key={id} style={{ justifyContent: 'space-between' }}><Text>{id === meId ? 'You' : nameOf(id)}</Text><MoneyText v="body">{formatMoney(v, currency)}</MoneyText></Row>)}</Card>}
+          {preview.shares && <Card>{Object.entries(preview.shares).map(([id, v]) => <Row key={id} style={{ justifyContent: 'space-between' }}><Text>{id === meId ? 'You' : nameOf(id)}</Text><Money size="sm" align="right" text={formatMoney(v, currency)} /></Row>)}</Card>}
         </View>
       )}
 
       {preview.error && effectiveTotal > 0 ? <Text color={colors.danger} accessibilityRole="alert">{preview.error}</Text> : null}
       <Button title={existing ? 'Save changes' : 'Add expense'} onPress={save} disabled={!canSave} loading={saving} />
+      {existing ? <Comments expenseId={existing.id} members={members} /> : null}
     </ScrollView>
   );
 }

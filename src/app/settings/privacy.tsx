@@ -1,7 +1,9 @@
 import React from 'react';
-import { Linking } from 'react-native';
+import { Linking , View } from 'react-native';
 import Constants from 'expo-constants';
 import { SubScreen, Card, Text, Button } from '@/components/ui';
+import { Emblem } from '@/components/Emblem';
+import { useTheme } from '@/theme/ThemeProvider';
 import { appConfig } from '@/config/app';
 import { appVariant } from '@/features/native/module';
 import { space } from '@/theme/tokens';
@@ -27,12 +29,14 @@ const POINTS: [string, string][] = [
 ];
 
 export default function Privacy() {
+  const { colors } = useTheme();
   return (
     <SubScreen title="Privacy">
+      <View style={{ alignItems: 'center', paddingVertical: space.sm }}><Emblem icon="shield" size={150} /></View>
       {POINTS.map(([h, b]) => (
         <Card key={h} style={{ gap: space.xs }}>
           <Text v="title">{h}</Text>
-          <Text>{b}</Text>
+          <Text color={colors.textMuted}>{b}</Text>
         </Card>
       ))}
       <Button title="Read the full privacy policy" kind="secondary" onPress={() => Linking.openURL(appConfig.privacyPolicyUrl).catch(() => {})} />

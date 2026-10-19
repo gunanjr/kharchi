@@ -1,17 +1,23 @@
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming, useReducedMotion } from 'react-native-reanimated';
-import Svg, { Circle, Path, Rect, G } from 'react-native-svg';
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming, useReducedMotion } from 'react-native-reanimated';
 import { useTheme } from '@/theme/ThemeProvider';
-import { Button, Text } from './ui';
-import { radius, space } from '@/theme/tokens';
+import { Button, Text, Divider as UiDivider } from './ui';
+import { Emblem } from './Emblem';
+import { reportCrash } from '@/features/feedback/appInfo';
+import { easeOut } from '@/theme/motion';
+import { layout, radius, space } from '@/theme/tokens';
+import type { GlyphName } from './glyphs';
 
+export const Divider = UiDivider;
+
+/** Breathing placeholder sized like the content it stands in for. Prefer it to a spinner. */
 export function Skeleton({ h = 16, w = '100%', r = 8 }: { h?: number; w?: number | `${number}%`; r?: number }) {
   const { colors } = useTheme();
   const reduce = useReducedMotion();
   const o = useSharedValue(1);
   useEffect(() => {
-    if (!reduce) o.value = withRepeat(withTiming(0.45, { duration: 800 }), -1, true);
+    if (!reduce) o.value = withRepeat(withSequence(withTiming(0.5, { duration: 900, easing: easeOut }), withTiming(1, { duration: 900, easing: easeOut })), -1);
   }, [o, reduce]);
   const st = useAnimatedStyle(() => ({ opacity: o.value }));
   return <Animated.View accessibilityLabel="Loading" style={[{ height: h, width: w, borderRadius: r, backgroundColor: colors.skeleton }, st]} />;
@@ -19,83 +25,43 @@ export function Skeleton({ h = 16, w = '100%', r = 8 }: { h?: number; w?: number
 
 export function SkeletonList({ n = 5 }: { n?: number }) {
   return (
-    <View style={{ gap: space.md, padding: space.lg }}>
+    <View style={{ gap: space.lg, paddingHorizontal: layout.gutter, paddingTop: space.md }}>
       {Array.from({ length: n }).map((_, i) => (
         <View key={i} style={{ flexDirection: 'row', gap: space.md, alignItems: 'center' }}>
-          <Skeleton h={44} w={44} r={22} />
+          <Skeleton h={46} w={46} r={16} />
           <View style={{ flex: 1, gap: 8 }}>
-            <Skeleton h={14} w="60%" />
-            <Skeleton h={12} w="35%" />
+            <Skeleton h={14} w="55%" />
+            <Skeleton h={12} w="32%" />
           </View>
-          <Skeleton h={16} w={60} />
+          <Skeleton h={16} w={64} />
         </View>
       ))}
     </View>
   );
 }
 
-type Art = 'wallet' | 'group' | 'chart' | 'inbox' | 'chat';
+export function SkeletonCard({ h = 160 }: { h?: number }) {
+  return <View style={{ marginHorizontal: layout.gutter }}><Skeleton h={h} r={radius.lg} /></View>;
+}
 
+type Art = 'wallet' | 'group' | 'chart' | 'inbox' | 'chat';
+const ART: Record<Art, GlyphName> = { wallet: 'wallet-outline', group: 'people-outline', chart: 'stats-chart-outline', inbox: 'file-tray-outline', chat: 'chatbubble-ellipses-outline' };
+
+/** Kept for existing call sites: now an emblem (icon tile in soft rings) instead of a drawing. */
 export function Illustration({ kind, size = 132 }: { kind: Art; size?: number }) {
-  const { colors } = useTheme();
-  const c1 = colors.primary, c2 = colors.accent, c3 = colors.primarySoft, ink = colors.text;
-  return (
-    <Svg width={size} height={size} viewBox="0 0 120 120" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-      <Circle cx="60" cy="62" r="50" fill={c3} />
-      {kind === 'wallet' && (
-        <G>
-          <Rect x="24" y="38" width="72" height="50" rx="10" fill={c1} />
-          <Rect x="24" y="38" width="72" height="14" rx="7" fill={ink} opacity={0.18} />
-          <Rect x="70" y="58" width="30" height="18" rx="9" fill={colors.surface} />
-          <Circle cx="80" cy="67" r="4" fill={c2} />
-        </G>
-      )}
-      {kind === 'group' && (
-        <G>
-          <Circle cx="40" cy="55" r="12" fill={c1} />
-          <Circle cx="80" cy="55" r="12" fill={c2} />
-          <Circle cx="60" cy="48" r="14" fill={ink} opacity={0.85} />
-          <Path d="M20 92c2-16 12-22 20-22s14 4 20 4 12-4 20-4 18 6 20 22z" fill={c1} opacity={0.75} />
-        </G>
-      )}
-      {kind === 'chart' && (
-        <G>
-          <Rect x="26" y="62" width="14" height="28" rx="4" fill={c2} />
-          <Rect x="46" y="46" width="14" height="44" rx="4" fill={c1} />
-          <Rect x="66" y="54" width="14" height="36" rx="4" fill={c2} />
-          <Rect x="86" y="34" width="14" height="56" rx="4" fill={c1} />
-        </G>
-      )}
-      {kind === 'inbox' && (
-        <G>
-          <Path d="M24 64l12-24h48l12 24v22a6 6 0 01-6 6H30a6 6 0 01-6-6z" fill={c1} />
-          <Path d="M24 64h26a10 10 0 0020 0h26" stroke={colors.surface} strokeWidth="4" fill="none" />
-          <Circle cx="60" cy="30" r="7" fill={c2} />
-        </G>
-      )}
-      {kind === 'chat' && (
-        <G>
-          <Rect x="24" y="34" width="62" height="40" rx="14" fill={c1} />
-          <Path d="M40 74l-8 14 22-14z" fill={c1} />
-          <Rect x="52" y="56" width="44" height="30" rx="12" fill={c2} />
-          <Circle cx="64" cy="71" r="2.5" fill="#fff" />
-          <Circle cx="74" cy="71" r="2.5" fill="#fff" />
-          <Circle cx="84" cy="71" r="2.5" fill="#fff" />
-        </G>
-      )}
-    </Svg>
-  );
+  return <Emblem glyph={ART[kind]} size={size} />;
 }
 
 export function EmptyState({ art, title, body, action, onAction }: {
   art: Art; title: string; body: string; action?: string; onAction?: () => void;
 }) {
+  const { colors } = useTheme();
   return (
-    <View style={{ alignItems: 'center', padding: space.xxl, gap: space.md }}>
-      <Illustration kind={art} />
-      <Text v="h2" style={{ textAlign: 'center' }}>{title}</Text>
-      <Text v="body" style={{ textAlign: 'center', opacity: 0.75 }}>{body}</Text>
-      {action && onAction ? <Button title={action} onPress={onAction} style={{ marginTop: space.sm }} /> : null}
+    <View style={{ alignItems: 'center', paddingVertical: space.xxl, paddingHorizontal: layout.gutter + 8, gap: space.sm }}>
+      <Emblem glyph={ART[art]} size={152} />
+      <Text v="h2" style={{ textAlign: 'center', marginTop: space.sm }}>{title}</Text>
+      <Text v="body" color={colors.textMuted} style={{ textAlign: 'center', maxWidth: 320 }}>{body}</Text>
+      {action && onAction ? <Button title={action} onPress={onAction} style={{ marginTop: space.lg, alignSelf: 'center' }} /> : null}
     </View>
   );
 }
@@ -103,11 +69,15 @@ export function EmptyState({ art, title, body, action, onAction }: {
 export function ErrorState({ error, onRetry }: { error: Error; onRetry?: () => void }) {
   const { colors } = useTheme();
   return (
-    <View style={{ padding: space.xl, gap: space.md, alignItems: 'center' }} accessibilityRole="alert">
-      <Text style={{ fontSize: 34 }}>⚠️</Text>
+    <View style={{ padding: layout.gutter, gap: space.sm, alignItems: 'center' }} accessibilityRole="alert">
+      <Emblem glyph="alert-circle-outline" size={120} />
       <Text v="h2">Something went wrong</Text>
-      <Text v="small" color={colors.textMuted} style={{ textAlign: 'center' }}>{error.message}</Text>
-      {onRetry ? <Button title="Try again" kind="secondary" onPress={onRetry} /> : null}
+      <Text v="body" color={colors.textMuted} style={{ textAlign: 'center' }}>Your entries are safe on this phone. Try again, and if it keeps happening please tell us.</Text>
+      <Text v="small" color={colors.textSubtle} style={{ textAlign: 'center' }} numberOfLines={3}>{error.message}</Text>
+      <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.sm }}>
+        {onRetry ? <Button title="Try again" kind="secondary" onPress={onRetry} /> : null}
+        <Button title="Send report" kind="ghost" onPress={() => reportCrash(error)} />
+      </View>
     </View>
   );
 }
@@ -118,13 +88,7 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
     return { error };
   }
   render() {
-    if (this.state.error)
-      return <ErrorState error={this.state.error} onRetry={() => this.setState({ error: null })} />;
+    if (this.state.error) return <ErrorState error={this.state.error} onRetry={() => this.setState({ error: null })} />;
     return this.props.children;
   }
 }
-
-export const Divider = () => {
-  const { colors } = useTheme();
-  return <View style={{ height: 1, backgroundColor: colors.border, marginVertical: radius.sm }} />;
-};

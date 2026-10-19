@@ -1,28 +1,22 @@
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { useQuery } from '@/db/provider';
-import { Card, Text, Row } from '@/components/ui';
+import { Card, Text, Row, IconTile, ProgressBar as Bar, SectionHeader } from '@/components/ui';
+import { Glyph } from '@/components/Icon';
+import { categoryGlyph } from '@/components/glyphs';
 import { listBudgets, spendByCategory, totalsBetween } from '@/features/tracker/repo';
 import { budgetProgress } from '@/features/tracker/budgets';
 import { useCategories } from '@/features/tracker/hooks';
 import { daysInMonth, endOfMonth, startOfMonth } from '@/lib/date';
 import { formatMoney } from '@/domain/money';
 import { useTheme } from '@/theme/ThemeProvider';
-import { radius, space } from '@/theme/tokens';
+import { layout, space, toneOf } from '@/theme/tokens';
 import { useRouter } from 'expo-router';
 
+/** Kept for existing call sites: maps a budget status onto the shared animated bar. */
 export function ProgressBar({ pct, status }: { pct: number; status: 'ok' | 'warn' | 'over' }) {
   const { colors } = useTheme();
-  const fill = status === 'over' ? colors.danger : status === 'warn' ? colors.warn : colors.accent;
-  return (
-    <View
-      accessibilityRole="progressbar"
-      accessibilityValue={{ min: 0, max: 100, now: Math.min(100, pct) }}
-      style={{ height: 8, borderRadius: 4, backgroundColor: colors.surfaceAlt, overflow: 'hidden' }}
-    >
-      <View style={{ width: `${Math.min(100, pct)}%`, height: 8, backgroundColor: fill, borderRadius: 4 }} />
-    </View>
-  );
+  return <Bar value={pct / 100} over={status === 'over'} color={status === 'warn' ? colors.warn : colors.primary} />;
 }
 
 export function BudgetStrip() {
@@ -44,16 +38,22 @@ export function BudgetStrip() {
   if (!q.data?.length) return null;
   return (
     <View style={{ gap: space.sm }}>
-      <Text v="h2" style={{ paddingHorizontal: space.lg }}>Budgets</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: space.lg, gap: space.md }}>
+      <SectionHeader title="Budgets" action="Manage" onAction={() => router.push('/budgets')} style={{ paddingHorizontal: layout.gutter }} />
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingBottom: 14, gap: space.md }} style={{ marginBottom: -14 }}>
         {q.data.map((p) => {
           const cat = p.budget.category_id ? byId.get(p.budget.category_id) : null;
+          const tone = toneOf(cat?.color);
+          const g = categoryGlyph(cat);
+          const over = p.status === 'over';
           return (
-            <Card key={p.budget.id} onPress={() => router.push('/budgets')} style={{ width: 210, gap: space.sm }} accessibilityLabel={`${cat?.name ?? 'Overall'} budget ${p.pct} percent used`}>
-              <Row><Text style={{ fontSize: 18 }}>{cat?.icon ?? '🎯'}</Text><Text v="title">{cat?.name ?? 'Overall'}</Text></Row>
-              <ProgressBar pct={p.pct} status={p.status} />
-              <Text v="small" color={p.status === 'over' ? colors.danger : colors.textMuted}>
-                {p.status === 'over' ? `${formatMoney(-p.remaining, 'INR', { compact: true })} over` : `${formatMoney(p.remaining, 'INR', { compact: true })} left`} · {p.pct}%
+            <Card key={p.budget.id} onPress={() => router.push('/budgets')} style={{ width: 220, gap: space.md }} accessibilityLabel={`${cat?.name ?? 'Overall'} budget ${p.pct} percent used`}>
+              <Row style={{ gap: space.sm }}>
+                <IconTile size={36}>{g ? <Glyph name={g} size={17} color={tone} /> : <Glyph name="flag-outline" size={17} color={colors.text} />}</IconTile>
+                <Text v="title" numberOfLines={1} style={{ flex: 1 }}>{cat?.name ?? 'Overall'}</Text>
+              </Row>
+              <Bar value={p.pct / 100} over={over} color={p.status === 'warn' ? colors.warn : cat ? tone : colors.primary} />
+              <Text v="small" color={over ? colors.expense : colors.textMuted}>
+                {over ? `${formatMoney(-p.remaining, 'INR', { compact: true })} over` : `${formatMoney(p.remaining, 'INR', { compact: true })} left`} · {p.pct}%
               </Text>
             </Card>
           );

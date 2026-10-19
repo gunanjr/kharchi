@@ -8,6 +8,7 @@ import { useDb, useQuery, bumpData } from '@/db/provider';
 import { deleteBill, listBills } from '@/features/bills/repo';
 import { formatDay } from '@/lib/date';
 import { formatMoney } from '@/domain/money';
+import { Icon } from '@/components/Icon';
 import { useTheme } from '@/theme/ThemeProvider';
 import { space, radius } from '@/theme/tokens';
 
@@ -21,7 +22,7 @@ export default function Bills() {
   const Row_ = ({ b, i }: { b: NonNullable<typeof d>['waiting'][number]; i: number }) => (
     <Enter i={i}>
       <Card onPress={() => router.push(`/bill/${b.id}`)} style={{ flexDirection: 'row', gap: space.md, alignItems: 'center' }} accessibilityLabel={`Bill ${b.store ?? ''}`}>
-        {b.photo_path ? <Image source={{ uri: `file://${b.photo_path}` }} style={{ width: 56, height: 72, borderRadius: radius.sm, backgroundColor: colors.surfaceAlt }} /> : <View style={{ width: 56, height: 72, borderRadius: radius.sm, backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center' }}><Text>🧾</Text></View>}
+        {b.photo_path ? <Image source={{ uri: `file://${b.photo_path}` }} style={{ width: 56, height: 72, borderRadius: radius.sm, backgroundColor: colors.surfaceAlt }} /> : <View style={{ width: 56, height: 72, borderRadius: radius.sm, backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center' }}><Icon name="receipt" size={24} color={colors.textMuted} /></View>}
         <View style={{ flex: 1 }}>
           <Text v="title" numberOfLines={1}>{b.store ?? 'Bill'}</Text>
           <Text v="small" color={colors.textMuted}>{formatDay(b.created_at)}{b.total ? ` · ${formatMoney(b.total, 'INR', { trimZeros: true })}` : ''}</Text>
@@ -40,7 +41,7 @@ export default function Bills() {
       {d?.waiting.map((b, i) => <Row_ key={b.id} b={b} i={i} />)}
       {d && d.done.length > 0 && <Text v="caps" color={colors.textMuted} style={{ marginTop: space.md }}>ALREADY SPLIT</Text>}
       {d?.done.map((b, i) => <Row_ key={b.id} b={b} i={i} />)}
-      <Row style={{ marginTop: space.md }}><Button title="📷 Scan a bill" onPress={() => router.push('/scan-bill')} /></Row>
+      <Row style={{ marginTop: space.md }}><Button title="Scan a bill" icon="camera" onPress={() => router.push('/scan-bill')} /></Row>
       <ToastHost />
     </SubScreen>
   );

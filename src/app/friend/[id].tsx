@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, View } from 'react-native';
+import { Modal } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { SubScreen, Card, Text, Row, Button, Field, MoneyText } from '@/components/ui';
+import { SubScreen, Card, Text, Button, Field, Money } from '@/components/ui';
 import { Sheet } from '@/components/Sheet';
 import { ToastHost, toast } from '@/components/Toast';
 import { SettleForm } from '@/features/groups/ui/SettleSheet';
@@ -27,15 +27,15 @@ export default function Friend() {
 
   return (
     <SubScreen title={p.name}>
-      <Card style={{ gap: space.sm }}>
-        {net === 0 ? <Text v="h2">You’re settled up</Text> : (
+      <Card tone="ink" style={{ gap: space.md }}>
+        {net === 0 ? <Text v="h2" color={colors.onHero}>You’re settled up</Text> : (
           <>
-            <Text v="caps" color={colors.textMuted}>{net > 0 ? `${p.name.toUpperCase()} OWES YOU` : `YOU OWE ${p.name.toUpperCase()}`}</Text>
-            <MoneyText v="hero" color={net > 0 ? colors.income : colors.expense}>{formatMoney(Math.abs(net), 'INR', { trimZeros: true })}</MoneyText>
+            <Text v="caps" color={colors.onHeroMuted}>{net > 0 ? `${p.name.toUpperCase()} OWES YOU` : `YOU OWE ${p.name.toUpperCase()}`}</Text>
+            <Money size="hero" color={net > 0 ? colors.incomeOnHero : colors.expenseOnHero} text={formatMoney(Math.abs(net), 'INR', { trimZeros: true })} />
           </>
         )}
-        {net !== 0 && <Button title="Settle up" onPress={() => setSettle(true)} />}
-        {net > 0 && <Button title="Remind me to ask in 3 days" kind="secondary" onPress={async () => { const r = await scheduleReminder(p.name, formatMoney(net, 'INR', { trimZeros: true }), 3); toast(r === 'scheduled' ? 'Reminder set for 3 days from now' : r === 'denied' ? 'Allow notifications to use reminders' : 'Reminders work in the installed app (not Expo Go)'); }} />}
+        {net !== 0 && <Button title="Settle up" kind="accent" onPress={() => setSettle(true)} />}
+        {net > 0 && <Button title="Remind me to ask in 3 days" kind="secondary" icon="bell" onPress={async () => { const r = await scheduleReminder(p.name, formatMoney(net, 'INR', { trimZeros: true }), 3); toast(r === 'scheduled' ? 'Reminder set for 3 days from now' : r === 'denied' ? 'Allow notifications to use reminders' : 'Reminders work in the installed app (not Expo Go)'); }} />}
       </Card>
       <Card style={{ gap: space.md }}>
         <Field label="UPI ID" value={upi ?? p.upi_id ?? ''} onChangeText={setUpi} autoCapitalize="none" placeholder="name@okaxis" />

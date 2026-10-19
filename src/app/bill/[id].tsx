@@ -95,7 +95,7 @@ export default function BillScreen() {
       }, b.photo_path);
       haptic.success();
       bumpData();
-      toast('Bill split ✓');
+      toast('Bill split');
       if (groupId) router.replace(`/group/${groupId}`);
       else router.back();
     } catch (e) {
@@ -150,7 +150,7 @@ export default function BillScreen() {
 
             <Row style={{ justifyContent: 'space-between', marginTop: space.sm }}>
               <Text v="h2">Who had what?</Text>
-              {items.length > 0 && <Text v="small" color={unassigned ? colors.warn : colors.income}>{unassigned ? `${unassigned} left` : 'all assigned ✓'}</Text>}
+              {items.length > 0 && <Text v="small" color={unassigned ? colors.warn : colors.income}>{unassigned ? `${unassigned} left` : 'all assigned'}</Text>}
             </Row>
             <Text v="small" color={colors.textMuted}>Tap a name under each item. Tap several to share it equally. Fix any wrong name or price.</Text>
 

@@ -12,7 +12,7 @@ export default function Invite() {
   const { colors } = useTheme();
   return (
     <SubScreen title="Invite to group">
-      <View style={{ alignItems: 'center', gap: space.md }}>
+      <View style={{ alignItems: 'center', gap: space.md, paddingVertical: space.lg }}>
         <Illustration kind="group" size={160} />
         <Text v="h2" style={{ textAlign: 'center' }}>{backendConfigured ? 'Invite link' : 'Available after a backend is connected'}</Text>
         <Text color={colors.textMuted} style={{ textAlign: 'center' }}>

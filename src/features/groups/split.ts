@@ -1,4 +1,4 @@
-import { allocate, type Minor } from '@/domain/money';
+import { allocate, isValidMinor, type Minor } from '@/domain/money';
 import type { SplitType } from '@/domain/types';
 
 export type SplitInput =
@@ -17,7 +17,7 @@ const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
 
 /** Returns each person's share of `total`. The result ALWAYS sums exactly to `total` or this throws SplitError. */
 export function computeShares(total: Minor, input: SplitInput): Record<string, Minor> {
-  if (!Number.isInteger(total) || total <= 0) throw new SplitError('Total must be a positive amount');
+  if (!isValidMinor(total)) throw new SplitError('Total must be a positive amount');
   const out: Record<string, Minor> = {};
   const fromWeights = (ids: string[], weights: number[], amount = total) => {
     if (!ids.length) throw new SplitError('Pick at least one person');

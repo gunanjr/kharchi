@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Pressable, ScrollView, View , Modal } from 'react-native';
+import { ScrollView, View, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Screen, Header, Text, Card, Row, Button, Enter, Field, Chip, MoneyText } from '@/components/ui';
+import { Screen, Header, Text, Card, Row, Button, Enter, Field, Chip, GlyphPick, Money, IconTile, SectionHeader, Group, ListRow } from '@/components/ui';
 import { EmptyState, SkeletonList } from '@/components/Feedback';
 import { Sheet } from '@/components/Sheet';
 import { ToastHost, toast } from '@/components/Toast';
@@ -9,7 +9,9 @@ import { useDb, useQuery, bumpData } from '@/db/provider';
 import { addPerson, createGroup, ensureSelf, friendBalances, groupSummary, listGroups, listPeople } from '@/features/groups/repo';
 import { formatMoney } from '@/domain/money';
 import { useTheme } from '@/theme/ThemeProvider';
-import { space } from '@/theme/tokens';
+import { GROUP_ICONS, groupGlyph } from '@/components/glyphs';
+import { Glyph } from '@/components/Icon';
+import { space, layout } from '@/theme/tokens';
 
 const ICONS = ['👥', '✈️', '🏠', '🍽️', '🎉', '💼', '🏖️', '🎬'];
 
@@ -19,14 +21,13 @@ function BalanceLabel({ net, currency = 'INR' }: { net: number; currency?: strin
   return (
     <View style={{ alignItems: 'flex-end' }}>
       <Text v="caps" color={net > 0 ? colors.income : colors.expense}>{net > 0 ? 'YOU ARE OWED' : 'YOU OWE'}</Text>
-      <MoneyText color={net > 0 ? colors.income : colors.expense}>{formatMoney(Math.abs(net), currency, { trimZeros: true })}</MoneyText>
+      <Money size="md" align="right" color={net > 0 ? colors.income : colors.expense} text={formatMoney(Math.abs(net), currency, { trimZeros: true })} />
     </View>
   );
 }
 
 export default function Groups() {
   const router = useRouter();
-  const db = useDb();
   const { colors } = useTheme();
   const [newGroup, setNewGroup] = useState(false);
   const [newFriend, setNewFriend] = useState(false);
@@ -40,8 +41,8 @@ export default function Groups() {
 
   return (
     <Screen>
-      <Header title="Groups" right={<Row style={{ gap: 4 }}><Button title="📷" accessibilityLabel="Scan a bill" kind="secondary" onPress={() => router.push('/scan-bill')} style={{ paddingHorizontal: space.md }} /><Button title="+ Friend" kind="ghost" onPress={() => setNewFriend(true)} /><Button title="+ Group" onPress={() => setNewGroup(true)} /></Row>} />
-      <ScrollView contentContainerStyle={{ padding: space.lg, gap: space.md, paddingBottom: 100 }}>
+      <Header title="Groups" right={<Row style={{ gap: space.sm }}><Button title="Scan" accessibilityLabel="Scan a bill" kind="secondary" size="sm" icon="scan" onPress={() => router.push('/scan-bill')} /><Button title="Friend" kind="secondary" size="sm" icon="personAdd" onPress={() => setNewFriend(true)} /><Button title="Group" size="sm" icon="plus" onPress={() => setNewGroup(true)} /></Row>} />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingTop: space.sm, gap: space.md, paddingBottom: 168 }}>
         {q.loading && !q.data ? <SkeletonList n={3} /> : null}
         {q.data && q.data.sums.length === 0 && (
           <EmptyState art="group" title="Split anything, with anyone" body="Create a group for a trip, flat or dinner. Unlimited groups, friends and expenses. No paywall." action="Create a group" onAction={() => setNewGroup(true)} />
@@ -49,9 +50,9 @@ export default function Groups() {
         {q.data?.sums.map((s, i) => s && (
           <Enter key={s.group.id} i={i}>
             <Card onPress={() => router.push(`/group/${s.group.id}`)} accessibilityLabel={`${s.group.name}, ${s.members.length} people`}>
-              <Row style={{ justifyContent: 'space-between' }}>
-                <Row style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 30 }}>{s.group.icon}</Text>
+              <Row style={{ justifyContent: 'space-between', gap: space.md }}>
+                <Row style={{ flex: 1, gap: space.md }}>
+                  <IconTile size={52} tone="ink"><Glyph name={groupGlyph(s.group.icon)} size={24} color={colors.onInk} /></IconTile>
                   <View style={{ flex: 1 }}><Text v="title" numberOfLines={1}>{s.group.name}</Text><Text v="small" color={colors.textMuted}>{s.members.length} people · {formatMoney(s.totalSpent, s.group.currency, { compact: true })} spent</Text></View>
                 </Row>
                 <BalanceLabel net={s.myBalance} currency={s.group.currency} />
@@ -61,16 +62,18 @@ export default function Groups() {
         ))}
         {q.data && q.data.friends.length > 0 && (
           <View style={{ gap: space.sm, marginTop: space.md }}>
-            <Row style={{ justifyContent: 'space-between' }}>
-              <Text v="h2">Friends</Text>
-              <Button title="Split with a friend" kind="ghost" onPress={() => router.push('/group-expense')} />
-            </Row>
-            {q.data.friends.map((f) => (
-              <Pressable key={f.person.id} accessibilityRole="button" onPress={() => router.push(`/friend/${f.person.id}`)} style={{ minHeight: 56, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Row><View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' }}><Text v="title" color={colors.primary}>{f.person.name[0]?.toUpperCase()}</Text></View><Text v="title">{f.person.name}</Text></Row>
-                <BalanceLabel net={f.net} />
-              </Pressable>
-            ))}
+            <SectionHeader title="Friends" action="Split with a friend" onAction={() => router.push('/group-expense')} />
+            <Group>
+              {q.data.friends.map((f) => (
+                <ListRow
+                  key={f.person.id}
+                  title={f.person.name}
+                  leading={<IconTile size={40} tone="plain"><Text v="title" color={colors.link}>{f.person.name[0]?.toUpperCase()}</Text></IconTile>}
+                  right={<BalanceLabel net={f.net} />}
+                  onPress={() => router.push(`/friend/${f.person.id}`)}
+                />
+              ))}
+            </Group>
           </View>
         )}
       </ScrollView>
@@ -111,7 +114,7 @@ function NewGroupModal({ visible, onClose, onCreated }: { visible: boolean; onCl
       <Sheet onClose={onClose}>
         <Text v="h2">New group</Text>
         <Field label="Name" value={name} onChangeText={setName} placeholder="Goa trip" autoFocus />
-        <Row style={{ flexWrap: 'wrap', gap: space.sm }}>{ICONS.map((i) => <Chip key={i} label="" icon={i} selected={icon === i} onPress={() => setIcon(i)} />)}</Row>
+        <Row style={{ flexWrap: 'wrap', gap: space.sm }}>{ICONS.map((i) => <GlyphPick key={i} label={GROUP_ICONS.find((g) => g.value === i)?.label ?? 'Icon'} glyph={groupGlyph(i)} selected={icon === i} onPress={() => setIcon(i)} />)}</Row>
         <Row>{['INR', 'USD', 'EUR', 'AED'].map((c) => <Chip key={c} label={c} selected={currency === c} onPress={() => setCurrency(c)} />)}</Row>
         <Text v="caps">MEMBERS</Text>
         <Row style={{ flexWrap: 'wrap', gap: space.sm }}>

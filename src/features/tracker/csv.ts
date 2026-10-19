@@ -1,7 +1,9 @@
 import type { Category, Transaction } from '@/domain/types';
 import { formatMoney, parseAmountToMinor } from '@/domain/money';
+import { isValidDate } from '@/lib/date';
+import { readTags } from './tags';
 
-const HEADER = ['date', 'type', 'amount', 'currency', 'category', 'merchant', 'note', 'account', 'payment_method', 'tags'];
+const HEADER = ['date', 'type', 'amount', 'currency', 'category', 'merchant', 'note', 'account', 'payment_method', 'tags', 'excluded'];
 
 const esc = (v: string) => (/[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
 
@@ -18,7 +20,8 @@ export function toCsv(txs: Transaction[], cats: Category[], accountNames: Record
       t.note ?? '',
       (t.account_id && accountNames[t.account_id]) || '',
       t.payment_method ?? '',
-      t.tags ? (JSON.parse(t.tags) as string[]).join('|') : '',
+      readTags(t.tags).join('|'),
+      t.excluded ? '1' : '0',
     ].map(esc).join(','),
   );
   return [HEADER.join(','), ...rows].join('\n');
@@ -59,6 +62,7 @@ export interface ImportedTx {
   categoryName: string;
   merchant: string | null;
   note: string | null;
+  excluded: boolean;
 }
 
 function parseDate(s: string): number | null {
@@ -91,6 +95,7 @@ export function importCsv(text: string): { rows: ImportedTx[]; skipped: number }
   const iCat = idx('category');
   const iMer = idx('merchant', 'description', 'narration', 'particulars');
   const iNote = idx('note', 'remark');
+  const iEx = head.indexOf('excluded');
   const rows: ImportedTx[] = [];
   let skipped = 0;
   for (const r of all.slice(1)) {
@@ -109,7 +114,7 @@ export function importCsv(text: string): { rows: ImportedTx[]; skipped: number }
       type = t === 'income' ? 'income' : t === 'expense' ? 'expense' : raw.trim().startsWith('-') ? 'expense' : 'income';
       if (iType < 0 && !raw.trim().startsWith('-')) type = 'expense'; // unsigned amounts default to spending
     }
-    if (!when || !type || !amount || amount <= 0) {
+    if (!when || !isValidDate(when) || when < Date.UTC(1990, 0, 1) || !type || !amount || amount <= 0) {
       skipped++;
       continue;
     }
@@ -121,6 +126,7 @@ export function importCsv(text: string): { rows: ImportedTx[]; skipped: number }
       categoryName: iCat >= 0 ? (r[iCat] ?? '') : '',
       merchant: iMer >= 0 ? r[iMer] || null : null,
       note: iNote >= 0 ? r[iNote] || null : null,
+      excluded: iEx >= 0 && (r[iEx] ?? '').trim() === '1',
     });
   }
   return { rows, skipped };

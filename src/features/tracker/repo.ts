@@ -6,6 +6,8 @@ import {
   DEFAULT_EXPENSE_CATEGORIES,
   DEFAULT_INCOME_CATEGORIES,
 } from './defaults';
+import { isValidMinor } from '@/domain/money';
+import { isValidDate } from '@/lib/date';
 
 const ALIVE = 'deleted_at IS NULL';
 
@@ -78,6 +80,7 @@ export type NewTx = {
   occurred_at?: number;
   payment_method?: Transaction['payment_method'];
   tags?: string[];
+  excluded?: boolean;
   receipt_uri?: string | null;
   source?: Transaction['source'];
   fingerprint?: string | null;
@@ -86,7 +89,8 @@ export type NewTx = {
 };
 
 export async function addTransaction(db: Db, t: NewTx): Promise<string> {
-  if (!Number.isInteger(t.amount) || t.amount <= 0) throw new Error('amount must be a positive integer (minor units)');
+  if (!isValidMinor(t.amount)) throw new Error('amount must be a positive whole number of paise, up to ₹10,000 crore');
+  if (t.occurred_at !== undefined && !isValidDate(t.occurred_at)) throw new Error('That date is not valid');
   return insertRow(db, 'transactions', {
     type: t.type,
     amount: t.amount,
@@ -99,6 +103,7 @@ export async function addTransaction(db: Db, t: NewTx): Promise<string> {
     occurred_at: t.occurred_at ?? Date.now(),
     payment_method: t.payment_method ?? null,
     tags: t.tags?.length ? JSON.stringify(t.tags) : null,
+    excluded: t.excluded ? 1 : 0,
     receipt_uri: t.receipt_uri ?? null,
     source: t.source ?? 'manual',
     fingerprint: t.fingerprint ?? null,
@@ -110,7 +115,9 @@ export async function addTransaction(db: Db, t: NewTx): Promise<string> {
 export async function updateTransaction(db: Db, id: string, patch: Partial<NewTx>) {
   const p: Record<string, any> = { ...patch };
   if (patch.tags) p.tags = patch.tags.length ? JSON.stringify(patch.tags) : null;
-  if (patch.amount !== undefined && (!Number.isInteger(patch.amount) || patch.amount <= 0)) throw new Error('bad amount');
+  if (patch.excluded !== undefined) p.excluded = patch.excluded ? 1 : 0;
+  if (patch.amount !== undefined && !isValidMinor(patch.amount)) throw new Error('bad amount');
+  if (patch.occurred_at !== undefined && !isValidDate(patch.occurred_at)) throw new Error('That date is not valid');
   await updateRow(db, 'transactions', id, p);
 }
 
@@ -129,11 +136,16 @@ export interface TxFilter {
   maxAmount?: number;
   limit?: number;
   offset?: number;
+  /** Entries the user left out of their totals are hidden unless asked for: every total, chart and answer relies on this default. */
+  includeExcluded?: boolean;
+  onlyExcluded?: boolean;
 }
 
 export function listTransactions(db: Db, f: TxFilter = {}): Promise<Transaction[]> {
   const w: string[] = [ALIVE];
   const p: (string | number)[] = [];
+  if (f.onlyExcluded) w.push('excluded = 1');
+  else if (!f.includeExcluded) w.push('excluded = 0');
   if (f.from !== undefined) (w.push('occurred_at >= ?'), p.push(f.from));
   if (f.to !== undefined) (w.push('occurred_at <= ?'), p.push(f.to));
   if (f.type) (w.push('type = ?'), p.push(f.type));
@@ -159,7 +171,7 @@ export async function totalsBetween(db: Db, from: number, to: number): Promise<P
   const r = await db.get<{ i: number; e: number }>(
     `SELECT COALESCE(SUM(CASE WHEN type='income' THEN amount END),0) i,
             COALESCE(SUM(CASE WHEN type='expense' THEN amount END),0) e
-     FROM transactions WHERE ${ALIVE} AND occurred_at BETWEEN ? AND ?`,
+     FROM transactions WHERE ${ALIVE} AND excluded=0 AND occurred_at BETWEEN ? AND ?`,
     [from, to],
   );
   const income = r?.i ?? 0;
@@ -170,7 +182,7 @@ export async function totalsBetween(db: Db, from: number, to: number): Promise<P
 export const spendByCategory = (db: Db, from: number, to: number) =>
   db.all<{ category_id: string | null; total: number; n: number }>(
     `SELECT category_id, SUM(amount) total, COUNT(*) n FROM transactions
-     WHERE ${ALIVE} AND type='expense' AND occurred_at BETWEEN ? AND ? GROUP BY category_id ORDER BY total DESC`,
+     WHERE ${ALIVE} AND excluded=0 AND type='expense' AND occurred_at BETWEEN ? AND ? GROUP BY category_id ORDER BY total DESC`,
     [from, to],
   );
 
@@ -178,6 +190,7 @@ export const spendByCategory = (db: Db, from: number, to: number) =>
 export const listBudgets = (db: Db) => db.all<Budget>(`SELECT * FROM budgets WHERE ${ALIVE}`);
 
 export async function setBudget(db: Db, categoryId: string | null, amount: number, alertPct = 80): Promise<string> {
+  if (!isValidMinor(amount)) throw new Error('Enter a valid budget amount');
   const existing = await db.get<Budget>(
     `SELECT * FROM budgets WHERE ${ALIVE} AND ${categoryId ? 'category_id=?' : 'category_id IS NULL'}`,
     categoryId ? [categoryId] : [],

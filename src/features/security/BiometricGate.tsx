@@ -3,6 +3,7 @@ import { AppState, View } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { useSettings } from '@/store/settings';
 import { Button, Text } from '@/components/ui';
+import { Emblem } from '@/components/Emblem';
 import { useTheme } from '@/theme/ThemeProvider';
 import { space } from '@/theme/tokens';
 
@@ -43,9 +44,9 @@ export function BiometricGate({ children }: { children: React.ReactNode }) {
   if (enabled && locked)
     return (
       <View style={{ flex: 1, backgroundColor: colors.bg, alignItems: 'center', justifyContent: 'center', gap: space.lg, padding: space.xl }}>
-        <Text style={{ fontSize: 48 }}>🔒</Text>
+        <Emblem icon="lock" size={200} />
         <Text v="h1">Locked</Text>
-        <Button title="Unlock" onPress={unlock} />
+        <Button title="Unlock" icon="lock" onPress={unlock} />
       </View>
     );
   return <>{children}</>;

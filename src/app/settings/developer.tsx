@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
-import { SubScreen, Card, Text, Button, Field, Row, Chip } from '@/components/ui';
+import { Alert, View } from 'react-native';
+import { SubScreen, Card, Text, Button, Field, Chip } from '@/components/ui';
 import { ToastHost, toast } from '@/components/Toast';
 import { useDb, bumpData } from '@/db/provider';
 import { SAMPLES } from '@/features/parser/samples';
 import { ingest } from '@/features/pending/service';
 import { seedDemoData } from '@/features/dev/seed';
 import { seedGroupDemo } from '@/features/dev/seedGroups';
+import { hasAnyData, loadCompleteDemo } from '@/features/dev/loadDemo';
 import { parseSms } from '@/features/parser/sms';
 import { appVariant, isNativeAvailable, isExpoGo } from '@/features/native/module';
 import { useSettings } from '@/store/settings';
@@ -36,7 +37,12 @@ export default function Developer() {
       </Card>
       <Card style={{ gap: space.md }}>
         <Text v="h2">Demo data</Text>
-        <Button title="Generate 3 months of spending" onPress={async () => { const n = await seedDemoData(db); bumpData(); toast(`Added ${n} transactions`); }} />
+        <Button title="Load complete demo (every screen)" icon="play" onPress={async () => {
+          const go = async () => { await loadCompleteDemo(db); bumpData(); toast('Complete demo loaded'); };
+          if (!(await hasAnyData(db))) return go();
+          Alert.alert('Add sample data?', 'This adds demo entries on top of what you already have. Use Delete all my data afterwards to clear them.', [{ text: 'Cancel', style: 'cancel' }, { text: 'Add', onPress: go }]);
+        }} />
+        <Button title="Generate 6 months of spending" kind="secondary" onPress={async () => { const n = await seedDemoData(db); bumpData(); toast(`Added ${n} transactions`); }} />
         <Button title="Generate demo groups" kind="secondary" onPress={async () => { await seedGroupDemo(db); bumpData(); toast('Groups added'); }} />
       </Card>
       <Card style={{ gap: space.md }}>

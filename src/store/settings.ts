@@ -13,6 +13,10 @@ export type Settings = {
   senderAllowlist: string; // comma separated; empty = all financial senders
   hapticsEnabled: boolean;
   weeklySummary: boolean;
+  plusPreview: boolean; // local Plus switch; there is no billing
+  accent: 'marigold' | 'teal' | 'rose' | 'indigo';
+  hideAmounts: boolean; // masks every amount (for public places); the eye on Home
+  plusWaitlist: '' | 'monthly' | 'yearly'; // the plan a person said they would pick when Plus launches
 };
 
 export const defaultSettings: Settings = {
@@ -26,6 +30,10 @@ export const defaultSettings: Settings = {
   senderAllowlist: '',
   hapticsEnabled: true,
   weeklySummary: false,
+  plusPreview: false,
+  accent: 'marigold',
+  hideAmounts: false,
+  plusWaitlist: '',
 };
 
 type Store = Settings & {

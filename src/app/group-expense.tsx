@@ -6,6 +6,7 @@ import { useQuery } from '@/db/provider';
 import { getExpense, getGroup, groupMembers, listPeople } from '@/features/groups/repo';
 import { ToastHost } from '@/components/Toast';
 import { View } from 'react-native';
+import { layout } from '@/theme/tokens';
 
 export default function GroupExpenseScreen() {
   const { groupId, id } = useLocalSearchParams<{ groupId?: string; id?: string }>();
@@ -19,7 +20,7 @@ export default function GroupExpenseScreen() {
   if (!q.data) return <SubScreen title="Expense"><Text>Loading…</Text></SubScreen>;
   return (
     <SubScreen title={q.data.existing ? 'Edit expense' : q.data.group ? `Add to ${q.data.group.name}` : 'Split with friends'} scroll={false}>
-      <View style={{ flex: 1, paddingHorizontal: 16 }}>
+      <View style={{ flex: 1, paddingHorizontal: layout.gutter }}>
       <GroupExpenseForm
         key={q.data.existing?.id ?? 'new'}
         groupId={groupId ?? null}

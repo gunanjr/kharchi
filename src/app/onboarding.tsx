@@ -3,11 +3,12 @@ import { FlatList, View, useWindowDimensions } from 'react-native';
 import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
 import { Screen, Text, Button, Row } from '@/components/ui';
 import { Illustration } from '@/components/Feedback';
-import { useDb } from '@/db/provider';
+import { useDb, bumpData } from '@/db/provider';
+import { hasAnyData, loadCompleteDemo } from '@/features/dev/loadDemo';
 import { useSettings } from '@/store/settings';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useT } from '@/i18n';
-import { space } from '@/theme/tokens';
+import { layout, space } from '@/theme/tokens';
 
 const PAGES = [
   { art: 'wallet', t: 'onb.1.title', b: 'onb.1.body' },
@@ -29,7 +30,13 @@ export default function Onboarding() {
     if (i < PAGES.length - 1) {
       list.current?.scrollToIndex({ index: i + 1, animated: !reduce });
       setI(i + 1);
-    } else set(db, 'onboarded', true);
+    } else {
+      // Development builds (Expo Go) start with the complete sample data so every screen has content. Store builds never do.
+      (async () => {
+        if (__DEV__ && !(await hasAnyData(db))) { await loadCompleteDemo(db); bumpData(); }
+        set(db, 'onboarded', true);
+      })();
+    }
   };
 
   return (
@@ -43,16 +50,16 @@ export default function Onboarding() {
         scrollEnabled={false}
         keyExtractor={(p) => p.art}
         renderItem={({ item }) => (
-          <View style={{ width, padding: space.xl, justifyContent: 'center', alignItems: 'center', gap: space.lg }}>
-            <Animated.View entering={reduce ? undefined : FadeIn.duration(500)}><Illustration kind={item.art} size={220} /></Animated.View>
-            <Text v="h1" style={{ textAlign: 'center' }} accessibilityRole="header">{t(item.t)}</Text>
-            <Text v="body" color={colors.textMuted} style={{ textAlign: 'center', maxWidth: 320 }}>{t(item.b)}</Text>
+          <View style={{ width, paddingHorizontal: layout.gutter + 8, justifyContent: 'center', alignItems: 'center', gap: space.lg }}>
+            <Animated.View entering={reduce ? undefined : FadeIn.duration(600)} style={{ marginBottom: space.lg }}><Illustration kind={item.art} size={260} /></Animated.View>
+            <Text v="display" style={{ textAlign: 'center', fontSize: 34, lineHeight: 38 }} accessibilityRole="header">{t(item.t)}</Text>
+            <Text v="body" color={colors.textMuted} style={{ textAlign: 'center', maxWidth: 330, fontSize: 16, lineHeight: 24 }}>{t(item.b)}</Text>
           </View>
         )}
       />
-      <View style={{ padding: space.xl, gap: space.lg, alignItems: 'center' }}>
-        <Row accessibilityElementsHidden>
-          {PAGES.map((p, k) => <View key={p.art} style={{ width: k === i ? 24 : 8, height: 8, borderRadius: 4, backgroundColor: k === i ? colors.primary : colors.border }} />)}
+      <View style={{ padding: layout.gutter, paddingBottom: space.xl, gap: space.xl, alignItems: 'center' }}>
+        <Row accessibilityElementsHidden style={{ gap: 6 }}>
+          {PAGES.map((p, k) => <View key={p.art} style={{ width: k === i ? 28 : 8, height: 8, borderRadius: 4, backgroundColor: k === i ? colors.ink : colors.track }} />)}
         </Row>
         <Button title={i === PAGES.length - 1 ? t('onb.start') : t('onb.next')} onPress={next} style={{ alignSelf: 'stretch' }} />
       </View>
