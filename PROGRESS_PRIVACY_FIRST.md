@@ -1,0 +1,83 @@
+# Progress: Privacy-First production changes (19 Oct 2026)
+
+Goal: launch Kharchi with the fewest sensitive permissions, no bank integration, no financial-data backend and no unnecessary regulatory complexity, as proposed in the two review documents. Status: **done and verified on a release build**, except items listed under "Not done / needs you".
+
+## Result in one table
+| | Before | After (store edition) |
+|---|---|---|
+| Permissions in release APK | 30+ (SMS, internet, camera, overlay, FCM/c2dm, 20 launcher-badge, install-referrer...) | **4**: notifications (optional), biometrics (optional), vibrate, boot (re-arm reminders) |
+| SMS permission / receiver / declaration | yes / yes / needed | **none / none / not needed** |
+| INTERNET | yes | **removed** (data cannot leave the phone) |
+| Push (FCM), badges, camera, contacts, location | present via libraries | **none** |
+| Target SDK | not pinned | **36** (Play requirement as of 19 Oct 2026) |
+| APK size (arm64) | 58 MB | 45 MB |
+| Auto-backup to Google Drive | on | **off** |
+| Production build | full SMS edition | **Privacy-First edition** (SMS edition kept as optional) |
+| Tests | 138 | **140** |
+
+## What changed (by recommendation)
+
+### 1. Local storage and data access
+- Confirmed architecture: SQLite on device, no backend, no accounts, no sync. Nothing transmits.
+- Made it **provable**: store builds remove the INTERNET and ACCESS_NETWORK_STATE permissions, so the OS blocks any network use. (`app.config.ts`, `STORE_BUILD=1`)
+- `scripts/audit-manifest.mjs` (`npm run audit:manifest`) inspects the real APK and **fails** on forbidden permissions/components, Firebase/analytics, or targetSdk < 36. Passed on the final release APK.
+- In-app Privacy screen rewritten to state facts for the running build (e.g. "this build has no permission to use the internet") and to link the policy and support email. (`src/app/settings/privacy.tsx`)
+
+### 2. Privacy-First edition = Lite build as production default
+- `APP_VARIANT` now defaults to `lite`; app name no longer has a "Lite" suffix.
+- Lite strips: SMS receiver, SMS permission, notification listener, double-tap service, foreground-service permissions, notification-reply receiver, headless drain service (plugin `plugins/withKharchiNative.js`).
+- Automatic capture replaced in the UI by **Paste / Share a bank message**: a new "Import from a message" screen with 4 plain steps and a "Paste a copied message" button; Share-to-app intent kept. Parser (70 samples) reused unchanged; user confirms before saving.
+- Onboarding, More menu, Developer panel, store listing and privacy policy copy rewritten to match (en + hi).
+- Experimental features (notification listener, motion detector) now only exist with `EXPERIMENTAL=1` dev/test builds, never in store builds.
+
+### 3. Permission profile
+| Item | Outcome |
+|---|---|
+| SMS | removed |
+| Bank / Account Aggregator | not implemented (interface + mock only, unused by UI) |
+| Contacts, location, camera, microphone | blocked/removed |
+| Notifications | optional runtime request, only when you set a reminder |
+| Biometrics | optional app lock |
+| File access | system file picker only (no storage permission) |
+| Internet | **removed** in store builds |
+- **Removed unused/over-broad packages**: expo-image-picker (was adding CAMERA), expo-print, expo-sms, expo-intent-launcher, expo-keep-awake, expo-task-manager, expo-system-ui, @shopify/react-native-skia, async-storage, zod.
+- **Removed `expo-notifications`** (it brought FCM `c2dm`, WAKE_LOCK and ~20 launcher-badge permissions). Replaced by native **local reminders** (`Reminders.kt`: inexact AlarmManager alarms, re-armed after reboot, no exact-alarm permission). `scheduleReminder()` is now `src/features/groups/reminders.ts`.
+- Blocked in config: SYSTEM_ALERT_WINDOW (dev-client), install-referrer, storage, camera, mic, contacts, location.
+
+### 4. Legal / Google Play work
+- **Avoided:** SMS Permissions Declaration, demo video for SMS, bank/AA onboarding, backend, cloud DB, server AI, sensitive permissions.
+- **Done for what remains:** privacy policy rewritten (`docs/index.html`, `docs/privacy-policy.html`; GitHub Pages from `/docs` → `https://gunanjr.github.io/kharchi/`), linked in the app; Data safety answers (collects/shares **nothing**), financial-features declaration answers, content rating, target audience (`docs/PLAY_POLICY.md`); store listing (en/hi) rewritten without SMS claims; icons + feature graphic ready; target SDK 36; EAS profiles reorganised.
+- `docs/PUBLISH_GUIDE.md` rewritten for the privacy-first path (no SMS form), beginner steps, 12-tester rule, GitHub Pages hosting.
+
+### 5. The five developer tasks
+1. **Audit the Lite build** - done (audit script; passed on the release APK: 4 permissions, no SMS/listener/sensor components, no Firebase).
+2. **Verify local-only behaviour** - strengthened: INTERNET permission removed, so traffic is impossible. (No code path performs network calls; verified by grep and by the build working with no network permission.)
+3. **Functional without permissions** - release build installed on an Android 16 emulator **with notification permission only**; onboarding, demo data, Insights and Groups render; no crashes (0 FATAL in logcat). Manual entry, CSV, splitting, backup are covered by 140 unit tests on real SQLite.
+4. **Minimum store documentation** - done (above).
+5. **Build and submit** - production AAB is built by `npm run build:store-aab` (needs your Expo + Play accounts, see the guide). A local release APK of the same configuration was built and audited.
+
+### 6. Pricing, economics and subscriptions
+- `docs/BUSINESS_PLAN.md`: free tier, ₹499/yr and ₹79/mo hypotheses, cost table, revenue/break-even maths (net ₹424.15/yr per subscriber; 142 / 283 / 849 subscribers cover ₹5k / ₹10k / ₹30k per month), growth discipline, billing plan, compliance reminders. All figures flagged as assumptions.
+- **No paywall in v1.0**, deliberately (billing cannot be properly tested without a live Play account; the review also says "launch free first or prepare a *tested* billing implementation"). `src/features/entitlements` (+2 tests) is the inert hook for Plus; group splitting stays free.
+- No Firebase/analytics/crash SDK added. Use Play Console vitals.
+
+### 7. Quality and infrastructure fixes found along the way
+- **SDK 57 restored.** A stray `git checkout package.json` had silently reverted the repo to SDK 58 (it would not open in the App Store Expo Go). Re-applied and committed; `expo install --check` clean.
+- Tab bar bottom padding now clears the gesture bar (verified on the release build).
+- Developer panel wording adapted for the store edition; it stays reachable (More → Developer) so Play reviewers and you can see every screen and make screenshots.
+- `package.json` scripts: `android:dev`, `android:store`, `build:store-aab`, `build:store-test-apk`, `audit:manifest`, `check`.
+- Docs updated: README, APP_OVERVIEW, DECISIONS (items 15-22), RELEASE_CHECKLIST.
+
+## Verification log
+- `tsc --noEmit` clean; ESLint 0 errors; Jest **140/140** (13 suites).
+- `expo-doctor`/`expo install --check` clean on SDK 57.
+- Release APK (`APP_VARIANT=lite STORE_BUILD=1`, R8 on): built; `audit:manifest` PASSED; targetSdk 36; installed and ran on emulator (API 36).
+
+## Not done / needs you
+1. **Fill the real app name and app ID** in `src/config/app.json` before the first upload (permanent). Currently `Kharchi` / `app.kharchi.tracker` placeholders.
+2. **Support email** in the policy is `bollugunwanth@gmail.com` (the address you gave for GitHub). Change if you want a different public contact.
+3. **Turn on GitHub Pages** (repo Settings → Pages → `main` + `/docs`) and push these changes (commit exists locally; not pushed).
+4. **Accounts and forms** only you can do: Expo, Play Developer ($25 + ID), Data safety/content rating/declarations, screenshots, 12-tester closed test if applicable (guide: `docs/PUBLISH_GUIDE.md`).
+5. **Billing / Plus** intentionally not built. Do it only after real Plus features exist.
+6. **Unexercised on a physical device:** reminder alarm firing, tile/widget/shortcut + translucent quick-add panel, biometric lock. Code complete; please try them on your phone via the test APK (`npm run build:store-test-apk`) before the first upload.
+7. Back-tap: still impossible for apps; the guide connects the phone's own gesture to the shortcut.

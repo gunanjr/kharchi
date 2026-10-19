@@ -3,8 +3,6 @@
 3    package="expo.modules.kharchinative" >
 4
 5    <uses-sdk android:minSdkVersion="26" />
-5-->INJECTED
-5-->INJECTED
 6    <!--
 7    Components that are safe in BOTH variants live here (tile, widget, notification action receiver).
 8    SMS receiver, notification listener and the experimental double-tap service are added by

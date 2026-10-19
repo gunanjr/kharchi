@@ -40,8 +40,8 @@ export default function Developer() {
         <Button title="Generate demo groups" kind="secondary" onPress={async () => { await seedGroupDemo(db); bumpData(); toast('Groups added'); }} />
       </Card>
       <Card style={{ gap: space.md }}>
-        <Text v="h2">Simulate incoming bank SMS</Text>
-        <Text v="small" color={colors.textMuted}>Runs the exact pipeline the real receiver uses: parse, filter, dedupe, pending card, then “What was this for?”.</Text>
+        <Text v="h2">{appVariant === 'full' ? 'Simulate incoming bank SMS' : 'Try a bank message'}</Text>
+        <Text v="small" color={colors.textMuted}>Same reading step as “Paste a copied message”: parse, filter, dedupe, then a card on Home asks “What was this for?”. Nothing is sent anywhere.</Text>
         <Field label="Sender" value={sender} onChangeText={setSender} autoCapitalize="characters" />
         <Field label="Message" value={body} onChangeText={setBody} multiline style={{ minHeight: 110, textAlignVertical: 'top', paddingTop: 12 }} />
         <Button title="Send to pipeline" onPress={() => simulate()} />
