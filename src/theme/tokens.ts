@@ -1,5 +1,5 @@
 /**
- * Design tokens. Mirrors .interface-design/system.md ("Ink & Marigold"). Nothing outside the theme folder
+ * Design tokens. Mirrors KHARCHI.md section 4 ("Ink & Marigold"). Nothing outside the theme folder
  * should contain a raw colour, font name, radius or shadow: read them through useTheme() and these exports.
  */
 export const palette = {

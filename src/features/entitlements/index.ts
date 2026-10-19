@@ -4,7 +4,7 @@
  * that unlocks the extras below. When real billing is added later, implement `Entitlements` with purchase-token
  * validation and switch `getEntitlements()`; no screen needs to change.
  *
- * Rules (docs/BUSINESS_PLAN.md): basic entry, group splitting, budgets, standard insights, the offline assistant and
+ * Rules (KHARCHI.md, section 7): basic entry, group splitting, budgets, standard insights, the offline assistant and
  * CSV stay FREE forever. Only features that are implemented AND clearly better than the free version go here.
  */
 export type PlusFeature = 'goals_unlimited' | 'full_history' | 'health_score' | 'review_share' | 'receipt_vault' | 'accent_themes';

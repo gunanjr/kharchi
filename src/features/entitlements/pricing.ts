@@ -1,7 +1,7 @@
 import { formatMoney } from '@/domain/money';
 
 /**
- * Launch pricing (from docs/BUSINESS_PLAN.md; change here only). Billing is not built: until it is, the app shows these
+ * Launch pricing (KHARCHI.md section 7; change here only). Billing is not built: until it is, the app shows these
  * prices and collects a waitlist choice on the phone. Amounts are in paise like every other amount in the app.
  */
 export const PRICING = { currency: 'INR', monthly: 7900, yearly: 49900 } as const;
