@@ -31,6 +31,7 @@ export interface KharchiNativeModule {
   notificationListenerCompiledIn(): boolean;
   setDoubleTapEnabled(enabled: boolean, sensitivity: number): boolean;
   setPersistentAddNotification(enabled: boolean): void;
+  scheduleReminder(atMs: number, title: string, body: string): number;
   requestAddTile(): void;
   pinWidget(): boolean | void;
 }

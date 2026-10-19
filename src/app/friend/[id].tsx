@@ -35,7 +35,7 @@ export default function Friend() {
           </>
         )}
         {net !== 0 && <Button title="Settle up" onPress={() => setSettle(true)} />}
-        {net > 0 && <Button title="Remind me to ask in 3 days" kind="secondary" onPress={async () => toast((await scheduleReminder(p.name, formatMoney(net, 'INR', { trimZeros: true }), 3)) ? 'Reminder set' : 'Allow notifications to use reminders')} />}
+        {net > 0 && <Button title="Remind me to ask in 3 days" kind="secondary" onPress={async () => { const r = await scheduleReminder(p.name, formatMoney(net, 'INR', { trimZeros: true }), 3); toast(r === 'scheduled' ? 'Reminder set for 3 days from now' : r === 'denied' ? 'Allow notifications to use reminders' : 'Reminders work in the installed app (not Expo Go)'); }} />}
       </Card>
       <Card style={{ gap: space.md }}>
         <Field label="UPI ID" value={upi ?? p.upi_id ?? ''} onChangeText={setUpi} autoCapitalize="none" placeholder="name@okaxis" />

@@ -1,0 +1,9 @@
+expo.modules.kharchinative.kharchi-native-pngs-0 /Users/gunawanthbollu/Desktop/app/modules/kharchi-native/android/build/generated/res/pngs/release
+expo.modules.kharchinative.kharchi-native-updated_navigation_xml-1 /Users/gunawanthbollu/Desktop/app/modules/kharchi-native/android/build/generated/updated_navigation_xml/release
+expo.modules.kharchinative.kharchi-native-mergeReleaseResources-2 /Users/gunawanthbollu/Desktop/app/modules/kharchi-native/android/build/intermediates/incremental/release/mergeReleaseResources/merged.dir
+expo.modules.kharchinative.kharchi-native-mergeReleaseResources-3 /Users/gunawanthbollu/Desktop/app/modules/kharchi-native/android/build/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+expo.modules.kharchinative.kharchi-native-release-4 /Users/gunawanthbollu/Desktop/app/modules/kharchi-native/android/build/intermediates/merged_res/release/mergeReleaseResources
+expo.modules.kharchinative.kharchi-native-release-5 /Users/gunawanthbollu/Desktop/app/modules/kharchi-native/android/build/intermediates/packaged_res/release/packageReleaseResources
+expo.modules.kharchinative.kharchi-native-main-6 /Users/gunawanthbollu/Desktop/app/modules/kharchi-native/android/src/main/res
+expo.modules.kharchinative.kharchi-native-release-7 /Users/gunawanthbollu/Desktop/app/modules/kharchi-native/android/src/release/res
+gradleHome-0 /Users/gunawanthbollu/.gradle

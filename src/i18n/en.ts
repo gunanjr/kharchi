@@ -24,11 +24,11 @@ export const en = {
   'empty.tx.title': 'No spending yet',
   'empty.tx.body': 'Add your first expense, or load demo data from Settings to see the app come alive.',
   'onb.1.title': 'Every rupee, noticed',
-  'onb.1.body': 'Bank and UPI texts turn into expenses automatically. You just say what it was for.',
+  'onb.1.body': 'Paste or share a bank message and it becomes an expense in two seconds. Or add one by hand in three.',
   'onb.2.title': 'Split without the awkwardness',
   'onb.2.body': 'Groups, friends, itemised bills and the fewest possible payments to settle up. No limits, no paywall.',
   'onb.3.title': 'Private by design',
-  'onb.3.body': 'Everything stays on your phone. Messages are read on-device and never uploaded.',
+  'onb.3.body': 'No account, no ads, no tracking. Your money data stays on your phone and never leaves it.',
   'onb.next': 'Next',
   'onb.start': 'Get started',
 } as const;

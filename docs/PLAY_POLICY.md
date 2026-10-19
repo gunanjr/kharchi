@@ -1,60 +1,56 @@
-# Google Play: SMS permissions, policy notes and submission drafts
+# Google Play: policy position, declarations and answers
 
-> **Approval is not guaranteed.** Google restricts SMS permissions heavily and decides case by case. Treat the `lite` variant as the plan that is always shippable, and `full` as a stretch goal. This document is engineering guidance, not legal advice.
+> This is engineering guidance, not legal advice. Google makes the final decision on every submission.
 
-## 1. The policy in short
-- `READ_SMS`, `RECEIVE_SMS`, `SEND_SMS`, `RECEIVE_MMS`, `RECEIVE_WAP_PUSH` are **restricted permissions** ("SMS and Call Log permissions" policy). They may only be used by an app that is the user's **default SMS, Phone or Assistant handler**, unless the app qualifies for a documented **exception** and Google approves the **Permissions Declaration Form**.
-- Apps must also not derive SMS content through alternative APIs (for example by reading the same text from notifications or accessibility services) to get around the restriction.
-- Personal and sensitive data must be handled under the User Data policy: prominent in-app disclosure, a privacy policy, minimal collection, secure handling.
-- Apps in the expense-tracking space have seen **mixed outcomes**: some approved for a narrow "bank transaction alerts" use case, some rejected and asked to use alternatives.
-- Sideloaded APKs that request SMS permissions can trigger a **Play Protect warning** ("app may be harmful / unrecognised developer"). The user can tap "More details → Install anyway". USB installs and development builds are unaffected.
+## 1. The position: Privacy-First edition (the default production build)
+Kharchi ships on Google Play as a **local-first app with the fewest sensitive permissions**:
+- **No SMS permission, no SMS receiver, no notification listener, no background sensors.** Therefore **no SMS Permissions Declaration Form** and no "default SMS handler" question.
+- **No INTERNET permission** in the store build (`STORE_BUILD=1`): the app cannot transmit data.
+- **No bank integration, no Account Aggregator, no backend, no cloud AI, no analytics, no ads, no accounts.**
+- Transactions come from: manual entry, Quick Add (tile / widget / shortcut), **paste or share of a bank message** (user-initiated, parsed on-device, user confirms), CSV import.
 
-## 2. How this app is built around the policy
-| Concern | What the code does |
+What you still owe Google (cannot be skipped): developer verification, Data safety form, public privacy policy, store listing, content rating, declarations, testing track, and a build targeting API 36+.
+
+## 2. What the production bundle contains (verified by `npm run audit:manifest`)
+Permissions in the final APK: `POST_NOTIFICATIONS` (optional, for user-set reminders), `USE_BIOMETRIC` (optional app lock), `VIBRATE`, `RECEIVE_BOOT_COMPLETED` (re-arm user reminders after reboot). That's all.
+Explicitly absent: SMS, contacts, location, camera, microphone, storage, internet, network state, overlay, foreground service, push (FCM), install referrer.
+Components: launcher activity, Quick Add activity, Quick Settings tile, home-screen widget, reminder receiver, boot receiver. Target SDK 36.
+`allowBackup=false` so financial data is not auto-copied to Google Drive.
+The audit script **fails the build** if a forbidden permission/component appears.
+
+## 3. Data safety form: answers
+- *Does your app collect or share any of the required user data types?* **No.**
+  Reason: all data stays on the device; Google's guidance treats data processed only on-device and never sent off the device as not collected. The store build has no internet permission and no third-party SDKs.
+- *Is all of the user data collected by your app encrypted in transit?* Not applicable (no data collected).
+- *Do you provide a way for users to request that their data is deleted?* Not applicable (no data collected); in-app "Delete all my data" exists anyway.
+- Re-check this form if you ever add sync, analytics, crash reporting, ads or billing (see section 6).
+
+## 4. Other Play Console declarations
+| Item | Answer |
 |---|---|
-| Least privilege | Only `RECEIVE_SMS` is declared. `READ_SMS` is **not** requested; the app never reads the inbox. |
-| Prominent disclosure | `src/app/disclosure/[kind].tsx` is shown before the runtime dialog and says what is read, ignored, kept, that nothing is uploaded, and how to revoke. |
-| On-device only | Kotlin prefilter drops non-financial messages immediately (never stored/logged). Parsing is local. Raw text is deleted after parsing; only parsed fields + a hash remain. |
-| Graceful denial | App is fully usable without SMS: manual, quick add, share-to-app, paste, CSV import. |
-| Alternative API risk | The **NotificationListener** source is separate, opt-in, limited to a fixed list of UPI/bank apps, and **excluded from the `lite` build**. Consider removing it from any Play submission of `full` if the SMS declaration is questioned. |
-| Variants | `APP_VARIANT=full` includes the permission, receiver, listener, detector. `APP_VARIANT=lite` strips all of them from the manifest (verified by the config plugin). |
+| Privacy policy URL | `https://gunanjr.github.io/kharchi/` (GitHub Pages from `/docs`). Also linked inside the app: Settings → Privacy |
+| Ads | No |
+| App access | All functionality available without login |
+| Target audience | 18+ |
+| Content rating | Everyone (answer No to violence, sexual content, gambling, etc.) |
+| Financial features | Personal finance / expense tracking & bill splitting. Does **not** provide loans, banking, payments processing or investments |
+| Government / news / health / COVID | No |
+| Advertising ID | No |
+| Target API | 36 (set in `app.config.ts`, audited) |
+| Account type | Personal is fine for a local-first app; Organisation needs D-U-N-S and website verification. Never misrepresent the publisher. New personal accounts: closed test with 12+ testers for 14 days before production access |
 
-## 3. Draft: Permissions Declaration Form answers (`full` variant)
-**Which permission?** RECEIVE_SMS.
-**Core functionality:** The app's core purpose is automatic personal expense tracking. Banks send a transaction alert SMS for each debit/credit; the app detects these alerts on-device, extracts the amount and merchant, and asks the user "What was this for?" so the expense is logged in seconds without manual typing.
-**Why is a default-handler exception needed?** Receiving the bank's own alert is the only reliable, real-time source of the transaction. Account Aggregator / bank APIs are not available to individuals at this scale; notification scraping is not an acceptable alternative under policy.
-**Which exception applies?** Our submission relies on the "core functionality of the app requires SMS" review path; we do not claim default-handler status. (Check the current exception list in the Play Console form: the available options change. If none fits, do not submit `full` to Play.)
-**Data handling:** Messages are processed on the device. Non-financial messages are discarded instantly. Message text is not stored after parsing, not logged and not transmitted. Only the user's confirmed transactions remain on the device.
-**Disclosure:** Prominent in-app disclosure precedes the permission dialog (see screenshots).
-**Demo video script (≤ 2 min, upload as unlisted YouTube):**
-1. (0:00) Fresh install, open app, show onboarding "Private by design".
-2. (0:10) Settings → Bank & UPI messages. Show the full-screen disclosure; read it aloud; tap "Agree and continue".
-3. (0:30) Show the standard Android "Allow Kharchi to send and view SMS messages?" dialog; tap Allow.
-4. (0:40) Close the app. From another phone/emulator (`adb emu sms send HDFCBK "Rs.450.00 debited from a/c **1234 ... to VPA swiggy@ybl"`), send a bank alert and an OTP message.
-5. (0:55) Show the notification "Spent ₹450 at Swiggy. What was this for?" only for the bank alert, none for the OTP. Reply "lunch" inline.
-6. (1:15) Open the app: the expense is saved. Show Settings → Privacy and "Delete all my data".
-7. (1:40) Show revoking the permission in Android Settings and that the app still works (manual add).
+## 5. Why paste/share does not trigger SMS policy
+Google restricts apps that **request** SMS/Call Log permissions. Share and paste use Android's standard share sheet and clipboard: the user hands the app one message they chose, the app holds no SMS permission, and nothing runs in the background. This is the policy-safe route Google's own guidance points to when a permission is not essential.
 
-## 4. Data Safety form (draft answers)
-- **Data collected / shared:** *No data collected*, *no data shared* in the offline build (everything stays on the device). If backend sync is later enabled: declare Financial info (user-initiated transactions), Personal info (name, optional phone) as "collected, encrypted in transit, user can request deletion", **not** SMS content.
-- **SMS or MMS:** processed on-device, not collected (processing that never leaves the device is not "collection"; keep this wording consistent with the privacy policy).
-- **Security:** data encrypted in transit (when sync exists); users can request deletion (in-app "Delete all my data").
-- **Permissions declared:** RECEIVE_SMS, POST_NOTIFICATIONS, USE_BIOMETRIC, BIND_NOTIFICATION_LISTENER_SERVICE (full), FOREGROUND_SERVICE_SPECIAL_USE (full, experimental detector; also needs a Play justification, consider removing from store builds).
+## 6. If you later add things, redo the privacy work first
+| Addition | What changes |
+|---|---|
+| Google Play Billing (Plus) | Add INTERNET + `BILLING` permission; Data safety: purchase history handled by Google; privacy policy text; validate purchase tokens server-side without sending finance data. See `docs/BUSINESS_PLAN.md` |
+| Crash reporting / analytics | New SDK = Data safety "collected" entries, disclosure, scrubbing of amounts/merchants. Defer until needed |
+| Cloud sync / remote AI | Full re-declaration; see `docs/supabase-draft.sql`; never sync raw messages |
+| Re-enabling SMS (`production-full` profile) | See Appendix |
 
-## 5. Privacy policy text (host at a public URL, link in Play Console)
-> **Kharchi Privacy Policy**
-> *Last updated: <date>.*
-> Kharchi is an expense tracker and bill-splitting app that works on your device. **We do not run servers that receive your data.**
-> **What the app accesses.** With your permission, the app receives bank and UPI transaction text messages and (optionally) notifications from payment apps, solely to create expense entries. Messages that are not bank or UPI transactions, such as OTPs, promotions and personal chats, are discarded immediately and never stored or logged.
-> **What is stored.** On your phone only: amount, merchant, account last four digits, date, your category/notes, and a one-way hash of each message to prevent duplicates. The message text is deleted after it is understood.
-> **What is shared.** Nothing. Messages and transactions are never uploaded.
-> **Optional cloud features.** If a future version offers sync or sharing groups, it will be opt-in, will tell you exactly what is sent, and will never include raw messages.
-> **Your choices.** Revoke SMS or notification access in Android Settings at any time; restrict which sender IDs are read; export your data; delete everything with "Delete all my data".
-> **Children.** Not directed to children under 13.
-> **Contact.** <your email>.
-
-## 6. The `lite` fallback plan (use if the declaration is rejected)
-1. Build: `APP_VARIANT=lite eas build --profile production-lite` (AAB).
-2. Capture sources that remain: **Share-to-app** (select a bank SMS → Share → app), paste from clipboard, manual entry, Quick Add (tile, shortcut, widget), CSV / bank-statement import, and the regulated **Account Aggregator** path (`AccountAggregator` interface in `src/features/aggregator`, currently mocked).
-3. Store listing for lite: do not promise "automatic SMS reading"; promise "paste or share a bank message, done in 2 seconds".
-4. Keep distributing `full` as a signed APK from your own site / GitHub releases for power users, with a note about the Play Protect prompt.
+## Appendix: the optional Full (SMS) edition (not the default)
+Built with `eas build --profile production-full` (`APP_VARIANT=full`). Adds `RECEIVE_SMS` + the receiver + notification replies. Google restricts SMS permissions to default SMS/Phone/Assistant handlers unless an exception is approved through the **Permissions Declaration Form**; approval is **not guaranteed** and outcomes for expense apps have been mixed. Sideloaded APKs requesting SMS can trigger a Play Protect warning (user taps "More details → Install anyway"; USB/dev builds unaffected).
+Draft declaration text: core purpose is automatic personal expense tracking; bank alert SMS are parsed on-device, non-financial messages discarded instantly, nothing stored or transmitted; prominent disclosure precedes the runtime dialog (`src/app/disclosure/[kind].tsx`). Demo-video outline: show disclosure → Allow dialog → send a bank alert and an OTP from another phone → notification only for the bank alert → reply inline → saved in app → revoke permission and show the app still works.
+Only pursue this after the privacy-first edition is live and you have users who ask for it.

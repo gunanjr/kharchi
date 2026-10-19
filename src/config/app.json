@@ -4,5 +4,7 @@
   "scheme": "kharchi",
   "androidPackage": "app.kharchi.tracker",
   "iosBundleId": "app.kharchi.tracker",
-  "defaultCurrency": "INR"
+  "defaultCurrency": "INR",
+  "privacyPolicyUrl": "https://gunanjr.github.io/kharchi/",
+  "supportEmail": "bollugunwanth@gmail.com"
 }

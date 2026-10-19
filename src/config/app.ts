@@ -11,4 +11,6 @@ export const appConfig = raw as {
   androidPackage: string;
   iosBundleId: string;
   defaultCurrency: string;
+  privacyPolicyUrl: string;
+  supportEmail: string;
 };

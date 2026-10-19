@@ -1,4 +1,4 @@
-> **Start with `docs/PUBLISH_GUIDE.md`**: the beginner step-by-step. This file is the short expert checklist.
+> **Start with `docs/PUBLISH_GUIDE.md`**: the beginner step-by-step. This file is the short expert checklist. Production = the Privacy-First edition (`eas build --profile production`).
 
 # Release checklist (manual steps for you)
 

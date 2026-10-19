@@ -16,3 +16,12 @@ Recorded as I went (build ran unattended). Newest at the bottom.
 12. **Lint:** React-Compiler advisory rules (`react-hooks/set-state-in-effect`, `purity`, `refs`, `immutability`, `use-memo`) are turned off; they flag intentional external-state sync patterns.
 13. **Jest preset:** jest-expo on SDK 58 needs `@react-native/jest-preset` installed explicitly.
 14. **`.npmrc legacy-peer-deps=true`:** Expo SDK 58 transitive peer ranges conflict under npm's strict resolver.
+
+15. **SDK 57, not 58.** The App Store build of Expo Go supports SDK 57; the project was downgraded so it runs in Expo Go.
+16. **Privacy-First edition is the production default** (`APP_VARIANT` now defaults to `lite`). Reason: removes the SMS Permissions Declaration dependency and review risk. The SMS code stays in the repo as the optional `full` edition.
+17. **`STORE_BUILD=1` removes INTERNET and ACCESS_NETWORK_STATE.** The app has no network code, so "data cannot leave the phone" becomes a verifiable property, not just a promise. Enforced by `scripts/audit-manifest.mjs`.
+18. **Removed `expo-notifications`** (and unused packages: image-picker, print, sms, intent-launcher, keep-awake, task-manager, system-ui, skia, async-storage, zod). Audit of the release APK showed it pulled FCM (`c2dm`), badge-launcher permissions and WAKE_LOCK; the camera permission came from image-picker. Local reminders are now a ~100-line Kotlin `AlarmManager` implementation (`Reminders.kt`, re-armed after reboot, inexact alarms so no exact-alarm permission).
+19. **Notification listener + double-tap detector only with `EXPERIMENTAL=1`** (never in Play builds).
+20. **No Play Billing / paywall in v1.0.** Billing cannot be properly tested without a live Play account; shipping an untested paywall is worse than shipping free. `src/features/entitlements` is the inert hook; plan in `docs/BUSINESS_PLAN.md`.
+21. **Privacy policy hosted from `docs/` via GitHub Pages** (`https://gunanjr.github.io/kharchi/`), also linked in-app. Support email defaults to the address given for GitHub; change in `src/config/app.json`.
+22. **Developer tools stay visible in store builds** (More → Developer): they let a Play reviewer exercise every screen without a real bank SMS, and let the owner produce screenshots.

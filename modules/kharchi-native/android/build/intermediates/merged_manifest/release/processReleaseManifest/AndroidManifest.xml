@@ -12,6 +12,9 @@
         <receiver
             android:name="expo.modules.kharchinative.ActionReceiver"
             android:exported="false" />
+        <receiver
+            android:name="expo.modules.kharchinative.ReminderReceiver"
+            android:exported="false" />
 
         <service
             android:name="expo.modules.kharchinative.QuickAddTileService"

@@ -86,6 +86,9 @@ class KharchiNativeModule : Module() {
       Notifier.setPersistent(ctx, enabled)
     }
 
+    /** Local reminder at an absolute time (ms since epoch). Returns an id. */
+    Function("scheduleReminder") { atMs: Double, title: String, body: String -> Reminders.schedule(ctx, atMs.toLong(), title, body) }
+
     Function("requestAddTile") {
       if (Build.VERSION.SDK_INT >= 33) {
         try {

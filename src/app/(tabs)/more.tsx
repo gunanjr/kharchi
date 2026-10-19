@@ -60,8 +60,8 @@ export default function More() {
         </Enter>
         <Enter i={1}>
           <Card>
-            <Text v="caps" color={colors.textMuted}>AUTOMATIC CAPTURE</Text>
-            <Item title="Bank & UPI messages" sub="Turn texts into expenses, on your phone only" href="/settings/capture" />
+            <Text v="caps" color={colors.textMuted}>QUICK CAPTURE</Text>
+            <Item title={appVariant === 'full' ? 'Bank & UPI messages' : 'Import from a message'} sub={appVariant === 'full' ? 'Turn texts into expenses, on your phone only' : 'Paste or share a bank SMS: done in two seconds'} href="/settings/capture" />
             <Item title="Quick add" sub="Add an expense in about 3 seconds" href="/settings/quick-add" />
           </Card>
         </Enter>
@@ -83,7 +83,7 @@ export default function More() {
             <Text v="caps" color={colors.textMuted}>YOUR DATA</Text>
             <Item title="Export & backup" sub="CSV, full backup file, restore" href="/settings/data" />
             <Item title="Privacy" sub="What stays on your phone" href="/settings/privacy" />
-            <Item title={t('settings.developer')} sub={isNativeAvailable ? 'Native module detected' : 'Expo Go: native features simulated'} href="/settings/developer" />
+            <Item title={t('settings.developer')} sub="Demo data and a message simulator for trying things out" href="/settings/developer" />
           </Card>
         </Enter>
       </ScrollView>

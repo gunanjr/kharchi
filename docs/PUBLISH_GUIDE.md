@@ -1,123 +1,112 @@
 # Publish to the Google Play Store: step by step (no experience needed)
 
-Read it once top to bottom, then do the steps in order. Each step says **where** to click or type. Anything in `code style` is typed in the **Terminal** (in VS Code: menu *Terminal → New Terminal*) while you are inside the project folder `~/Desktop/app`.
+Do the steps in order. Each says **where** to click or type. Anything in `code style` is typed in the **Terminal** (in VS Code: menu *Terminal → New Terminal*) while you are inside the project folder `~/Desktop/app`.
 
-## Please read first: three honest facts
-1. **Google decides whether SMS reading is allowed.** Apps that read SMS must fill a *Permissions Declaration Form* and Google reviews it. It can be approved or rejected, and it can take days. This project ships **two builds** so you are never stuck: the **Full** build (reads bank SMS) and the **Lite** build (no SMS permission; users share/paste the bank message instead). If Full is rejected you upload Lite and you are still live.
-2. **"Double-tap the back of the phone" cannot be done by any app.** Android gives apps no way to detect it. What the app does instead: Quick Settings tile, home-screen widget, long-press shortcut, and a guide that connects your phone's *own* back-tap setting (Pixel Quick Tap, Samsung Good Lock) to the app's Add expense shortcut. The experimental motion detector exists only in your own test builds, **not** in the Play Store build (Google dislikes always-on sensors).
-3. The notification-reading feature (GPay/PhonePe notifications) is also **left out of the Play build** for policy safety. It is included in the test APK (`preview`) you install yourself.
+## What you are publishing
+The **Privacy-First edition**: no SMS permission, no internet permission, no account, no ads, no tracking. Users paste or share a bank message (or type) and confirm. Because it asks for almost nothing, you **skip Google's difficult SMS approval**. (The old automatic-SMS edition still exists as `production-full`, but do not use it for the first release. See `docs/PLAY_POLICY.md`.)
+
+Two honest facts:
+1. "Double-tap the back of the phone" cannot be done by any app. The app gives a Quick Settings tile, widget, shortcut, and a guide to connect your phone's own back-tap setting to the "Add expense" shortcut.
+2. Google can still ask questions during review. You always owe Google: developer verification, Data safety form, privacy policy page, store listing, and a build for Android 16 (API 36), which this project already uses.
 
 ## What you need (checklist)
 | Thing | Cost | Notes |
 |---|---|---|
-| Google account (Gmail) | free | The one you will use for Play |
-| Google Play Developer account | **US$25 once** | needs a credit/debit card, your government ID, a phone number, ~1-3 days for identity check |
-| Expo account | free | https://expo.dev/signup |
-| GitHub account | free | only to host the privacy policy page |
-| An email address for users to contact | free | goes in the privacy policy and store listing |
-| An Android phone with USB debugging, or a second phone | free | to record the SMS demo video and take screenshots |
-| **12 testers** (friends/family with Gmail) | free | **only if** your Play account is a *personal* account made after Nov 2023: Google requires 12 testers for 14 days before "Production" |
-| Time | | about 1 day of work + waiting for Google |
+| Google account (Gmail) | free | the one you will use for Play |
+| Google Play Developer account | **US$25 once** | card, government ID, phone number; identity check 1-3 days |
+| Expo account | free | https://expo.dev/signup (builds the app in the cloud) |
+| GitHub account | free | you already have `gunanjr`; hosts the privacy policy page |
+| An email for users | free | currently `bollugunwanth@gmail.com` is in the privacy policy; change it if you want another |
+| An Android phone | free | for screenshots and testing |
+| **12 testers** (friends/family with Gmail) | free | **only if** your Play account is a *personal* account created after 13 Nov 2023: they must stay opted in for 14 days before you can go to Production |
+| Time | | about half a day + waiting for Google |
+
+You do **not** need: a website, a Google Cloud account, a backend, a database server, or an SMS declaration.
 
 ---
-## PART A: Decide the name and the app ID (do this FIRST, it cannot be changed later)
-The app ID (package name) is permanent once you upload to Play.
-1. Pick the real app name. Search it on the Play Store and on https://ipindiaservices.gov.in/tmrpublicsearch (trademark search). If taken, pick another.
-2. In VS Code open `src/config/app.json`. Change:
-   - `"appName"`: the name people see (e.g. `"Kharchi"`)
-   - `"androidPackage"`: your own unique ID, **lowercase, like a reversed web address**. Example: `com.yourname.kharchi`. Use your own name, not `app.kharchi.tracker` unless you want it.
-   - Do the same for `"iosBundleId"` (just make it equal).
-3. Save. In the Terminal run: `npx expo prebuild --clean` (it regenerates the Android folder; it is safe).
+## PART A: Decide the name and the app ID (FIRST, cannot change later)
+The app ID is permanent once uploaded to Play.
+1. Pick the real app name. Search it in the Play Store and on https://tmrsearch.ipindia.gov.in/tmrpublicsearch/ (Indian trademark search). If taken, pick another.
+2. In VS Code open `src/config/app.json` and set:
+   - `appName`: the name people see.
+   - `androidPackage` and `iosBundleId`: your own unique ID in lowercase, like a reversed web address, e.g. `com.gunanjr.kharchi`. Both the same.
+   - `supportEmail`: the email users can contact.
+   - `privacyPolicyUrl`: leave as is if your GitHub username is `gunanjr` and the repo is `kharchi` (Part B).
+3. Save. In the Terminal run `npx expo prebuild --clean` (regenerates Android files; safe).
 
-## PART B: Privacy policy web page (Google requires a link)
-1. Open `docs/privacy-policy.html`. Replace `REPLACE_DATE` with today's date and `REPLACE_EMAIL` with your email. Save.
-2. Go to https://github.com → sign in → **+** (top right) → **New repository**. Name it `kharchi-privacy`. Choose **Public**. Click **Create repository**.
-3. On the new repo page click **uploading an existing file**. Drag in your edited `privacy-policy.html` and **rename it `index.html`** (rename the file on your computer before dragging). Click **Commit changes**.
-4. In the repo: **Settings → Pages**. Under *Branch* choose `main` and folder `/ (root)`, click **Save**. Wait 1-2 minutes.
-5. Your link is `https://YOUR-GITHUB-USERNAME.github.io/kharchi-privacy/`. Open it in a browser to check it works. **Copy it**; you need it later.
+## PART B: Privacy policy page (Google requires a public link)
+The page already exists in the project (`docs/index.html`). You only turn on hosting:
+1. Open https://github.com/gunanjr/kharchi (push the latest code first; ask me and I'll push).
+2. Click **Settings** (top bar of the repo) → **Pages** (left menu).
+3. Under *Build and deployment → Source* choose **Deploy from a branch**. Under *Branch* choose `main` and the folder **/docs**. Click **Save**.
+4. Wait 1-2 minutes. Open `https://gunanjr.github.io/kharchi/` in a browser. You should see the privacy policy. If it says 404, wait a bit and refresh.
+5. If you changed your support email in Part A, also edit it near the bottom of `docs/index.html` and `docs/privacy-policy.html`, commit and push.
+This link goes into Play Console (Part G) and is also reachable inside the app (More → Privacy → Read the full privacy policy).
 
 ## PART C: Connect Expo (builds the app in the cloud, free)
 1. Make an Expo account at https://expo.dev/signup.
 2. Terminal: `npx eas-cli login` → type your Expo email and password.
-3. Terminal: `npx eas-cli init` → say **Yes** to create the project. It prints a **project ID**.
-4. Create a file named `.env` in the project folder (same place as `package.json`) containing exactly one line (use your ID): `EAS_PROJECT_ID=paste-the-id-here`
-5. Also run: `npx eas-cli env:create --name EAS_PROJECT_ID --value paste-the-id-here --environment production --visibility plaintext` (so cloud builds see it).
+3. Terminal: `npx eas-cli init` → answer **Yes** to create the project. It prints a **project ID**.
+4. Create a file named `.env` in the project folder (next to `package.json`) with one line: `EAS_PROJECT_ID=paste-the-id-here`
+5. Run: `npx eas-cli env:create --name EAS_PROJECT_ID --value paste-the-id-here --environment production --visibility plaintext`
 
-## PART D: Build the Play Store file (.aab)
-1. Terminal: `npx eas-cli build --platform android --profile production`
-2. First time it asks *"Generate a new Android Keystore?"* → press **Y**. This is your app's **signing key**. EAS stores it safely. (Later run `npx eas-cli credentials`, choose Android → "Download credentials" and keep a backup in a safe place. If it is lost you can still recover through Play App Signing, but back it up anyway.)
-3. Wait about 10-20 minutes. When it finishes it shows a link to an `.aab` file. Click it and **download** it. This is **Build FULL**.
-4. Also make the fallback now so you have it ready: `npx eas-cli build --platform android --profile production-lite` and download that `.aab` too. This is **Build LITE**.
-5. (Optional, for testing on your own phone first) `npx eas-cli build --platform android --profile preview` gives an `.apk` you can install directly with every experimental feature.
+## PART D: Build the Play Store file (.aab) and prove it is clean
+1. Terminal: `npm run build:store-aab` (this is `eas build --platform android --profile production`).
+2. First time it asks *"Generate a new Android Keystore?"* → press **Y**. This is your app's signing key; EAS stores it. Later run `npx eas-cli credentials`, choose Android, and download a backup copy to a safe place.
+3. Wait 10-20 minutes. When done it prints a link to the `.aab` file. Download it.
+4. **Test on your own phone first (recommended):** `npm run build:store-test-apk` builds an `.apk` with the exact same permissions. Open the link on your phone, install it, and try: add expense, paste a bank message, a group split, backup/restore, dark mode.
+5. **Optional audit (needs Android Studio installed):** `npm run android:store` builds the same thing locally; then `npm run audit:manifest` prints the permission list and **fails** if anything forbidden slipped in. Expected permissions: notifications (optional), biometrics (optional), vibrate, start-up reminders. Target SDK must say 36.
 
 ## PART E: Create the Play Console account
 1. Go to https://play.google.com/console/signup and sign in with your Google account.
-2. Choose **Personal** (just you) or **Organization** (you have a registered company). Personal is fine.
-3. Pay the **US$25**. Fill in your name, address, phone. Verify your phone and email.
-4. Upload your **government ID** when asked and wait for approval (1-3 days). You cannot publish until it is approved.
+2. Choose **Personal** (just you) or **Organization** (a registered company; needs a D-U-N-S number and website verification). Personal is fine for this app.
+3. Pay the **US$25**. Fill in your name, address and phone; verify email and phone.
+4. Upload your **government ID** when asked, then wait for approval (1-3 days). You cannot publish until verified.
 
 ## PART F: Create the app and the store page
-1. Play Console → **Create app**. App name = your name. Default language *English (India)*. App or game = **App**. Free or paid = **Free**. Tick the two declarations. **Create app**.
-2. Left menu **Grow → Store presence → Main store listing**. Copy-paste the texts from `store/listing-en.md` (short description, full description).
-3. Upload the images:
-   - App icon: `store/play-icon-512.png`
-   - Feature graphic: `store/feature-graphic-1024x500.png`
-   - **Phone screenshots (at least 2, 4-8 is better)**: see "How to take screenshots" below.
-4. Click **Save**.
+1. Play Console → **Create app**. Name = your app name. Language *English (India)*. App. **Free**. Tick the two declarations → **Create app**.
+2. Left menu **Grow → Store presence → Main store listing**: paste the texts from `store/listing-en.md` (short and full description).
+3. Upload images: icon `store/play-icon-512.png`; feature graphic `store/feature-graphic-1024x500.png`; **phone screenshots (at least 2, ideally 6-8)**.
+4. **Save.**
 
 ### How to take screenshots
-Open the app on your phone, go to **More → Developer → Generate 3 months of spending** and **Generate demo groups** (so screens look full). Take screenshots (power + volume-down) of: Home, Insights, a Group, the Assistant, Quick add, dark mode. Send them to your computer (email/WhatsApp to self) and upload.
+Install the test APK (Part D step 4). Open **More → Developer** and tap "Generate 3 months of spending" and "Generate demo groups". Screenshot (power + volume-down) these: Home, Insights, a Group, the Assistant, Quick add, dark mode. Send them to your computer (email or WhatsApp to yourself), upload.
+Before you go live, use **More → Export & backup → Delete all my data** on your own phone if you don't want the demo data.
 
-## PART G: "App content" forms (Play Console → left menu → Policy and programs → App content)
-Do each item; they are all just forms.
-1. **Privacy policy** → paste your GitHub Pages link from Part B.
-2. **Ads** → *No, my app does not contain ads*.
-3. **App access** → *All functionality is available without special access*.
-4. **Content rating** → start the questionnaire. Category *Utility / Productivity*. Answer **No** to violence, sexual content, drugs, gambling, etc. Result should be "Everyone".
-5. **Target audience** → choose **18 and over** only.
-6. **News app** → No. **COVID** → No. **Government app** → No.
-7. **Data safety** → *Does your app collect or share user data?* Choose **No** (the app keeps everything on the phone and never sends it anywhere). *Is all data encrypted in transit / can users request deletion* → the questions disappear if you chose No. Click through and **Submit**.
-   - If Google's form asks about SMS specifically, say: processed on device only, not collected, not shared.
-8. **Financial features** → select that the app is a **personal finance / expense tracker** and does **not** offer loans, banking, payments or investments.
-9. **Health, Advertising ID, Government** → No / not applicable. **Advertising ID**: *No*.
+## PART G: "App content" forms (Policy and programs → App content)
+All are just forms; answers are also in `docs/PLAY_POLICY.md`.
+1. **Privacy policy** → paste `https://gunanjr.github.io/kharchi/`.
+2. **Ads** → No.
+3. **App access** → all functionality available without special access.
+4. **Content rating** → questionnaire; category Utility/Productivity; answer **No** to everything sensitive. Result: Everyone.
+5. **Target audience** → **18 and over**.
+6. **News app / COVID / Government** → No.
+7. **Data safety** → *Does your app collect or share any of the required user data types?* → **No**. Continue and **Submit**. (Reason: everything stays on the phone, the app has no internet permission and no third-party SDKs.)
+8. **Financial features** → choose *Personal finance / expense tracking*; the app does **not** offer loans, banking, payments or investments.
+9. **Advertising ID** → No.
+**There is no SMS permission form for this edition.**
 
-## PART H: The SMS permission form (only for the FULL build)
-Play Console → **Policy and programs → App content → Sensitive app permissions → SMS or Call Log permissions → Start declaration**.
-1. Say the app is **not** the default SMS handler.
-2. Pick the use-case that best matches. If you see **"Core functionality"** options or an option about **receiving transaction alerts / financial** use, choose it. If no option fits your case honestly, **skip the Full build and publish Lite** (Part K).
-3. Description (copy from `docs/PLAY_POLICY.md` section 3, "Draft: Permissions Declaration Form answers").
-4. **Demo video** (required, 1-2 minutes). How to record it simply:
-   a. Install the **preview** build on your phone (Part D step 5), or the Play internal-test build.
-   b. Turn on screen recording (swipe down → *Screen record*).
-   c. Follow the 7 steps in `docs/PLAY_POLICY.md` section 3: show the disclosure screen, the Allow dialog, then have a friend send you a test SMS like `Rs.450.00 debited from a/c XX1234 to VPA swiggy@ybl` (or use the second phone) and also an OTP message, show the notification asking "What was this for?", reply, and open the app.
-   d. Upload the video to YouTube as **Unlisted** and paste the link.
-5. Submit. Google replies by email. Typical wait: up to a few days.
+## PART H: Upload, test, and go live
+1. Left menu **Testing → Internal testing → Create new release** → drag in the `.aab` → **Next → Save → Review → Start rollout**.
+2. **Testers** tab → create a list → add your Gmail → copy the opt-in link → open it on your phone → install from Play → test.
+3. **If you need the 12-testers rule** (Part E, personal account): **Testing → Closed testing** → create track → add 12 Gmail addresses → upload the same `.aab` → ask them to opt in and keep it installed **14 days** (Console shows a counter). Then press **Apply for production**.
+4. When allowed: **Production → Create new release** → upload `.aab` → release notes ("First release") → **Review → Start rollout to Production**.
+5. Google reviews (hours to a few days) and emails you.
 
-## PART I: Upload and test
-1. Left menu **Testing → Internal testing → Create new release**.
-2. Upload the **FULL** `.aab` (drag it in). Release name auto-fills. **Next → Save → Go to review → Start rollout to Internal testing**.
-3. **Testers** tab → create a list → add your own Gmail → copy the *opt-in link* → open it on your phone → install from Play. Test everything.
-4. **If your account needs the 12-testers rule:** Testing → **Closed testing** → create a track → add 12 Gmail addresses → upload the same `.aab` → ask them to opt in and keep the app installed for **14 days**. The Console shows a counter.
+## PART I: Updates later
+1. Change `version` in `app.config.ts` (e.g. `'1.0.1'`); the build number goes up automatically.
+2. `npm run build:store-aab`, download the `.aab`, Play Console → Production → Create new release → upload → rollout.
 
-## PART J: Go to Production
-1. When the checklist under **Dashboard** shows everything done (and 14 days passed if required): **Production → Create new release** → upload the `.aab` → add release notes ("First release") → **Review → Start rollout to Production**.
-2. Google reviews (hours to ~7 days). You get an email when it is live.
-
-## PART K: If Google rejects the SMS permission (Plan B, already prepared)
-1. Do NOT argue forever; ship Lite. Upload the **LITE** `.aab` (Part D step 4) to the same release instead. Lite has no SMS permission, so no declaration is needed.
-2. Remove the "reads SMS automatically" claim from the store text; use this line: *"Paste or share a bank message into the app and it becomes an expense in 2 seconds."*
-3. You may later try again with a clearer video/explanation, or offer the Full build as a direct APK download on your own website (users will see a Play Protect warning and can tap *Install anyway*).
-
-## PART L: Releasing updates later
-1. In `app.config.ts` change `version` (e.g. `'1.0.1'`). The build number goes up automatically.
-2. `npx eas-cli build --platform android --profile production`, download the `.aab`, then Play Console → Production → **Create new release** → upload → rollout.
+## PART J: Later options (not for v1.0)
+- Paid "Plus": see `docs/BUSINESS_PLAN.md`. Needs Play Billing and a privacy/Data safety update first.
+- Automatic SMS reading: see the appendix of `docs/PLAY_POLICY.md` (`production-full`). Only after launch, only if users ask.
 
 ## Things that commonly go wrong
-- *"Package name already exists"* → choose a different `androidPackage` (Part A) and rebuild.
-- *Build fails in EAS* → copy the red error text and send it to me/search it; most are a missing `EAS_PROJECT_ID`.
-- *Rejected: "Prominent disclosure"* → show the disclosure screen clearly in the video; it is in `src/app/disclosure/[kind].tsx`.
-- *Rejected: SMS permission* → Part K.
-- *Forgot to back up the keystore* → run `npx eas-cli credentials` and download it.
+- *"Package name already exists"* → choose a different `androidPackage` (Part A), run `npx expo prebuild --clean`, rebuild.
+- *EAS build fails* → copy the red error text; most are a missing `EAS_PROJECT_ID` (Part C step 4-5).
+- *Privacy policy link rejected / 404* → Part B step 4: wait or re-check Pages source is `main` + `/docs`.
+- *Reviewer says the app needs login* → App access: "all functionality available without login". The demo-data tools in More → Developer let a reviewer see every screen.
+- *Lost the keystore* → `npx eas-cli credentials` to download a backup; Play App Signing can also help recover.
 
-## Before you press "Release" (one-minute check)
-`npx tsc --noEmit && npm run lint && npm test` all green; install the **preview** APK and test: add expense, simulate/receive SMS, reply from the notification, quick-add tile, dark mode, backup/restore.
+## One-minute check before you press "Release"
+`npm run check` (typecheck + lint + tests) is green; the store test APK installs and works; `npm run audit:manifest` passed (if you built locally); privacy page opens; Data safety submitted.

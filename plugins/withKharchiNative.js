@@ -95,13 +95,17 @@ module.exports = function withKharchiNative(config, props = {}) {
       }
     }
 
-    // headless drain after a notification reply (best effort)
-    upsertComponent(app.service, {
-      $: { 'android:name': 'expo.modules.kharchinative.DrainTaskService', 'android:exported': 'false' },
-    });
+    // tools:node="remove" lets us strip components that the library manifest declares
+    manifest.$ = manifest.$ || {};
+    manifest.$['xmlns:tools'] = 'http://schemas.android.com/tools';
+    const removeComponent = (list, name) => upsertComponent(list, { $: { 'android:name': name, 'tools:node': 'remove' } });
 
     if (variant === 'full') {
       addPermission(manifest, 'android.permission.RECEIVE_SMS');
+      // headless save after a notification reply (best effort)
+      upsertComponent(app.service, {
+        $: { 'android:name': 'expo.modules.kharchinative.DrainTaskService', 'android:exported': 'false' },
+      });
 
       upsertComponent(app.receiver, {
         $: {
@@ -146,6 +150,8 @@ module.exports = function withKharchiNative(config, props = {}) {
       });
     }
     if (variant === 'lite') {
+      // Privacy-first / store build: no SMS-driven components at all (the reply receiver only serves SMS prompts)
+      removeComponent(app.receiver, 'expo.modules.kharchinative.ActionReceiver');
       // make sure nothing SMS/notification-listener related survives from a previous prebuild
       const strip = (list, names) => list.filter((x) => !names.includes(x.$['android:name']));
       app.receiver = strip(app.receiver, ['expo.modules.kharchinative.SmsReceiver']);

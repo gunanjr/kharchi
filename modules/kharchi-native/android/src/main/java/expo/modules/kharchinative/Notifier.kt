@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 object Notifier {
   const val CHANNEL_PROMPT = "kharchi_prompt"
   const val CHANNEL_PERSIST = "kharchi_persistent"
+  const val CHANNEL_REMINDER = "kharchi_reminders"
   const val KEY_NOTE = "note"
   const val ACTION_REPLY = "expo.modules.kharchinative.REPLY"
   const val ACTION_CATEGORY = "expo.modules.kharchinative.CATEGORY"
@@ -32,10 +33,15 @@ object Notifier {
     nm.createNotificationChannel(NotificationChannel(CHANNEL_PROMPT, "Transaction prompts", NotificationManager.IMPORTANCE_HIGH).apply {
       description = "Asks what a detected bank or UPI transaction was for"
     })
+    nm.createNotificationChannel(NotificationChannel(CHANNEL_REMINDER, "Reminders", NotificationManager.IMPORTANCE_DEFAULT).apply {
+      description = "Gentle nudges you set yourself, such as asking a friend to settle up"
+    })
     nm.createNotificationChannel(NotificationChannel(CHANNEL_PERSIST, "Quick add shortcut", NotificationManager.IMPORTANCE_LOW).apply {
       description = "Optional always-available Add expense action"
     })
   }
+
+  fun canPostPublic(c: Context) = canPost(c)
 
   private fun canPost(c: Context) =
     Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(c, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED

@@ -1,16 +1,22 @@
-import * as Notifications from 'expo-notifications';
+import { PermissionsAndroid, Platform } from 'react-native';
+import { native } from '@/features/native/module';
 
-/** Local reminder ("Ask Ravi for ₹450") N days from now. Returns false if notification permission is missing. */
-export async function scheduleReminder(name: string, amountText: string, inDays: number): Promise<boolean> {
+export type ReminderResult = 'scheduled' | 'denied' | 'unsupported';
+
+/**
+ * Local reminder ("Ask Ravi for ₹450") N days from now, through the app's own native alarm.
+ * No push service, no network. Needs the installed app (not Expo Go) and, on Android 13+, notification permission.
+ */
+export async function scheduleReminder(name: string, amountText: string, inDays: number): Promise<ReminderResult> {
+  if (Platform.OS !== 'android' || !native?.scheduleReminder) return 'unsupported';
   try {
-    const perm = await Notifications.requestPermissionsAsync();
-    if (!perm.granted) return false;
-    await Notifications.scheduleNotificationAsync({
-      content: { title: `Settle up with ${name}`, body: `${name} still owes you ${amountText}. A gentle nudge?` },
-      trigger: { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: Math.max(60, inDays * 86400) },
-    });
-    return true;
+    if (Platform.Version >= 33) {
+      const r = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+      if (r !== 'granted') return 'denied';
+    }
+    native.scheduleReminder(Date.now() + Math.max(1, inDays) * 86_400_000, `Settle up with ${name}`, `${name} still owes you ${amountText}. A gentle nudge?`);
+    return 'scheduled';
   } catch {
-    return false;
+    return 'unsupported';
   }
 }

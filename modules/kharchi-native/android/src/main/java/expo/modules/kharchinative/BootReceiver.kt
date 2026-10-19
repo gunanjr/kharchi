@@ -8,6 +8,7 @@ import android.content.Intent
 class BootReceiver : BroadcastReceiver() {
   override fun onReceive(context: Context, intent: Intent) {
     if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
+    Reminders.rescheduleAll(context)
     if (NativeSettings.persistentNotif(context)) Notifier.setPersistent(context, true)
     if (NativeSettings.doubleTap(context)) DoubleTapService.start(context)
   }

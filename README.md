@@ -2,7 +2,7 @@
 
 Personal expense tracker **+** a full Splitwise-style group splitter, in one React Native (Expo SDK 58, TypeScript) app. **No backend, no accounts, no API keys.** Everything lives in a local SQLite database; sync is designed in but switched off.
 
-Headline features: automatic capture of bank/UPI SMS (on-device) with a "What was this for?" notification you can answer inline, 3-second Quick Add (tile / widget / shortcut), unlimited groups with five split types and minimum-transfer debt simplification, insights + an offline AI assistant.
+Headline features: paste/share a bank message and confirm what it was for (the optional Full edition can read bank SMS automatically), 3-second Quick Add (tile / widget / shortcut), unlimited groups with six split types and minimum-transfer debt simplification, insights + an offline AI assistant. The Play Store edition is **privacy-first: no account, no ads, no analytics, no internet permission.**
 
 Rename the product in one place: `src/config/app.json` (then `npx expo prebuild --clean`).
 
@@ -30,14 +30,19 @@ npx expo start --dev-client
 ```
 `eas.json` has `development`, `preview` (APK), `production` (AAB) plus `*-lite` variants.
 
-### App variants (Google Play policy)
-`APP_VARIANT=full` (default): SMS permission + receiver + notification listener + experimental detector.
-`APP_VARIANT=lite`: none of those in the manifest (verified); capture via Share-to-app, paste, manual, quick add, CSV, Account Aggregator (mock). Example: `APP_VARIANT=lite npx expo prebuild --clean`. Read `docs/PLAY_POLICY.md`.
+### Build editions
+| Edition | How | Contents |
+|---|---|---|
+| **Privacy-First (default, Play Store)** | `APP_VARIANT=lite STORE_BUILD=1` (EAS profile `production`) | No SMS, no listener, no sensors, **no INTERNET permission**, target SDK 36. Paste/share bank messages, manual, quick add, CSV |
+| Full (sideload / appeal) | `APP_VARIANT=full` (`production-full`) | + `RECEIVE_SMS` receiver with notification replies. Needs Google's SMS declaration for Play |
+| Dev / power testing | `APP_VARIANT=full EXPERIMENTAL=1` (`development`, `preview-full`) | + notification listener + double-tap detector |
+
+Verify a build: `npm run audit:manifest` (fails if a forbidden permission/component is present). See `docs/PLAY_POLICY.md`.
 
 `android/` is generated (git-ignored). Native code lives in `modules/kharchi-native` (Kotlin, Expo Modules API) and is wired by `plugins/withKharchiNative.js`, so `npx expo prebuild` always reproduces it. Never hand-edit `android/`.
 
 ## Scripts
-`npm start` · `npm run android:dev` · `npm run build:dev-apk` · `npm run typecheck` · `npm run lint` · `npm test`
+`npm start` · `npm run android:dev` (full + experimental, USB) · `npm run android:store` (store edition, release) · `npm run build:store-aab` · `npm run build:store-test-apk` · `npm run build:dev-apk` · `npm run audit:manifest` · `npm run check` (tsc + lint + tests)
 
 ## Architecture
 ```
@@ -58,10 +63,10 @@ store/              Play listing copy (en/hi)
 ```
 
 ## Privacy
-Parsing is on-device. The Kotlin receiver drops non-financial messages instantly (never stored or logged); financial ones sit in an app-private queue only until the TypeScript parser has run, then the text is deleted. The DB keeps parsed fields + a hash. "Delete all my data" is in Settings → Export & backup.
+The store edition has no INTERNET permission (data cannot leave the phone), no SMS permission, no analytics SDKs, and `allowBackup=false`. Parsing is on-device and the pasted text is not kept; the DB keeps parsed fields + a hash. In the optional Full edition, the Kotlin receiver drops non-financial messages instantly and financial ones sit in an app-private queue only until parsed. "Delete all my data" is in Settings → Export & backup.
 
 ## Quick-add and the back-tap gesture
 Android has **no public API** for back-tap. Order of delivery: (1) Quick Settings tile, (2) launcher shortcut + widget, (3) in-app guide to bind Pixel Quick Tap / Samsung RegiStar / OEM gestures to the shortcut, (4) experimental accelerometer detector (full only, off by default, battery warning).
 
 ## Testing
-`npm test`: 138 tests incl. 70 parser samples, split/simplify property tests (balances sum to zero, transfers settle everyone, never more than greedy), repositories against real SQLite, assistant, insights, seeds.
+`npm test`: 140 tests incl. 70 parser samples, split/simplify property tests (balances sum to zero, transfers settle everyone, never more than greedy), repositories against real SQLite, assistant, insights, seeds.
