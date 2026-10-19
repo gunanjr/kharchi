@@ -7,14 +7,15 @@
 Kharchi tracks your money and splits bills with friends, and keeps everything on your phone. No account. No ads. No tracking. The app does not even have internet permission.
 
 **Know where your money goes**
-• Add an expense in about 3 seconds from a Quick Settings tile, a home-screen widget or a launcher shortcut.
+• Add an expense in about 3 seconds from a home-screen widget or a launcher shortcut.
+• **Scan a bill**: at the supermarket or a restaurant, snap the bill from a widget. Later, tap who had what, item by item. Tax and discounts are shared fairly. The bill is read on your phone.
 • Paste or share a bank or UPI message and it turns into an expense in two seconds. You confirm what it was for.
 • Budgets with progress, category donut, monthly trends, daily heatmap, subscription finder and spending forecasts.
 • Ask the built-in assistant: "How much on food last month?", "Can I save this month?", "Who do I owe?". It runs offline.
 
 **Split with anyone, free**
 • Unlimited groups, friends and expenses. No daily limits, no paywall.
-• Equal, exact, percentage, shares, adjustment and itemised splits; multiple payers; multi-currency.
+• Equal, exact, percentage, shares, adjustment and itemised splits, including **bill scanning**; multiple payers; multi-currency.
 • "Simplify debts" finds the fewest payments to settle up. Pay a friend by UPI in one tap.
 • Your share of every group bill appears in your personal tracker automatically.
 

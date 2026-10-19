@@ -107,3 +107,36 @@ Install the new APK. You will see **two icons**: *Kharchi* and *Add expense*.
 - **Samsung:** Good Lock → RegiStar → Back-tap action → Double tap → Open app → **Add expense**.
 - **Other phones:** Settings → Gestures / Shortcuts → double-tap-back → Open app → **Add expense**. If your phone has no such setting, a free third-party app such as "Tap, Tap" can add one (not made by us).
 The app itself cannot detect a back-tap (Android has no API for that); your phone's gesture opens the "Add expense" entry, which opens the panel in about a second.
+
+
+---
+# Follow-up 2: bill scanning added, tile and back-tap removed
+
+## Removed (as requested)
+- Quick Settings tile (service, manifest entry, icon, settings UI).
+- Everything back-tap / double-tap: the accelerometer detector service and its permissions, the "Add expense" second launcher entry, the sensitivity slider, the gesture guides, the setting.
+- Kept: the Quick add widget (it uses the quick panel), long-press shortcuts, the optional notification-shade action.
+
+## Added: scan a bill, split it item by item
+- **Widget "Scan bill"** (teal, 2×1) and long-press shortcut. Tap → panel drops from the top → *Take photo* / *Gallery* → "Saved ✓ · Split now / Done".
+- **Waiting bills:** Home card "N bills waiting to be split", More → Saved bills, Groups tab 📷 button, "Scan bill" button inside every group.
+- **On-device OCR** (Google ML Kit, bundled model) + a tested receipt parser (rows from boxes, quantity × rate, HSN, two-line items, totals priority, tax = total − items).
+- **Review screen:** group + payer chips, person chips under each item (tap several to share), "Everyone", "Split the rest equally", editable names/prices, add/remove items, live "each person pays", unassigned counter, bill total field, warnings for missing items, photo viewer, "Paste bill text" and a sample bill for Expo Go.
+- **Split engine** now supports discounts (negative extras). Group expense gets the photo as its receipt; your share appears in the tracker.
+- DB migration 3 (`bills`), `docs/BILL_SCANNING.md` (research, design, limits), privacy policy and store listing updated.
+- **Research decision ("tags"):** per-item person chips (explicit, fast, no hidden gestures) rather than drag-and-drop or voice; shared items split equally.
+
+## Privacy / policy impact
+- Still **no CAMERA, storage or INTERNET permission**: the system camera app takes the picture; the system photo picker supplies gallery photos.
+- ML Kit's telemetry (Google Data Transport) components are removed from the manifest; the audit script now fails if they come back. Data safety answer unchanged (no data collected), plus a note in `docs/PLAY_POLICY.md`.
+- Added a FileProvider limited to the app's private `bills/` folder.
+
+## Verification (Android 16 emulator, release build, store edition)
+- Widget placed on the home screen via the pin dialog; tapping it opened the panel over the home screen; *Gallery* → system photo picker → synthetic DMart-style bill selected → "Saved ✓" → **Split now** opened the app on the bill screen.
+- On-device OCR read the store ("Avenue Supermarts"), all 5 items with exact prices, total ₹929 and derived +₹10.00 tax/charges. Assigning items and pressing Split created the group expense (You paid ₹929, share maths checked by hand) and updated the group balances.
+- *Take photo* opened the phone's own camera app, the photo came back, and the screen handled an unreadable image gracefully (warning + manual entry).
+- Manifest audit passes (permissions unchanged: 4 + internal), target SDK 36.
+- 167+ unit tests (parser, row grouping, assignment, split with discounts, property test on random bills).
+
+## Known limits
+Photo quality matters; Latin script only; always check the total. Reminder alarms and the Full (SMS) edition were not re-tested in this round. Real-world accuracy should be checked with a printed bill on your phone.

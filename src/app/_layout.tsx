@@ -43,7 +43,7 @@ function Shell() {
 
   useEffect(() => {
     const inOnboarding = segments[0] === 'onboarding';
-    if (segments[0] === 'quick-add') return; // quick-add host: never redirect
+    if (segments[0] === 'quick-add' || segments[0] === 'scan-bill') return; // quick-add host: never redirect
     if (!onboarded && !inOnboarding) router.replace('/onboarding');
     if (onboarded && inOnboarding) router.replace('/');
   }, [onboarded, segments, router]);
@@ -56,6 +56,7 @@ function Shell() {
         <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
         <Stack.Screen name="add" options={{ presentation: 'transparentModal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="quick-add" options={{ presentation: 'transparentModal', animation: 'fade', contentStyle: { backgroundColor: 'transparent' } }} />
+        <Stack.Screen name="scan-bill" options={{ presentation: 'transparentModal', animation: 'fade', contentStyle: { backgroundColor: 'transparent' } }} />
       </Stack>
     </BiometricGate>
   );

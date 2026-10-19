@@ -1,23 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <!--
-    Components that are safe in BOTH variants live here (tile, widget, notification action receiver).
-    SMS receiver, notification listener and the experimental double-tap service are added by
+    Components that are safe in BOTH variants live here (widgets, reminders, bill-photo FileProvider, notification action receiver).
+    SMS receiver and the experimental notification listener are added by
     plugins/withKharchiNative.js only when APP_VARIANT=full.
   -->
   <application>
     <receiver android:name=".ActionReceiver" android:exported="false" />
     <receiver android:name=".ReminderReceiver" android:exported="false" />
 
-    <service
-      android:name=".QuickAddTileService"
-      android:exported="true"
-      android:icon="@drawable/ic_tile_add"
-      android:label="Add expense"
-      android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
-      <intent-filter>
-        <action android:name="android.service.quicksettings.action.QS_TILE" />
-      </intent-filter>
-    </service>
 
     <receiver android:name=".QuickAddWidgetProvider" android:exported="true" android:label="Add expense">
       <intent-filter>
@@ -25,6 +15,22 @@
       </intent-filter>
       <meta-data android:name="android.appwidget.provider" android:resource="@xml/kharchi_widget_info" />
     </receiver>
+
+    <receiver android:name=".ScanBillWidgetProvider" android:exported="true" android:label="Scan bill">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data android:name="android.appwidget.provider" android:resource="@xml/kharchi_scan_widget_info" />
+    </receiver>
+
+    <!-- Lets the system camera write the bill photo into the app's private folder (no CAMERA permission needed) -->
+    <provider
+      android:name=".KharchiFileProvider"
+      android:authorities="${applicationId}.kharchi.fileprovider"
+      android:exported="false"
+      android:grantUriPermissions="true">
+      <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/kharchi_file_paths" />
+    </provider>
 
     <receiver android:name=".BootReceiver" android:exported="true">
       <intent-filter>

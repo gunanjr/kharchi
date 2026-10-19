@@ -3,7 +3,7 @@
 # Release checklist (manual steps for you)
 
 ## A. Try it on your phone today
-1. **Expo Go (instant):** `npm install && npx expo start`, scan the QR. Everything except real SMS/notification capture, the tile, widget and shortcut.
+1. **Expo Go (instant):** `npm install && npx expo start`, scan the QR. Everything except real SMS/notification capture, the widgets and shortcuts, and bill-photo scanning (use the sample bill).
 2. **Dev build over USB (everything native):**
    - Install Android Studio (gives SDK + a JDK 17-21; JDK 23 also worked in testing). Set `ANDROID_HOME`.
    - Phone: Settings → About → tap Build number 7× → Developer options → USB debugging.
@@ -23,7 +23,7 @@ Edit `src/config/app.json` (name, slug, scheme, package), then `npx expo prebuil
 7. `npx eas-cli submit --platform android` (needs a Play service-account JSON) or upload the AAB manually.
 
 ## D. Before every release
-`npx tsc --noEmit && npm run lint && npm test`, then a device pass: onboarding, add expense, simulate SMS, reply from notification (full), tile, backup/restore, dark mode, font scale 200%, TalkBack.
+`npx tsc --noEmit && npm run lint && npm test`, then a device pass: onboarding, add expense, simulate SMS, reply from notification (full), widgets, scan a printed bill, backup/restore, dark mode, font scale 200%, TalkBack.
 
 ## E. Later: connect a backend (Supabase)
 1. Create a Supabase project; run `docs/supabase-draft.sql`; review the RLS policies.

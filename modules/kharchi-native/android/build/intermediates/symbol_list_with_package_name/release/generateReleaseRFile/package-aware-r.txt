@@ -1,6 +1,0 @@
-expo.modules.kharchinative
-drawable ic_tile_add
-drawable widget_bg
-id kharchi_widget_root
-layout kharchi_widget
-xml kharchi_widget_info

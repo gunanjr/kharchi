@@ -40,7 +40,7 @@ export default function Groups() {
 
   return (
     <Screen>
-      <Header title="Groups" right={<Row><Button title="+ Friend" kind="ghost" onPress={() => setNewFriend(true)} /><Button title="+ Group" onPress={() => setNewGroup(true)} /></Row>} />
+      <Header title="Groups" right={<Row style={{ gap: 4 }}><Button title="📷" accessibilityLabel="Scan a bill" kind="secondary" onPress={() => router.push('/scan-bill')} style={{ paddingHorizontal: space.md }} /><Button title="+ Friend" kind="ghost" onPress={() => setNewFriend(true)} /><Button title="+ Group" onPress={() => setNewGroup(true)} /></Row>} />
       <ScrollView contentContainerStyle={{ padding: space.lg, gap: space.md, paddingBottom: 100 }}>
         {q.loading && !q.data ? <SkeletonList n={3} /> : null}
         {q.data && q.data.sums.length === 0 && (

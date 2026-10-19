@@ -17,8 +17,4 @@ object NativeSettings {
 
   fun persistentNotif(c: Context) = p(c).getBoolean("persistent", false)
   fun setPersistentNotif(c: Context, v: Boolean) = p(c).edit().putBoolean("persistent", v).apply()
-
-  fun doubleTap(c: Context) = p(c).getBoolean("dtap", false)
-  fun doubleTapSensitivity(c: Context) = p(c).getInt("dtapSens", 50)
-  fun setDoubleTap(c: Context, on: Boolean, sens: Int) = p(c).edit().putBoolean("dtap", on).putInt("dtapSens", sens).apply()
 }

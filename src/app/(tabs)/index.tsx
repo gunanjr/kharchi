@@ -7,6 +7,7 @@ import { TxRow } from '@/components/TxRow';
 import { EmptyState, SkeletonList, ErrorState } from '@/components/Feedback';
 import { Icon } from '@/components/Icon';
 import { PendingStack } from '@/features/pending/PendingStack';
+import { BillsCard } from '@/features/bills/BillsCard';
 import { BudgetStrip } from '@/features/tracker/ui/BudgetStrip';
 import { ToastHost } from '@/components/Toast';
 import { useQuery } from '@/db/provider';
@@ -65,6 +66,7 @@ export default function Home() {
               </Card>
             </Enter>
 
+            <BillsCard />
             <PendingStack />
             <BudgetStrip />
 

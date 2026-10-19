@@ -113,16 +113,21 @@ object Notifier {
     NotificationManagerCompat.from(c).notify(notifId(qid), n)
   }
 
-  fun quickAddIntent(c: Context): Intent {
+  /** Intent that opens one of the external panels (quick-add, scan-bill) in the translucent window. */
+  fun panelIntent(c: Context, route: String): Intent {
     val schemeRes = c.resources.getIdentifier("kharchi_scheme", "string", c.packageName)
     val scheme = if (schemeRes != 0) c.getString(schemeRes) else "kharchi"
-    return Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://quick-add?src=ext"))
+    return Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$route?src=ext"))
       .setClassName(c.packageName, "${c.packageName}.QuickAddActivity")
       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
   }
 
-  fun quickAddPending(c: Context): PendingIntent =
-    PendingIntent.getActivity(c, 9, quickAddIntent(c), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+  fun panelPending(c: Context, route: String, code: Int): PendingIntent =
+    PendingIntent.getActivity(c, code, panelIntent(c, route), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+
+  fun quickAddIntent(c: Context): Intent = panelIntent(c, "quick-add")
+
+  fun quickAddPending(c: Context): PendingIntent = panelPending(c, "quick-add", 9)
 
   fun setPersistent(c: Context, on: Boolean) {
     val nm = NotificationManagerCompat.from(c)
@@ -139,19 +144,5 @@ object Notifier {
       .addAction(android.R.drawable.ic_input_add, "Add expense", quickAddPending(c))
       .build()
     nm.notify(PERSIST_ID, n)
-  }
-
-  /** Fallback when Android blocks a background activity start: a heads-up the user can tap. */
-  fun postQuickAddHeadsUp(c: Context) {
-    if (!canPost(c)) return
-    ensureChannels(c)
-    val n = NotificationCompat.Builder(c, CHANNEL_PROMPT)
-      .setSmallIcon(c.applicationInfo.icon.takeIf { it != 0 } ?: android.R.drawable.ic_input_add)
-      .setContentTitle("Add expense")
-      .setContentText("Tap to log it now")
-      .setPriority(NotificationCompat.PRIORITY_HIGH)
-      .setAutoCancel(true).setTimeoutAfter(6000)
-      .setContentIntent(quickAddPending(c)).build()
-    NotificationManagerCompat.from(c).notify(7003, n)
   }
 }

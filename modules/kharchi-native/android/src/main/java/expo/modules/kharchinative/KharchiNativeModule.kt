@@ -1,20 +1,20 @@
 package expo.modules.kharchinative
 
 import android.Manifest
-import android.app.StatusBarManager
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.Icon
-import android.hardware.Sensor
-import android.hardware.SensorManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.core.content.ContextCompat
+import expo.modules.kotlin.activityresult.AppContextActivityResultLauncher
 import expo.modules.kotlin.exception.Exceptions
+import expo.modules.kotlin.functions.Coroutine
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
@@ -42,6 +42,34 @@ class KharchiNativeModule : Module() {
     OnNewIntent { intent -> SharedInbox.capture(intent) }
     OnActivityEntersForeground { SharedInbox.capture(appContext.currentActivity?.intent) }
     Function("consumeSharedText") { SharedInbox.take() }
+
+    /* ---------- bill scanning ---------- */
+    lateinit var captureLauncher: AppContextActivityResultLauncher<PhotoInput, String?>
+    lateinit var pickLauncher: AppContextActivityResultLauncher<PhotoInput, String?>
+    RegisterActivityContracts {
+      captureLauncher = registerForActivityResult(CaptureBillContract())
+      pickLauncher = registerForActivityResult(PickBillContract { ctx })
+    }
+
+    /** Opens the phone's camera app; resolves with the saved photo path in the app's private folder, or null if cancelled. */
+    AsyncFunction("captureBillPhoto") Coroutine { ->
+      val file = BillFiles.newFile(ctx)
+      try { captureLauncher.launch(PhotoInput(file.absolutePath)) } catch (_: android.content.ActivityNotFoundException) { null }
+    }
+
+    /** System photo picker; resolves with a private copy of the chosen image, or null if cancelled. */
+    AsyncFunction("pickBillPhoto") Coroutine { ->
+      val file = BillFiles.newFile(ctx)
+      pickLauncher.launch(PhotoInput(file.absolutePath))
+    }
+
+    /** On-device OCR. Returns JSON {lines:[{text,left,top,right,bottom}], width, height}. */
+    AsyncFunction("recognizeText") Coroutine { path: String ->
+      if (!BillFiles.isOurs(ctx, path)) throw IllegalArgumentException("not a bill photo")
+      withContext(Dispatchers.IO) { BillOcr.recognize(ctx, path) }
+    }
+
+    Function("deleteBillPhoto") { path: String -> if (BillFiles.isOurs(ctx, path)) java.io.File(path).delete() else false }
 
     Function("drainQueue") { Queue.snapshot(ctx) }
     Function("ackQueue") { ids: List<String> -> Queue.ack(ctx, ids.toSet()) }
@@ -74,14 +102,6 @@ class KharchiNativeModule : Module() {
     /** Closes the Quick Add window (tile / widget / shortcut / launcher entry). Returns false if none is open. */
     Function("finishQuickAdd") { QuickAddRegistry.finish() }
 
-    Function("setDoubleTapEnabled") { enabled: Boolean, sensitivity: Int ->
-      val has = (ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager).getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null
-      if (!has || !componentDeclared(DoubleTapService::class.java, false)) return@Function false
-      NativeSettings.setDoubleTap(ctx, enabled, sensitivity)
-      if (enabled) DoubleTapService.start(ctx) else DoubleTapService.stop(ctx)
-      true
-    }
-
     Function("setPersistentAddNotification") { enabled: Boolean ->
       NativeSettings.setPersistentNotif(ctx, enabled)
       Notifier.setPersistent(ctx, enabled)
@@ -90,17 +110,11 @@ class KharchiNativeModule : Module() {
     /** Local reminder at an absolute time (ms since epoch). Returns an id. */
     Function("scheduleReminder") { atMs: Double, title: String, body: String -> Reminders.schedule(ctx, atMs.toLong(), title, body) }
 
-    Function("requestAddTile") {
-      if (Build.VERSION.SDK_INT >= 33) {
-        try {
-          val sbm = ctx.getSystemService(StatusBarManager::class.java)
-          sbm.requestAddTileService(
-            ComponentName(ctx, QuickAddTileService::class.java), "Add expense",
-            Icon.createWithResource(ctx, ctx.resources.getIdentifier("ic_tile_add", "drawable", ctx.packageName)),
-            ctx.mainExecutor,
-          ) { }
-        } catch (_: Exception) {}
-      }
+    Function("pinScanWidget") {
+      val mgr = AppWidgetManager.getInstance(ctx)
+      if (Build.VERSION.SDK_INT >= 26 && mgr.isRequestPinAppWidgetSupported) {
+        mgr.requestPinAppWidget(ComponentName(ctx, ScanBillWidgetProvider::class.java), null, null)
+      } else false
     }
 
     Function("pinWidget") {

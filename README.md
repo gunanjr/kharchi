@@ -2,7 +2,7 @@
 
 Personal expense tracker **+** a full Splitwise-style group splitter, in one React Native (Expo SDK 58, TypeScript) app. **No backend, no accounts, no API keys.** Everything lives in a local SQLite database; sync is designed in but switched off.
 
-Headline features: paste/share a bank message and confirm what it was for (the optional Full edition can read bank SMS automatically), 3-second Quick Add (tile / widget / shortcut), unlimited groups with six split types and minimum-transfer debt simplification, insights + an offline AI assistant. The Play Store edition is **privacy-first: no account, no ads, no analytics, no internet permission.**
+Headline features: paste/share a bank message and confirm what it was for (the optional Full edition can read bank SMS automatically), 3-second Quick Add and **Scan bill** (home-screen widgets and shortcuts), unlimited groups with six split types and minimum-transfer debt simplification, insights + an offline AI assistant. The Play Store edition is **privacy-first: no account, no ads, no analytics, no internet permission.**
 
 Rename the product in one place: `src/config/app.json` (then `npx expo prebuild --clean`).
 
@@ -35,7 +35,7 @@ npx expo start --dev-client
 |---|---|---|
 | **Privacy-First (default, Play Store)** | `APP_VARIANT=lite STORE_BUILD=1` (EAS profile `production`) | No SMS, no listener, no sensors, **no INTERNET permission**, target SDK 36. Paste/share bank messages, manual, quick add, CSV |
 | Full (sideload / appeal) | `APP_VARIANT=full` (`production-full`) | + `RECEIVE_SMS` receiver with notification replies. Needs Google's SMS declaration for Play |
-| Dev / power testing | `APP_VARIANT=full EXPERIMENTAL=1` (`development`, `preview-full`) | + notification listener + double-tap detector |
+| Dev / power testing | `APP_VARIANT=full EXPERIMENTAL=1` (`development`, `preview-full`) | + notification listener |
 
 Verify a build: `npm run audit:manifest` (fails if a forbidden permission/component is present). See `docs/PLAY_POLICY.md`.
 
@@ -57,7 +57,7 @@ src/features/
   groups/           split engine, balances, debt simplification (exact), settle-up, activity, recurring shared
   insights/ ai/     analytics + offline rules assistant (AiProvider interface, remote stub)
   sync/ aggregator/ SyncEngine/RemoteRepository (no-op) and AccountAggregator (mock) interfaces
-modules/kharchi-native/  Kotlin: SmsReceiver, notification actions, listener, QS tile, widget, double-tap
+modules/kharchi-native/  Kotlin: SmsReceiver, notification actions, listener, widgets, bill camera + on-device OCR, reminders
 docs/               DECISIONS, PROGRESS, PLAY_POLICY, RELEASE_CHECKLIST, supabase-draft.sql
 store/              Play listing copy (en/hi)
 ```
@@ -65,8 +65,10 @@ store/              Play listing copy (en/hi)
 ## Privacy
 The store edition has no INTERNET permission (data cannot leave the phone), no SMS permission, no analytics SDKs, and `allowBackup=false`. Parsing is on-device and the pasted text is not kept; the DB keeps parsed fields + a hash. In the optional Full edition, the Kotlin receiver drops non-financial messages instantly and financial ones sit in an app-private queue only until parsed. "Delete all my data" is in Settings → Export & backup.
 
-## Quick-add and the back-tap gesture
-Android has **no public API** for back-tap. Order of delivery: (1) Quick Settings tile, (2) launcher shortcut + widget, (3) in-app guide to bind Pixel Quick Tap / Samsung RegiStar / OEM gestures to the shortcut, (4) experimental accelerometer detector (full only, off by default, battery warning).
+## Widgets, quick add and bill scanning
+- **Quick add widget** and long-press shortcut: a panel drops from the top (amount, what for, Save).
+- **Scan bill widget** and shortcut: snap a bill now, split it item by item later. Reads the bill on the phone with ML Kit (offline). Design and research: `docs/BILL_SCANNING.md`.
+- There is no Quick Settings tile and no back-tap/double-tap feature (removed by request; Android has no public back-tap API).
 
 ## Testing
 `npm test`: 140 tests incl. 70 parser samples, split/simplify property tests (balances sum to zero, transfers settle everyone, never more than greedy), repositories against real SQLite, assistant, insights, seeds.

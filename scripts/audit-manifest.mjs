@@ -36,7 +36,8 @@ const forbiddenComponents = [
 const problems = [];
 for (const p of perms) if (forbiddenPerms.includes(p)) problems.push(`forbidden permission: ${p}`);
 for (const c of forbiddenComponents) if (tree.includes(c)) problems.push(`forbidden component/attribute in manifest: ${c}`);
-if (/firebase|com\.google\.android\.gms\.measurement|crashlytics/i.test(tree)) problems.push('analytics/Firebase component present in manifest');
+// (ML Kit names its internal registrars 'com.google.firebase.components:...'; that is not the Firebase SDK.)
+if (/com\.google\.firebase\.(messaging|analytics|crashlytics|iid|installations)|crashlytics|gms\.measurement|datatransport/i.test(tree)) problems.push('analytics / telemetry / push component present in manifest');
 if (target < 36) problems.push(`targetSdkVersion is ${target}, Google Play requires 36+`);
 
 console.log(`APK: ${apk}\ntargetSdkVersion: ${target}\nPermissions (${perms.length}):`);

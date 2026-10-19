@@ -8,7 +8,7 @@ export type SplitInput =
   | { type: 'shares'; shares: Record<string, number> }
   /** Equal split of (total - sum(adjustments)) with each person's fixed adjustment added on top. */
   | { type: 'adjustment'; participants: string[]; adjustments: Record<string, Minor> }
-  /** Each item split equally among its participants; `extra` (tax/tip) is spread in proportion to item subtotals. */
+  /** Each item split equally among its participants; `extra` (tax/tip, or a NEGATIVE discount) is spread in proportion to item subtotals. */
   | { type: 'itemized'; items: { amount: Minor; participants: string[] }[]; extra?: Minor };
 
 export class SplitError extends Error {}
@@ -69,10 +69,12 @@ export function computeShares(total: Minor, input: SplitInput): Record<string, M
         if (!ids.length) throw new SplitError('Every item needs at least one person');
         allocate(it.amount, ids.map(() => 1)).forEach((v, i) => (perItem[ids[i]] = (perItem[ids[i]] ?? 0) + v));
       }
-      if (extra > 0) {
+      if (extra !== 0) {
+        // tax / tip / round-off (positive) or a discount (negative) is spread in proportion to each person's items
         const ids = Object.keys(perItem);
-        const parts = allocate(extra, ids.map((i) => perItem[i]));
-        ids.forEach((id, i) => (perItem[id] += parts[i]));
+        const parts = allocate(Math.abs(extra), ids.map((i) => perItem[i]));
+        ids.forEach((id, i) => (perItem[id] += extra > 0 ? parts[i] : -parts[i]));
+        if (Object.values(perItem).some((v) => v < 0)) throw new SplitError('The discount is larger than the items');
       }
       Object.assign(out, perItem);
       break;

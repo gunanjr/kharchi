@@ -2,7 +2,7 @@
  * Config plugin for the local Kotlin module `modules/kharchi-native`.
  * Re-runs on every `npx expo prebuild`, so the generated android/ folder never needs hand edits.
  *
- *  - variant "full": adds RECEIVE_SMS + SmsReceiver, NotificationCaptureService, DoubleTapService
+ *  - variant "full": adds RECEIVE_SMS + SmsReceiver (+ NotificationCaptureService with experimental)
  *  - variant "lite": adds none of those (Play Store fallback). Quick add, tile, widget, shortcut remain.
  *  - both: QuickAddActivity (translucent drop-down host), launcher shortcut, DrainTaskService (headless drain)
  */
@@ -35,7 +35,7 @@ function upsertComponent(list, node) {
 
 module.exports = function withKharchiNative(config, props = {}) {
   const variant = props.variant === 'lite' ? 'lite' : 'full';
-  // Experimental = notification listener + double-tap detector. Off for store builds (Play policy risk), on for dev/sideload.
+  // Experimental = notification listener. Off for store builds (Play policy risk), on for dev/sideload.
   const experimental = variant === 'full' && props.experimental === true;
   const scheme = config.scheme || 'kharchi';
   const pkg = config.android && config.android.package;
@@ -72,24 +72,6 @@ module.exports = function withKharchiNative(config, props = {}) {
           ],
           data: [{ $: { 'android:scheme': scheme, 'android:host': 'quick-add' } }],
         },
-      ],
-    });
-
-    // A SECOND launcher entry "Add expense". Phone gestures (Pixel Quick Tap, Samsung back-tap, OEM double-tap)
-    // can only open an app from their launcher list, so this is what makes them able to open the quick panel.
-    app['activity-alias'] = (app['activity-alias'] || []).filter((a) => a.$['android:name'] !== '.QuickAddLauncher');
-    app['activity-alias'].push({
-      $: {
-        'android:name': '.QuickAddLauncher',
-        'android:targetActivity': '.QuickAddActivity',
-        'android:label': '@string/kharchi_shortcut_short',
-        'android:icon': '@mipmap/ic_launcher',
-        'android:roundIcon': '@mipmap/ic_launcher_round',
-        'android:exported': 'true',
-        'android:enabled': 'true',
-      },
-      'intent-filter': [
-        { action: [{ $: { 'android:name': 'android.intent.action.MAIN' } }], category: [{ $: { 'android:name': 'android.intent.category.LAUNCHER' } }] },
       ],
     });
 
@@ -140,8 +122,6 @@ module.exports = function withKharchiNative(config, props = {}) {
       });
     }
     if (experimental) {
-      addPermission(manifest, 'android.permission.FOREGROUND_SERVICE');
-      addPermission(manifest, 'android.permission.FOREGROUND_SERVICE_SPECIAL_USE');
       upsertComponent(app.service, {
         $: {
           'android:name': 'expo.modules.kharchinative.NotificationCaptureService',
@@ -150,21 +130,6 @@ module.exports = function withKharchiNative(config, props = {}) {
           'android:permission': 'android.permission.BIND_NOTIFICATION_LISTENER_SERVICE',
         },
         'intent-filter': [{ action: [{ $: { 'android:name': 'android.service.notification.NotificationListenerService' } }] }],
-      });
-      upsertComponent(app.service, {
-        $: {
-          'android:name': 'expo.modules.kharchinative.DoubleTapService',
-          'android:exported': 'false',
-          'android:foregroundServiceType': 'specialUse',
-        },
-        property: [
-          {
-            $: {
-              'android:name': 'android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE',
-              'android:value': 'Optional user-enabled double-tap gesture detector that opens the Add expense panel',
-            },
-          },
-        ],
       });
     }
     if (variant === 'lite') {
@@ -177,8 +142,14 @@ module.exports = function withKharchiNative(config, props = {}) {
         (p) => !['android.permission.RECEIVE_SMS', 'android.permission.READ_SMS'].includes(p.$['android:name']),
       );
     }
+    // ML Kit (offline OCR) bundles Google's log-upload plumbing. Without INTERNET it cannot send anything, but we also
+    // remove the components so nothing is even scheduled. (OCR itself does not depend on them.)
+    removeComponent(app.service, 'com.google.android.datatransport.runtime.backends.TransportBackendDiscovery');
+    removeComponent(app.service, 'com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService');
+    removeComponent(app.receiver, 'com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver');
+
     if (!experimental) {
-      app.service = app.service.filter((x) => !['expo.modules.kharchinative.NotificationCaptureService', 'expo.modules.kharchinative.DoubleTapService'].includes(x.$['android:name']));
+      app.service = app.service.filter((x) => !['expo.modules.kharchinative.NotificationCaptureService'].includes(x.$['android:name']));
       manifest['uses-permission'] = (manifest['uses-permission'] || []).filter(
         (p) => !['android.permission.FOREGROUND_SERVICE', 'android.permission.FOREGROUND_SERVICE_SPECIAL_USE'].includes(p.$['android:name']),
       );
@@ -192,6 +163,8 @@ module.exports = function withKharchiNative(config, props = {}) {
         { $: { name: 'kharchi_scheme' }, _: scheme },
         { $: { name: 'kharchi_shortcut_short' }, _: 'Add expense' },
         { $: { name: 'kharchi_shortcut_long' }, _: 'Quick add an expense' },
+        { $: { name: 'kharchi_shortcut_scan_short' }, _: 'Scan bill' },
+        { $: { name: 'kharchi_shortcut_scan_long' }, _: 'Scan a bill to split later' },
       ],
       c.modResults,
     );
@@ -281,6 +254,18 @@ class QuickAddActivity : ReactActivity() {
     <intent
       android:action="android.intent.action.VIEW"
       android:data="${scheme}://quick-add?src=ext"
+      android:targetPackage="${pkg}"
+      android:targetClass="${pkg}.QuickAddActivity" />
+  </shortcut>
+  <shortcut
+    android:shortcutId="scan_bill"
+    android:enabled="true"
+    android:icon="@mipmap/ic_launcher"
+    android:shortcutShortLabel="@string/kharchi_shortcut_scan_short"
+    android:shortcutLongLabel="@string/kharchi_shortcut_scan_long">
+    <intent
+      android:action="android.intent.action.VIEW"
+      android:data="${scheme}://scan-bill?src=ext"
       android:targetPackage="${pkg}"
       android:targetClass="${pkg}.QuickAddActivity" />
   </shortcut>

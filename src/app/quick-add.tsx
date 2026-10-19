@@ -7,8 +7,8 @@ import { finishQuickAdd } from '@/features/native/quickAdd';
 
 /**
  * Top-anchored drop-down panel: amount, what-for, Save.
- * Opened either inside the app (Settings → Quick add → Try it) or from OUTSIDE it (tile, widget, shortcut,
- * launcher entry / phone gesture), which loads this route with `?src=ext` in the translucent QuickAddActivity.
+ * Opened either inside the app (More → Widgets & shortcuts → Try the panel) or from OUTSIDE it (widget or
+ * long-press shortcut), which loads this route with `?src=ext` in the translucent QuickAddActivity.
  * In the external case "closing" must finish that activity so the user lands back where they were.
  */
 export default function QuickAdd() {

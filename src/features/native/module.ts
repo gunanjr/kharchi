@@ -29,11 +29,16 @@ export interface KharchiNativeModule {
   finishQuickAdd(): boolean; // closes the translucent Quick Add window
 
   notificationListenerCompiledIn(): boolean;
-  setDoubleTapEnabled(enabled: boolean, sensitivity: number): boolean;
   setPersistentAddNotification(enabled: boolean): void;
   scheduleReminder(atMs: number, title: string, body: string): number;
-  requestAddTile(): void;
   pinWidget(): boolean | void;
+  /** Pin the "Scan bill" widget (falls back to the widgets list on launchers that cannot pin). */
+  pinScanWidget(): boolean | void;
+  /* bill scanning (all on-device) */
+  captureBillPhoto(): Promise<string | null>;
+  pickBillPhoto(): Promise<string | null>;
+  recognizeText(path: string): Promise<string>;
+  deleteBillPhoto(path: string): boolean;
 }
 
 export const native: Partial<KharchiNativeModule> | null =

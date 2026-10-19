@@ -7,16 +7,19 @@ Kharchi ships on Google Play as a **local-first app with the fewest sensitive pe
 - **No SMS permission, no SMS receiver, no notification listener, no background sensors.** Therefore **no SMS Permissions Declaration Form** and no "default SMS handler" question.
 - **No INTERNET permission** in the store build (`STORE_BUILD=1`): the app cannot transmit data.
 - **No bank integration, no Account Aggregator, no backend, no cloud AI, no analytics, no ads, no accounts.**
-- Transactions come from: manual entry, Quick Add (tile / widget / shortcut), **paste or share of a bank message** (user-initiated, parsed on-device, user confirms), CSV import.
+- Transactions come from: manual entry, Quick Add and Scan bill (widgets / shortcuts); **photo of a bill** taken with the phone's own camera app or chosen with the system photo picker, read on-device, **paste or share of a bank message** (user-initiated, parsed on-device, user confirms), CSV import.
 
 What you still owe Google (cannot be skipped): developer verification, Data safety form, public privacy policy, store listing, content rating, declarations, testing track, and a build targeting API 36+.
 
 ## 2. What the production bundle contains (verified by `npm run audit:manifest`)
 Permissions in the final APK: `POST_NOTIFICATIONS` (optional, for user-set reminders), `USE_BIOMETRIC` (optional app lock), `VIBRATE`, `RECEIVE_BOOT_COMPLETED` (re-arm user reminders after reboot). That's all.
 Explicitly absent: SMS, contacts, location, camera, microphone, storage, internet, network state, overlay, foreground service, push (FCM), install referrer.
-Components: launcher activity, Quick Add activity, Quick Settings tile, home-screen widget, reminder receiver, boot receiver. Target SDK 36.
+Components: launcher activity, quick-panel activity, two home-screen widgets (Quick add, Scan bill), reminder receiver, boot receiver, a private FileProvider (lets the system camera save a bill photo into the app's own folder). Target SDK 36.
 `allowBackup=false` so financial data is not auto-copied to Google Drive.
 The audit script **fails the build** if a forbidden permission/component appears.
+
+## 2b. Bill scanning and the Data safety form
+Reads receipts with **Google ML Kit text recognition (bundled model, on-device)**. No camera/storage permission is declared (system camera app + system photo picker). ML Kit's log-uploader components are removed and the store build has no INTERNET permission, so nothing leaves the device. In Play Console's Data safety form, answer "No data collected/shared"; if Google's SDK declarations flow asks about ML Kit, state it is used for on-device processing only. Re-verify by running `npm run audit:manifest` on the final build and keep the ML Kit version current.
 
 ## 3. Data safety form: answers
 - *Does your app collect or share any of the required user data types?* **No.**

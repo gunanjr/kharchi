@@ -24,7 +24,8 @@ Target users: salaried people in India (INR default, multi-currency supported). 
 | | |
 |---|---|
 | **Automatic capture** | A bank/UPI SMS becomes a notification "Spent ₹450 at Swiggy. What was this for?" with inline reply. |
-| **Quick add** | Add an expense in about 3 seconds from a Quick Settings tile, widget or launcher shortcut. |
+| **Quick add** | Add an expense in about 3 seconds from a home-screen widget or launcher shortcut. |
+| **Scan bill** | Snap a supermarket/restaurant bill from a widget; later tap who had what, item by item. Read on-device (ML Kit). See `docs/BILL_SCANNING.md`. |
 | **Assistant** | Ask "How much on food last month?", "Who do I owe?", "Predict this month". Runs offline. |
 
 ---
@@ -38,7 +39,8 @@ Target users: salaried people in India (INR default, multi-currency supported). 
 | Expo Go on iPhone (SDK 57) | bundles and serves; confirmed by the server, not yet seen on your iPhone by me |
 | Android release build (R8) | compiles; ran standalone on an emulator (API 36) |
 | Native SMS to notification to app flow | **verified on the emulator** with real SMS sent via adb |
-| Everything else native (tile, widget, shortcut, double-tap, headless save) | code complete, **not verified on a device** |
+| Widgets, quick-add panel, Scan bill widget, photo picker, system camera, on-device OCR, item assignment | **verified on the emulator** (release build) |
+| Headless save after notification reply, biometric lock | code complete, not verified on a device |
 | Play Store | prepared (icons, listing, privacy policy, guide). Not submitted. SMS approval is up to Google. |
 
 ---
@@ -74,13 +76,11 @@ App opens (or headless task)
 - **Sender allow-list** setting to read only chosen sender IDs.
 - **Simulator** (Settings, Developer): 70 sample messages through the exact same pipeline, so Expo Go users can try everything.
 
-### 3.3 Quick add
-Android has no public back-tap API, so delivery is, in order:
-1. **Quick Settings tile** "Add expense" opens a translucent top drop-down panel (amount, what-for with smart category suggestion, Save).
-2. **Launcher long-press shortcut** and a **home-screen widget** to the same panel.
-3. **In-app guide** and a second launcher entry "Add expense" so Pixel Quick Tap / Samsung RegiStar / OEM gestures can open the panel (the real double-tap-back experience).
-4. **Experimental accelerometer detector** (foreground service, sensitivity slider, rate limit, battery warning). Test builds only.
-Also an optional permanent "Add expense" notification-shade action.
+### 3.3 Quick add and Scan bill (widgets)
+- **Quick add widget** and long-press shortcut open a translucent drop-down panel from the top: amount, what-for with smart category suggestion, Save. About three seconds.
+- **Scan bill widget** and shortcut open a second panel: *Take photo* (the phone's own camera app, so no camera permission) or *Gallery* (system photo picker). The photo is saved as a **waiting bill**; "Split now" or do it later from the Home card "N bills waiting to be split" (also More → Saved bills).
+- **Splitting a scanned bill:** on-device OCR (Google ML Kit, offline) reads the items; a pure-TypeScript parser rebuilds the receipt rows, finds items, quantities and the payable total (tax/discount/round-off = total − items). The review screen lets you pick the group and who paid, tap person chips under each item (several = shared equally), fix names/prices, add items, and see each person's total live. Save creates an itemised group expense with the photo attached; your share lands in your tracker. Negative extras (discounts) are supported.
+- Optional notification-shade "Add expense" action. Removed by request: Quick Settings tile and any back-tap / double-tap feature.
 
 ### 3.4 Groups and splitting
 - People are local contacts with UUIDs (ready to map to real accounts later); each has an optional UPI ID.
@@ -157,8 +157,9 @@ docs/ store/ scripts/
 | `Notifier` / `ActionReceiver` | "What was this for?" with inline reply, category chip, Not mine |
 | `DrainTaskService` | Best-effort headless JS task to save a reply without opening the app |
 | `NotificationCaptureService` | Opt-in UPI/bank app notification source (experimental builds) |
-| `QuickAddTileService`, `QuickAddWidgetProvider`, `BootReceiver` | Tile, widget, restore after reboot |
-| `DoubleTapService` | Experimental accelerometer detector (experimental builds) |
+| `QuickAddWidgetProvider`, `ScanBillWidgetProvider`, `BootReceiver`, `ReminderReceiver` | Widgets, restore reminders after reboot, local reminders |
+| `BillPhotos` (camera/gallery contracts, FileProvider), `BillOcr` (ML Kit) | Take/pick a bill photo into private storage, normalise, on-device OCR |
+| `QuickAddRegistry` | Closes the quick panel window reliably |
 | `SharedInbox` | Text shared into the app |
 | `KharchiNativeModule` | JS bridge; absent in Expo Go, and the app feature-detects it |
 
@@ -181,7 +182,7 @@ docs/ store/ scripts/
 |---|---|---|
 | **Privacy-First (default, Play Store)** | `APP_VARIANT=lite STORE_BUILD=1` (EAS `production`, `preview`) | No SMS, no listener, no sensors, **no INTERNET**. Paste/share a bank message, manual, quick add, CSV. Permissions: notifications (optional), biometrics (optional), vibrate, boot (re-arm reminders). Target SDK 36 |
 | Full (sideload / appeal) | `APP_VARIANT=full` (EAS `production-full`) | + `RECEIVE_SMS` receiver, inline-reply notifications. Needs Google's SMS declaration to be on Play |
-| Dev / power testing | `APP_VARIANT=full EXPERIMENTAL=1` (EAS `development`, `preview-full`) | + notification listener + double-tap detector |
+| Dev / power testing | `APP_VARIANT=full EXPERIMENTAL=1` (EAS `development`, `preview-full`) | + notification listener |
 
 **Expo Go** (iPhone/Android, instant): `npm install && npx expo start --go` (SDK 57 matches the App Store Expo Go). Native features degrade gracefully.
 **Local Android:** `npm run android:dev` (full + experimental, USB) or `npm run android:store` (store edition, release).
@@ -209,8 +210,8 @@ docs/ store/ scripts/
 
 **Honest limits**
 1. SMS reading is not in the Play build. It would need Google's approval and is an optional later edition.
-2. True back-tap is impossible for apps; the tile/widget/shortcut plus the phone's own gesture is the delivered solution.
-3. Notification reading and the motion detector are left out of the Play build.
+2. Notification reading is left out of the Play build.
+3. Bill scanning accuracy depends on the photo; always check the total before splitting. Latin script only.
 
 ---
 
@@ -220,14 +221,14 @@ docs/ store/ scripts/
 - Sync engine (no-op), remote AI provider, Account Aggregator (mock data), invite links/QR.
 
 **Not verified on a real device** (code complete)
-- Notification chips and inline reply end to end, tile/widget/shortcut and the translucent panel, double-tap detector, biometric lock, headless save after reply (Android may block background service starts; falls back to saving when the app opens), group-summary image share.
+- Notification chips and inline reply end to end (Full edition), biometric lock, headless save after reply (Android may block background service starts; falls back to saving when the app opens), group-summary image share.
 
 **Gaps**
 - Receipt photo and tags have storage but no picker UI.
 - Hindi covers core strings only.
 - Minor: bottom tab labels may touch the gesture bar on some phones.
 - The Impeccable design critique pass has not been run.
-- Android release build of the store edition was verified on SDK 57 (emulator, API 36). Reminder alarms, tile/widget/shortcut and the quick-add panel are code-complete but not exercised on a device.
+- Android release build of the store edition was verified on SDK 57 (emulator, API 36). Widgets, panels, photo picker, camera and OCR were exercised on the emulator; reminder alarms were not.
 
 ---
 

@@ -63,4 +63,10 @@ CREATE TABLE activity (
   payload TEXT, ${SYNC});
 CREATE TABLE comments (id TEXT PRIMARY KEY, expense_id TEXT NOT NULL, person_id TEXT, body TEXT NOT NULL, ${SYNC});
 `,
+  /* 3: scanned bills (photo stays on the device; only parsed fields are stored, never the raw OCR text) */ `
+CREATE TABLE bills (
+  id TEXT PRIMARY KEY, photo_path TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'new',
+  store TEXT, total INTEGER, items TEXT, bill_date INTEGER, group_expense_id TEXT, ${SYNC});
+CREATE INDEX idx_bills_status ON bills(status);
+`,
 ];

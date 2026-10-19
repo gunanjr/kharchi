@@ -86,6 +86,14 @@ export default function GroupDetail() {
       <View style={{ flex: 1 }}>
         <Body />
       </View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Scan a bill"
+        onPress={() => router.push({ pathname: '/scan-bill', params: { groupId: id } })}
+        style={{ position: 'absolute', right: space.lg + 72, bottom: space.lg, height: 60, minWidth: 60, paddingHorizontal: space.lg, borderRadius: 30, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center', elevation: 6 }}
+      >
+        <Text v="title" color="#fff">📷 Scan bill</Text>
+      </Pressable>
       <Fab onPress={() => router.push({ pathname: '/group-expense', params: { groupId: id } })} label="Add expense" />
       <Modal visible={!!settle} transparent animationType="none" onRequestClose={() => setSettle(null)}>
         <Sheet onClose={() => setSettle(null)}>

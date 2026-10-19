@@ -62,7 +62,8 @@ export default function More() {
           <Card>
             <Text v="caps" color={colors.textMuted}>QUICK CAPTURE</Text>
             <Item title={appVariant === 'full' ? 'Bank & UPI messages' : 'Import from a message'} sub={appVariant === 'full' ? 'Turn texts into expenses, on your phone only' : 'Paste or share a bank SMS: done in two seconds'} href="/settings/capture" />
-            <Item title="Quick add" sub="Add an expense in about 3 seconds" href="/settings/quick-add" />
+            <Item title="Saved bills" sub="Scanned bills waiting to be split" href="/bills" />
+            <Item title="Widgets & shortcuts" sub="Quick add and Scan bill on your home screen" href="/settings/quick-add" />
           </Card>
         </Enter>
         <Enter i={2}>

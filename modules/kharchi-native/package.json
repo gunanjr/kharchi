@@ -1,1 +1,1 @@
-{ "name": "kharchi-native", "version": "0.1.0", "private": true, "description": "Local Expo module: SMS capture, notification actions, quick add tile/widget" }
+{ "name": "kharchi-native", "version": "0.1.0", "private": true, "description": "Local Expo module: SMS capture, notification actions, quick add and scan-bill widgets, on-device bill OCR" }

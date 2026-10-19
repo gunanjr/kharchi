@@ -1,5 +1,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
   android:initialLayout="@layout/kharchi_widget"
+  android:previewLayout="@layout/kharchi_widget"
+  android:description="@string/kharchi_widget_desc"
   android:minWidth="110dp"
   android:minHeight="40dp"
   android:resizeMode="horizontal"

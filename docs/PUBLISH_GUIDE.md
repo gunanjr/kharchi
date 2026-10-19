@@ -6,7 +6,7 @@ Do the steps in order. Each says **where** to click or type. Anything in `code s
 The **Privacy-First edition**: no SMS permission, no internet permission, no account, no ads, no tracking. Users paste or share a bank message (or type) and confirm. Because it asks for almost nothing, you **skip Google's difficult SMS approval**. (The old automatic-SMS edition still exists as `production-full`, but do not use it for the first release. See `docs/PLAY_POLICY.md`.)
 
 Two honest facts:
-1. "Double-tap the back of the phone" cannot be done by any app. The app gives a Quick Settings tile, widget, shortcut, and a guide to connect your phone's own back-tap setting to the "Add expense" shortcut.
+1. Quick add and **Scan bill** are home-screen widgets (and long-press shortcuts). There is no Quick Settings tile and no back-tap feature.
 2. Google can still ask questions during review. You always owe Google: developer verification, Data safety form, privacy policy page, store listing, and a build for Android 16 (API 36), which this project already uses.
 
 ## What you need (checklist)

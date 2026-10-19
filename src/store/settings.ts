@@ -13,7 +13,6 @@ export type Settings = {
   senderAllowlist: string; // comma separated; empty = all financial senders
   hapticsEnabled: boolean;
   weeklySummary: boolean;
-  doubleTapExperimental: boolean;
 };
 
 export const defaultSettings: Settings = {
@@ -27,7 +26,6 @@ export const defaultSettings: Settings = {
   senderAllowlist: '',
   hapticsEnabled: true,
   weeklySummary: false,
-  doubleTapExperimental: false,
 };
 
 type Store = Settings & {
