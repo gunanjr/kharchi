@@ -11,3 +11,4 @@ web-build/
 expo-env.d.ts
 coverage/
 .DS_Store
+android-release.log
