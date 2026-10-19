@@ -8,7 +8,12 @@ import android.service.quicksettings.TileService
 /** Quick Settings tile "Add expense": opens the translucent drop-down panel. */
 class QuickAddTileService : TileService() {
   override fun onStartListening() {
-    qsTile?.apply { state = Tile.STATE_INACTIVE; label = "Add expense"; updateTile() }
+    qsTile?.apply {
+      state = Tile.STATE_INACTIVE
+      label = "Add expense"
+      if (Build.VERSION.SDK_INT >= 29) subtitle = "Quick add"
+      updateTile()
+    }
   }
 
   @Suppress("DEPRECATION")

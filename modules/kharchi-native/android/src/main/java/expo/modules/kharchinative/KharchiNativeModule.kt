@@ -71,7 +71,8 @@ class KharchiNativeModule : Module() {
       val a = appContext.currentActivity
       if (a != null && a.javaClass.simpleName == "QuickAddActivity") "quick" else null
     }
-    Function("finishQuickAdd") { appContext.currentActivity?.finish() }
+    /** Closes the Quick Add window (tile / widget / shortcut / launcher entry). Returns false if none is open. */
+    Function("finishQuickAdd") { QuickAddRegistry.finish() }
 
     Function("setDoubleTapEnabled") { enabled: Boolean, sensitivity: Int ->
       val has = (ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager).getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null

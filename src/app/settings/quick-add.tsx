@@ -11,10 +11,12 @@ import { useDb } from '@/db/provider';
 import { space } from '@/theme/tokens';
 
 const GUIDES = [
-  ['Pixel (Quick Tap)', 'Settings → System → Gestures → Quick Tap → turn on “Use Quick Tap” → choose “Open app” → pick this app’s shortcut “Add expense”.'],
-  ['Samsung (back-tap)', 'Install Good Lock → RegiStar → Back-tap action → Double tap → “Open app” (or Shortcut) → Add expense.'],
-  ['Nothing / OnePlus / Xiaomi / Realme', 'Look for “Gestures”, “Shortcuts” or “Quick ball” in Settings and bind a double-tap / back-tap to the “Add expense” launcher shortcut (long-press the app icon to find it).'],
-  ['Any phone', 'Add the Add expense tile to Quick Settings (swipe down twice) or place the widget on your home screen: one tap, same panel.'],
+  ['Why a second icon?', 'After installing you will see two icons: “Kharchi” (the app) and “Add expense” (opens only the quick panel). Phone gestures can only open an app from that list, so they are bound to “Add expense”.'],
+  ['Pixel (Quick Tap)', 'Settings → System → Gestures → Quick Tap → turn on “Use Quick Tap” → under “Open app” choose “Add expense”.'],
+  ['Samsung (back-tap)', 'Install Good Lock → RegiStar → Back-tap action → choose Double tap → “Open app” → Add expense.'],
+  ['Nothing / OnePlus / Xiaomi / Realme', 'Settings → look for “Gestures”, “Shortcuts” or “Quick ball”. Bind double-tap-back (or a similar gesture) to “Open app” → Add expense.'],
+  ['No back-tap setting on your phone?', 'A free third-party app such as “Tap, Tap” can add a back-tap gesture to many Android phones; pick “Launch app” and choose “Add expense”. (Not made by us; check it suits you.)'],
+  ['Any phone', 'Add the “Add expense” tile to Quick Settings (swipe down twice, tap the pencil, drag the tile in) or put the widget on your home screen: one tap, same panel.'],
 ];
 
 export default function QuickAddSettings() {

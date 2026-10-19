@@ -25,9 +25,9 @@ export function Sheet({ children, onClose, from = 'bottom', style }: {
   const close = () => {
     Keyboard.dismiss();
     if (reduce) return onClose();
-    p.value = withTiming(0, { duration: 160, easing: Easing.in(Easing.quad) }, (done) => {
-      if (done) require('react-native-reanimated').runOnJS(onClose)();
-    });
+    p.value = withTiming(0, { duration: 160, easing: Easing.in(Easing.quad) });
+    // A plain timer (not a worklet callback) so closing can never get stuck half-way.
+    setTimeout(onClose, 170);
   };
   return (
     <View style={{ flex: 1, justifyContent: from === 'top' ? 'flex-start' : 'flex-end' }}>

@@ -116,7 +116,7 @@ object Notifier {
   fun quickAddIntent(c: Context): Intent {
     val schemeRes = c.resources.getIdentifier("kharchi_scheme", "string", c.packageName)
     val scheme = if (schemeRes != 0) c.getString(schemeRes) else "kharchi"
-    return Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://quick-add"))
+    return Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://quick-add?src=ext"))
       .setClassName(c.packageName, "${c.packageName}.QuickAddActivity")
       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
   }

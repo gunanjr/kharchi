@@ -78,7 +78,7 @@ App opens (or headless task)
 Android has no public back-tap API, so delivery is, in order:
 1. **Quick Settings tile** "Add expense" opens a translucent top drop-down panel (amount, what-for with smart category suggestion, Save).
 2. **Launcher long-press shortcut** and a **home-screen widget** to the same panel.
-3. **In-app guide** to bind Pixel Quick Tap / Samsung RegiStar / OEM gestures to that shortcut (the real double-tap-back experience).
+3. **In-app guide** and a second launcher entry "Add expense" so Pixel Quick Tap / Samsung RegiStar / OEM gestures can open the panel (the real double-tap-back experience).
 4. **Experimental accelerometer detector** (foreground service, sensitivity slider, rate limit, battery warning). Test builds only.
 Also an optional permanent "Add expense" notification-shade action.
 

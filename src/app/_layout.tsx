@@ -14,13 +14,25 @@ import { DMSans_700Bold } from '@expo-google-fonts/dm-sans/700Bold';
 import { DbProvider, useDb } from '@/db/provider';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 import { useSettings } from '@/store/settings';
-import { ErrorBoundary, SkeletonList } from '@/components/Feedback';
+import { ErrorBoundary } from '@/components/Feedback';
 import { BiometricGate } from '@/features/security/BiometricGate';
 import { useAppBootstrap } from '@/features/bootstrap';
 import '@/features/native/headless';
-import { quitIfQuickLaunch } from '@/features/native/quickAdd';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+
+/** Shown for a moment while SQLite opens. Transparent, so a Quick Add window never flashes a full-screen skeleton. */
+function BootPlaceholder() {
+  return (
+    <View style={{ flex: 1 }}>
+      <View style={{ backgroundColor: '#FFFAF0', paddingTop: 56, paddingHorizontal: 20, paddingBottom: 24, borderBottomLeftRadius: 28, borderBottomRightRadius: 28, gap: 14 }}>
+        <View style={{ height: 22, width: 120, borderRadius: 8, backgroundColor: '#E9DCC4' }} />
+        <View style={{ height: 44, width: 160, borderRadius: 10, backgroundColor: '#E9DCC4' }} />
+        <View style={{ height: 48, borderRadius: 14, backgroundColor: '#EFE4CF' }} />
+      </View>
+    </View>
+  );
+}
 
 function Shell() {
   const { colors, dark } = useTheme();
@@ -31,7 +43,7 @@ function Shell() {
 
   useEffect(() => {
     const inOnboarding = segments[0] === 'onboarding';
-    if (quitIfQuickLaunch()) return; // quick-add host: never redirect
+    if (segments[0] === 'quick-add') return; // quick-add host: never redirect
     if (!onboarded && !inOnboarding) router.replace('/onboarding');
     if (onboarded && inOnboarding) router.replace('/');
   }, [onboarded, segments, router]);
@@ -39,11 +51,11 @@ function Shell() {
   return (
     <BiometricGate>
       <StatusBar style={dark ? 'light' : 'dark'} />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: quitIfQuickLaunch() ? 'transparent' : colors.bg }, animation: 'fade_from_bottom' }}>
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg }, animation: 'fade_from_bottom' }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
         <Stack.Screen name="add" options={{ presentation: 'transparentModal', animation: 'slide_from_bottom' }} />
-        <Stack.Screen name="quick-add" options={{ presentation: 'transparentModal', animation: 'fade' }} />
+        <Stack.Screen name="quick-add" options={{ presentation: 'transparentModal', animation: 'fade', contentStyle: { backgroundColor: 'transparent' } }} />
       </Stack>
     </BiometricGate>
   );
@@ -59,7 +71,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ErrorBoundary>
-          <DbProvider fallback={<View style={{ flex: 1, paddingTop: 80 }}><SkeletonList /></View>}>
+          <DbProvider fallback={<BootPlaceholder />}>
             <ThemeProvider>
               <Shell />
             </ThemeProvider>

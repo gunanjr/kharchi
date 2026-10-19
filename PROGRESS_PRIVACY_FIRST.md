@@ -81,3 +81,29 @@ Goal: launch Kharchi with the fewest sensitive permissions, no bank integration,
 5. **Billing / Plus** intentionally not built. Do it only after real Plus features exist.
 6. **Unexercised on a physical device:** reminder alarm firing, tile/widget/shortcut + translucent quick-add panel, biometric lock. Code complete; please try them on your phone via the test APK (`npm run build:store-test-apk`) before the first upload.
 7. Back-tap: still impossible for apps; the guide connects the phone's own gesture to the shortcut.
+
+
+---
+# Follow-up: Quick Settings tile and back-tap fixes (after real-phone testing)
+
+Feedback from testing the APK on an Android phone: everything worked except the Quick Settings tile and the back-tap gesture. Both were reproduced on an Android 16 emulator and fixed.
+
+## What was wrong
+| Symptom | Root cause | Fix |
+|---|---|---|
+| Tile opens the panel only after several seconds of placeholder bars | Cold start of the app's JS in a new window showed a full-screen skeleton | Boot placeholder is now a compact transparent top card, so nothing odd flashes over your screen |
+| **Save in the panel spins forever / panel will not close, an invisible window stays on top** | Closing relied on a process-wide JS flag and `currentActivity`, both wrong when two activities share one JS runtime | New native `QuickAddRegistry` closes exactly the quick-add window; panel is told it is external by `?src=ext` in its URL |
+| Tapping outside the panel did not close it | Close animation used a worklet callback that never fired | Replaced with a plain timer |
+| **Back-tap gesture could not open the panel** | Phone gesture settings (Pixel Quick Tap, Samsung back-tap, OEM double-tap) only list apps from the launcher; there was nothing to pick except the full app | Added a **second launcher entry "Add expense"** that opens only the panel. Bind your gesture to it |
+| Alias launch showed the full app instead of the panel | React Native only reports a launch URL for VIEW intents; launcher intents are MAIN | The panel activity now sets action=VIEW + panel URL when started plainly |
+| Tile label unclear | Small round tile, no subtitle | Subtitle "Quick add" (Android 10+) |
+
+## Verified on the emulator (release build, store edition)
+Tile cold start, tile warm start, launcher-entry cold start, launcher-entry warm start: each opens the panel over the home screen, Save stores the expense and the window closes back to where you were (4/4; ₹300 total shown in the app afterwards). Tapping outside and the Back button close the panel. Opening the normal app is unaffected. Manifest audit still passes (4 permissions, target SDK 36).
+
+## Back-tap: how to use it now
+Install the new APK. You will see **two icons**: *Kharchi* and *Add expense*.
+- **Pixel:** Settings → System → Gestures → Quick Tap → on → Open app → **Add expense**.
+- **Samsung:** Good Lock → RegiStar → Back-tap action → Double tap → Open app → **Add expense**.
+- **Other phones:** Settings → Gestures / Shortcuts → double-tap-back → Open app → **Add expense**. If your phone has no such setting, a free third-party app such as "Tap, Tap" can add one (not made by us).
+The app itself cannot detect a back-tap (Android has no API for that); your phone's gesture opens the "Add expense" entry, which opens the panel in about a second.

@@ -26,8 +26,8 @@ export interface KharchiNativeModule {
   isNotificationListenerEnabled(): boolean;
   openNotificationListenerSettings(): void;
   openAppSettings(): void;
-  consumeLaunchMode(): string | null; // 'quick' when this JS root belongs to the QuickAddActivity
-  finishQuickAdd(): void;
+  finishQuickAdd(): boolean; // closes the translucent Quick Add window
+
   notificationListenerCompiledIn(): boolean;
   setDoubleTapEnabled(enabled: boolean, sensitivity: number): boolean;
   setPersistentAddNotification(enabled: boolean): void;
