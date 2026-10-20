@@ -8,6 +8,7 @@ import { SAMPLES } from '@/features/parser/samples';
 import { seedDemoData } from './seed';
 import { seedGroupDemo } from './seedGroups';
 import { DAY } from '@/lib/date';
+import { useSettings } from '@/store/settings';
 
 /**
  * One call that fills EVERY part of the app so nothing looks empty: three months of spending with tags and notes, six
@@ -67,4 +68,74 @@ export async function seedEverything(db: Db, now = Date.now()): Promise<void> {
   for (const s of SAMPLES.filter((x) => 'amount' in x.expect && x.expect.direction === 'debit').slice(0, 3)) {
     await ingest(db, { origin: 'simulated', body: s.body, sender: s.sender, allowlist: [] });
   }
+
+  await seedProDemo(db, now, bank);
+}
+
+/**
+ * Sample data for every Pro feature so each screen has something to show: spaces with their own entries, due dates,
+ * warranties, work spends to claim, tax-tagged payments, private entries and saved settle-up lines.
+ */
+async function seedProDemo(db: Db, now: number, bank: string | null) {
+  const set = useSettings.getState().set;
+  const tx = (o: Parameters<typeof addTransaction>[1]) => addTransaction(db, { source: 'manual', account_id: bank, ...o });
+
+  // Spaces: a side hustle with income and costs, and a trip with a budget
+  const side = 'space_side_demo', trip = 'space_trip_demo';
+  await set(db, 'spaces', [
+    { id: side, name: 'Design work', kind: 'side', emoji: '💼', taxPct: 20 },
+    { id: trip, name: 'Goa 2026', kind: 'trip', emoji: '✈️', budget: 4000000 },
+  ]);
+  for (const [amt, d, who] of [[4200000, 3, 'Client: Lumen Studio'], [1800000, 12, 'Client: Nova Cafe'], [2500000, 26, 'Client: Lumen Studio']] as [number, number, string][]) {
+    await tx({ type: 'income', amount: amt, category_id: 'cat_freelance', merchant: who, occurred_at: now - d * DAY, space_id: side });
+  }
+  for (const [amt, d, m] of [[159900, 4, 'Figma'], [99900, 9, 'Canva'], [450000, 15, 'Coworking day pass'], [120000, 20, 'Stock photos']] as [number, number, string][]) {
+    await tx({ type: 'expense', amount: amt, category_id: 'cat_other', merchant: m, occurred_at: now - d * DAY, space_id: side });
+  }
+  for (const [amt, d, m, c] of [[1250000, 6, 'Villa booking', 'cat_travel'], [480000, 5, 'IndiGo', 'cat_travel'], [210000, 4, 'Beach shack dinner', 'cat_food'], [90000, 3, 'Scooter rental', 'cat_transport'], [150000, 2, 'Cafe', 'cat_food']] as [number, number, string, string][]) {
+    await tx({ type: 'expense', amount: amt, category_id: c, merchant: m, occurred_at: now - d * DAY, space_id: trip });
+  }
+
+  // Work spends to claim (two already claimed), with the tag the Reimbursements screen reads
+  for (const [amt, d, m, c, tags] of [
+    [42000, 2, 'Uber', 'cat_transport', ['work']], [68000, 5, 'Client lunch', 'cat_food', ['work']], [35000, 8, 'Ola', 'cat_transport', ['work']],
+    [129900, 12, 'Printer ink', 'cat_shopping', ['work', 'claimed']], [56000, 14, 'Team coffee', 'cat_food', ['work', 'claimed']],
+  ] as [number, number, string, string, string[]][]) {
+    await tx({ type: 'expense', amount: amt, category_id: c, merchant: m, note: 'Office', tags, occurred_at: now - d * DAY, space_id: '' });
+  }
+
+  // Tax-time payments in this financial year
+  for (const [amt, d, m, tags] of [
+    [5000000, 40, 'ELSS SIP', ['elss']], [2500000, 70, 'Health insurance', ['health-insurance']], [3600000, 120, 'LIC premium', ['lic']],
+    [500000, 30, 'Donation', ['donation']], [1000000, 60, 'NPS', ['nps']],
+  ] as [number, number, string, string[]][]) {
+    await tx({ type: 'expense', amount: amt, category_id: 'cat_other', merchant: m, tags, occurred_at: now - d * DAY, space_id: '' });
+  }
+
+  // Private entries
+  await tx({ type: 'expense', amount: 450000, category_id: 'cat_shopping', merchant: 'Surprise gift', tags: ['private'], occurred_at: now - 1 * DAY, space_id: '' });
+  await tx({ type: 'expense', amount: 220000, category_id: 'cat_other', merchant: 'Therapy session', tags: ['private'], occurred_at: now - 6 * DAY, space_id: '' });
+
+  // Due dates: one overdue, one soon, one paid this month, one later
+  const d = new Date(now);
+  const mk = (t: number) => { const x = new Date(t); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}`; };
+  const dayIn = (offset: number) => Math.min(28, Math.max(1, new Date(now + offset * DAY).getDate()));
+  await set(db, 'dueItems', [
+    { id: 'due_card', name: 'HDFC Regalia card', kind: 'card', amount: 1845000, day: dayIn(2), remindBefore: 1, paid: [] },
+    { id: 'due_rent', name: 'Rent', kind: 'rent', amount: 2200000, day: 5, remindBefore: 3, paid: d.getDate() > 5 ? [mk(now)] : [] },
+    { id: 'due_emi', name: 'Phone EMI', kind: 'emi', amount: 349900, day: dayIn(-2), remindBefore: 1, paid: [] },
+    { id: 'due_power', name: 'Electricity', kind: 'bill', amount: null, day: 22, remindBefore: 0, paid: [] },
+  ]);
+
+  // Warranties: one ending soon, one covered, one expired
+  await set(db, 'warranties', [
+    { id: 'w_phone', item: 'Phone', store: 'Croma', boughtAt: now - 345 * DAY, months: 12, amount: 7999900, receipt: null },
+    { id: 'w_laptop', item: 'Laptop', store: 'Online store', boughtAt: now - 200 * DAY, months: 24, amount: 8499900, receipt: null },
+    { id: 'w_mixer', item: 'Mixer grinder', store: 'Local shop', boughtAt: now - 500 * DAY, months: 12, amount: 450000, receipt: null },
+  ]);
+
+  // Bump Pro: two saved lines and a card theme
+  await set(db, 'savedLines', ['{name}, {amount} for {for}. Pay up before I write a song about it 🎤', '{name}! {amount}. {days} days. Bruh me 🙏']);
+  await set(db, 'bumpTheme', 'sunset');
+  await set(db, 'bumpSticker', '🍕');
 }
