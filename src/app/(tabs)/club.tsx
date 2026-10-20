@@ -10,7 +10,7 @@ import { useIsPro, useProStore } from '@/features/pro/store';
 import { PRODUCTS } from '@/features/pro/entitlement';
 import { WIDGETS, PIN_TABS, useProStats, type ProWidget, type PinTab } from '@/features/pro/widgets';
 import { AuraOrb, auraColors } from '@/features/mce/AuraOrb';
-import { movesFor } from '@/features/mce/aura';
+import { movesFor, seasonDaysLeft } from '@/features/mce/aura';
 import { monthLines } from '@/features/story/stickers';
 import { useSettings } from '@/store/settings';
 import { formatMoney } from '@/domain/money';
@@ -117,6 +117,28 @@ export default function ProTab() {
           <BriefRow figure={money(stats?.claim.total ?? 0)} line="ready to claim from work" sub={stats?.claim.count ? `${stats.claim.count} work spends` : 'Tag spends #work to collect them'} locked={locked} onPress={go('/reimburse')} last />
         </View>
 
+        {/* challenges: the daily reason to come back */}
+        <Press onPress={go('/challenges')} accessibilityLabel="Challenges" style={{ backgroundColor: CARD, borderRadius: 28, padding: space.lg, gap: space.md, borderWidth: 1, borderColor: LINE }}>
+          <Row style={{ justifyContent: 'space-between' }}>
+            <Caps>CHALLENGE</Caps>
+            <Icon name={locked ? 'lock' : 'chevron'} size={15} color={SOFT} />
+          </Row>
+          {stats?.running[0] ? (
+            <>
+              <Text style={{ fontFamily: fonts.brandBlack, fontSize: 24, color: INK }}>{stats.running[0].def.title}</Text>
+              <Row style={{ gap: 4 }}>
+                {Array.from({ length: Math.min(stats.running[0].goal, 30) }, (_, i) => <View key={i} style={{ flex: 1, height: 8, borderRadius: 3, backgroundColor: i < Math.round((stats.running[0].progress / stats.running[0].goal) * Math.min(stats.running[0].goal, 30)) ? colors.primary : LINE }} />)}
+              </Row>
+              <Text style={{ fontFamily: fonts.medium, fontSize: 13, color: SOFT }}>{stats.running[0].line} · {stats.running[0].daysLeft} days left</Text>
+            </>
+          ) : (
+            <>
+              <Text style={{ fontFamily: fonts.brandBlack, fontSize: 24, lineHeight: 28, color: INK }}>7 no-spend days.{'\n'}Think you can?</Text>
+              <Text style={{ fontFamily: fonts.medium, fontSize: 13, color: SOFT }}>Short goals, checked daily from what you log. Finish one and make it a story.</Text>
+            </>
+          )}
+        </Press>
+
         {/* aura */}
         <Press onPress={go('/mce')} accessibilityLabel="Main Character Energy" style={{ borderRadius: 28, padding: space.lg, backgroundColor: c1 }}>
           <Row style={{ gap: space.md, alignItems: 'center' }}>
@@ -124,6 +146,7 @@ export default function ProTab() {
               <Caps color="rgba(20,24,31,0.6)">MAIN CHARACTER ENERGY</Caps>
               <Text style={{ fontFamily: fonts.brandBlack, fontSize: 30, lineHeight: 34, color: DARK, letterSpacing: -0.8 }} numberOfLines={2}>{aura?.rank.title ?? ' '}</Text>
               {next && pro ? <Text style={{ fontFamily: fonts.semibold, fontSize: 13.5, color: 'rgba(20,24,31,0.72)' }} numberOfLines={1}>Next: {next.title} · +{next.points}</Text> : null}
+              <Text style={{ fontFamily: fonts.semibold, fontSize: 12.5, color: 'rgba(20,24,31,0.6)' }} numberOfLines={1}>Season · {seasonDaysLeft(now)} days left</Text>
             </View>
             {aura ? <AuraOrb rank={aura.rank.key} score={aura.score} size={112} ink={DARK} track="rgba(20,24,31,0.14)" color={DARK} /> : <View style={{ width: 112, height: 112 }} />}
           </Row>
@@ -133,7 +156,7 @@ export default function ProTab() {
         <Press onPress={go('/story')} accessibilityLabel="Make a story" style={{ borderRadius: 28, padding: space.lg, backgroundColor: INK, flexDirection: 'row', alignItems: 'center', gap: space.md }}>
           <View style={{ width: 62, height: 100, borderRadius: 14, backgroundColor: DARK, padding: 8, justifyContent: 'flex-end' }}>
             <Text style={{ fontFamily: fonts.brandBlack, fontSize: 19, lineHeight: 21, color: INK }}>24</Text>
-            <Text style={{ fontFamily: fonts.bold, fontSize: 7, color: INK }}>DAYS IN A ROW</Text>
+            <Text style={{ fontFamily: fonts.bold, fontSize: 7, color: INK }}>DAY STREAK</Text>
             <Row style={{ gap: 2, marginTop: 4 }}>{Array.from({ length: 8 }, (_, i) => <View key={i} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: INK, opacity: i === 2 ? 0.3 : 1 }} />)}</Row>
           </View>
           <View style={{ flex: 1, gap: 4 }}>

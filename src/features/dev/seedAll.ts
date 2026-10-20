@@ -138,4 +138,7 @@ async function seedProDemo(db: Db, now: number, bank: string | null) {
   await set(db, 'savedLines', ['{name}, {amount} for {for}. Pay up before I write a song about it 🎤', '{name}! {amount}. {days} days. Bruh me 🙏']);
   await set(db, 'bumpTheme', 'sunset');
   await set(db, 'bumpSticker', '🍕');
+  // a challenge in progress and one already finished, so Challenges and the Pro tab have something to show
+  await set(db, 'challenges', [{ id: 'challenge_demo', key: 'log30', startedAt: now - 9 * 86_400_000 }]);
+  await set(db, 'challengeWins', [{ key: 'nospend7', at: now - 24 * 86_400_000 }]);
 }

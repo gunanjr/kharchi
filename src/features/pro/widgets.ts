@@ -7,7 +7,8 @@ import { viewAll } from '@/features/dues/dues';
 import { status as warrantyStatus } from '@/features/warranty/warranty';
 import { WORK_TAG, CLAIMED_TAG } from '@/features/reimburse/reimburse';
 import { readTags } from '@/features/tracker/tags';
-import { auraDays, auraScore } from '@/features/mce/aura';
+import { auraDays, auraScore, seasonsFor } from '@/features/mce/aura';
+import { challengeView } from '@/features/challenges/challenges';
 import { useSettings } from '@/store/settings';
 import { formatMoney } from '@/domain/money';
 
@@ -19,6 +20,7 @@ export const PIN_TABS: { key: PinTab; label: string }[] = [{ key: 'home', label:
 export type ProWidget = { id: string; icon: IconName; title: string; sub: string; href: Href; group: 'you' | 'plan' | 'protect' | 'understand' | 'work' };
 export const WIDGETS: ProWidget[] = [
   { id: 'aura', icon: 'bolt', title: 'Main Character Energy', sub: 'Your aura and rank', href: '/mce', group: 'you' },
+  { id: 'challenges', icon: 'flame', title: 'Challenges', sub: 'Short goals with a finish line', href: '/challenges', group: 'you' },
   { id: 'bruh', icon: 'person', title: 'Money profile', sub: 'Persona, Roast or toast', href: '/me', group: 'you' },
   { id: 'comingUp', icon: 'calendar', title: 'Coming up', sub: 'Bills and renewals this week', href: '/dues', group: 'plan' },
   { id: 'dues', icon: 'calendar', title: 'Due dates', sub: 'Never pay late', href: '/dues', group: 'plan' },
@@ -66,6 +68,9 @@ export function useProStats() {
     tax: 'This financial year',
     reimburse: unclaimed.length ? `${unclaimed.length} to claim · ${money(unclaimed.reduce((a, t) => a + t.amount, 0))}` : 'Nothing to claim',
   };
+  const running = s.challenges.map((c) => challengeView(c, txs, now, money)).filter((v) => v.status === 'running');
+  stat.challenges = running.length ? `${running[0].def.title} · ${running[0].line}` : s.challengeWins.length ? `${s.challengeWins.length} finished · start another` : 'Start your first';
+  const seasons = seasonsFor(txs, sets, now, 6);
   const claim = { count: unclaimed.length, total: unclaimed.reduce((a, t) => a + t.amount, 0) };
-  return { stat, aura, radar, dues, txs, sets, claim };
+  return { stat, aura, radar, dues, txs, sets, claim, running, seasons };
 }

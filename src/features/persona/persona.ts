@@ -127,7 +127,7 @@ export function currentStreak(txs: Pick<Tx, 'occurred_at'>[], now: number): { da
 
 /* ---------- roast or toast ---------- */
 export type RoastTone = 'toast' | 'gentle' | 'playful' | 'savage';
-export interface RoastFact { kind: 'late' | 'place' | 'weekend' | 'saver' | 'steady'; count: number; amount: number; name?: string }
+export interface RoastFact { kind: 'late' | 'place' | 'weekend' | 'saver' | 'steady' | 'weekday' | 'small' | 'nospend' | 'streak' | 'biggest'; count: number; amount: number; name?: string }
 
 /** The facts a roast or toast may use, only above clear thresholds, never about sensitive categories. */
 export function roastFacts(all: Tx[], from: number, to: number, prevSpent = 0): RoastFact[] {
@@ -143,43 +143,33 @@ export function roastFacts(all: Tx[], from: number, to: number, prevSpent = 0): 
   const weekend = tx.filter((t) => [0, 6].includes(new Date(t.occurred_at).getDay())).reduce((a, t) => a + t.amount, 0);
   if (total > 0 && weekend / total >= 0.5) out.push({ kind: 'weekend', count: Math.round((weekend / total) * 100), amount: weekend });
   if (prevSpent > 0 && total <= prevSpent * 0.85) out.push({ kind: 'saver', count: Math.round((1 - total / prevSpent) * 100), amount: prevSpent - total });
+  // priciest weekday, when one day clearly leads
+  const wd = new Array(7).fill(0);
+  for (const t of tx) wd[new Date(t.occurred_at).getDay()] += t.amount;
+  const top7 = Math.max(...wd);
+  if (total > 0 && top7 / total >= 0.25) out.push({ kind: 'weekday', name: ['Sundays', 'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays'][wd.indexOf(top7)], count: Math.round((top7 / total) * 100), amount: top7 });
+  // many small treats (₹200 or less)
+  const small = tx.filter((t) => t.amount <= 20000);
+  if (small.length >= 10) out.push({ kind: 'small', count: small.length, amount: small.reduce((a, t) => a + t.amount, 0) });
+  // logged days with no spending at all
+  const sodOf = (t: number) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
+  const inWin = all.filter((t) => t.occurred_at >= from && t.occurred_at < to);
+  const spendDays = new Set(inWin.filter((t) => t.type === 'expense' && !t.excluded).map((t) => sodOf(t.occurred_at)));
+  const noSpend = new Set(inWin.map((t) => sodOf(t.occurred_at)).filter((d) => !spendDays.has(d))).size;
+  if (noSpend >= 3) out.push({ kind: 'nospend', count: noSpend, amount: 0 });
+  // a real logging streak
+  const streak = currentStreak(all, to - 1).days;
+  if (streak >= 7) out.push({ kind: 'streak', count: streak, amount: 0 });
+  // the single biggest everyday spend (fixed costs and sensitive categories never count)
+  const big = all.filter((t) => t.type === 'expense' && !t.excluded && t.occurred_at >= from && t.occurred_at < to && !FIXED.has(t.category_id ?? '') && !SENSITIVE.has(t.category_id ?? '') && (t.merchant ?? '').trim())
+    .sort((a, b) => b.amount - a.amount)[0];
+  if (big && big.amount >= 100000) out.push({ kind: 'biggest', count: 1, amount: big.amount, name: (big.merchant ?? '').trim() });
   if (!out.length && tx.length >= 30) out.push({ kind: 'steady', count: tx.length, amount: total });
   return out;
 }
 
-/** Three lines per fact and tone so "another one" gives a fresh take. Always about a habit, never about the person. */
-const LINES: Record<RoastFact['kind'], Record<RoastTone, ((f: RoastFact, m: string) => string)[]>> = {
-  late: {
-    toast: [(f) => `${f.count} late-night treats. You know what you like 🌙`, (f) => `Night shift snacks: ${f.count} of them. Fuel for big ideas.`, () => `Your best decisions happen after 11 pm. Apparently.`],
-    gentle: [(f, m) => `${f.count} spends after 11 pm (${m}). Maybe dinner a little earlier?`, () => `Late-night orders add up. A snack shelf could help.`, (f) => `${f.count} after-11 spends. Your future self says hi.`],
-    playful: [(_f, m) => `${m} after 11 pm. Midnight snacker detected 🌙`, (f) => `${f.count} orders past 11. The delivery guy knows your name now.`, () => `Sleep? Never heard of her. Snacks? Besties.`],
-    savage: [(f) => `${f.count} orders after 11 pm. Your kitchen filed a missing person report.`, () => `Your fridge is just decor at this point.`, (_f, m) => `${m} at midnight. Dinner is a myth to you.`],
-  },
-  place: {
-    toast: [(f) => `${f.name} ${f.count} times. Loyal and proud of it.`, (f) => `${f.name} is your comfort spot. ${f.count} visits strong.`, (f) => `Regular at ${f.name}. They should name a table after you.`],
-    gentle: [(f, m) => `${f.name} ${f.count} times (${m}). Worth a look?`, (f) => `${f.name} keeps showing up. A monthly limit might help.`, (f) => `${f.count} visits to ${f.name}. Still worth it?`],
-    playful: [(f) => `${f.name} ${f.count} times. Are you two dating? 👀`, (f) => `${f.name} called. They want to thank you personally.`, (f) => `${f.count}x ${f.name}. Main character energy, side character budget.`],
-    savage: [(f) => `${f.count} trips to ${f.name}. Ask for shares at this point.`, (f) => `${f.name} has your face on the wall. Probably.`, (_f, m) => `${m} at one place. Commitment issues? Not here.`],
-  },
-  weekend: {
-    toast: [(f) => `${f.count}% of spending on weekends. Work hard, live well.`, () => `Weekdays you save, weekends you live. Balance.`, () => `Weekend you is having the time of their life.`],
-    gentle: [(f) => `${f.count}% on weekends. A weekend budget might help.`, () => `Weekends cost the most. Plan one free activity?`, (f) => `${f.count}% lands on Sat and Sun. Worth a glance.`],
-    playful: [(_f, m) => `Weekdays: calm. Weekends: ${m}. Plot twist every Saturday 🎢`, () => `Monday to Friday: monk. Weekend: chaos goblin.`, (f) => `${f.count}% on weekends. Friday-night you is unstoppable.`],
-    savage: [(f) => `${f.count}% on weekends. Monday you is paying for Saturday you.`, () => `Your wallet needs a weekend off. From you.`, (_f, m) => `${m} in two days a week. Impressive. Concerning.`],
-  },
-  saver: {
-    toast: [(f, m) => `${f.count}% less than last month. ${m} still with you 🙌`, () => `Spending down, vibes up. Proud of you.`, (_f, m) => `You kept ${m} more than last month. Iconic.`],
-    gentle: [(f) => `${f.count}% less than last month. Nicely done.`, () => `A calmer month. Keep the streak going.`, (_f, m) => `${m} saved versus last month. Small wins add up.`],
-    playful: [(_f, m) => `${m} saved vs last month. Your wallet is breathing again 😮‍💨`, () => `Who is this responsible adult and what did they do with you?`, (f) => `${f.count}% less. Your bank app is blushing.`],
-    savage: [(f) => `${f.count}% less than last month. Who are you and where is the old you?`, () => `Saving money? Suspicious. Very suspicious.`, (_f, m) => `${m} saved. Don’t let it go to your head. Or your cart.`],
-  },
-  steady: {
-    toast: [(f) => `${f.count} spends and nothing wild. Steady wins.`, () => `Calm, consistent, in control. Love that for you.`, () => `No drama month. Rare. Beautiful.`],
-    gentle: [(f) => `${f.count} spends, all steady. Keep it up.`, () => `Steady spending. Maybe set a goal next?`, () => `Consistent month. A budget could make it even smoother.`],
-    playful: [(f) => `${f.count} spends and zero drama. Boring? No. Iconic.`, () => `Your spending graph is flatter than my jokes.`, () => `So steady we checked if the app was broken.`],
-    savage: [(f) => `${f.count} spends and not one scandal. We wanted gossip.`, () => `Your spending is so stable it should be a savings account.`, () => `Zero chaos. Honestly a little disappointing.`],
-  },
-};
+import { LINES } from './roastLines';
+export { LINES };
 
 export function roastLine(f: RoastFact, tone: RoastTone, money: (n: number) => string, variant = 0): string {
   const list = LINES[f.kind][tone];

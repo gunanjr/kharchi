@@ -373,6 +373,8 @@ Crew and Social engineering stay locked until **all** of these hold: 1,000 month
 
 ## 21. Paused and parked ideas
 
+- **Friend duels and leaderboards (20 Oct, late):** the founder wants social competition to keep Pro users. Both need data to move between users (invitations, friend graphs), which section 1 prohibits; leaderboards also need a server. Needs written amendment A2. Built instead: solo challenges, seasons and shareable story images.
+
 Everything below was asked for or proposed and **deliberately not built**, because it breaks the constitution or would add permissions, a server, payments or legal review. Each row says what it would feel like, what stops it, and what it would take, so you can decide which to unpause. "Amendment" means a written change to section 1 by the founder.
 
 | Idea | What it would feel like | Why it is paused | What it would take | Effort and risk |
@@ -587,6 +589,12 @@ A previous session ran out of context in the middle of a large redesign. This is
 - Ideas not built yet: Instagram's direct "add to story" sticker intent (needs a Facebook app id, so it was skipped).
 
 **Pro tab, second pass (done):** membership header (plan name), *This week, Pro caught* brief (going out in 7 days, price rises, spent vs last month same days, ready to claim; each opens its tool; masked for free users), aura hero in the rank's flat colour, Story maker card, tools as grouped list cards with live lines, plan links at the bottom. The founder still wants more depth here; next ideas: membership since-date, a monthly Pro report, richer Bump Pro.
+
+**Retention layer (built after the founder said Pro would churn):**
+- **Challenges** (Pro): `src/features/challenges/challenges.ts` (tested): 7 no-spend days in 14, 30 days logged, a lighter week (20% under the usual week, fixed costs ignored), calm weekend; start after noon means tomorrow; missed only when the goal is out of reach; at most 2 running; wins go to a trophy shelf (`challenges`, `challengeWins` in settings). Screen `src/app/challenges.tsx`; Challenge card on the Pro tab; widget `challenges` (pinnable). Demo seeds one running and one won.
+- **Aura seasons:** `seasonsFor`, `seasonDaysLeft` in `aura.ts` (tested): each month is a season with a kept final rank; shelf in MCE History; countdown on the Pro tab aura card.
+- **Fresh roasts:** `src/features/persona/roastLines.ts` (pack 2026-H2: 10 topics × 4 tones × 6 lines = 240, no emojis; new topics weekday, small treats, no-spend days, streak, biggest one-off) and `fresh.ts` (tested): one line per day, stable all day, never repeats until the pool for the user's topics is used up (`roastSeen` in settings), then the oldest comes back first; "Another one" walks the same order. **Every 6-monthly app update should append a new pack** (append only; ids are `topic.tone.index`).
+- **Duels with friends via link: NOT built.** It conflicts with constitution section 1 (no invitations, friend graphs or social). It needs a written amendment A2 from the founder. In-bounds alternative available now: share a challenge or story image through the share sheet. Recorded in section 21.
 
 **Other open requests:** Goals master-level redesign (screen `src/app/goals.tsx`); Budgets UI; stronger Bump Pro (card designer, auto follow-ups); native widgets and app icon variants need a device build. Team tasks in 24.5b (EAS build, Play products, testers).
 

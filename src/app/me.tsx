@@ -15,10 +15,11 @@ import { useDb, useQuery } from '@/db/provider';
 import { listTransactions } from '@/features/tracker/repo';
 import { ensureSelf, listExpenses, listGroups, listSettlements } from '@/features/groups/repo';
 import { reliability, BADGE_LABEL } from '@/features/groups/reliability';
-import { currentStreak, personaFor, roastFacts, roastLine, PERSONA_STYLE, type PersonaKey, type RoastTone } from '@/features/persona/persona';
+import { currentStreak, personaFor, roastFacts, PERSONA_STYLE, type PersonaKey, type RoastTone } from '@/features/persona/persona';
 import { longestStreak } from '@/features/wrapped/recap';
 import { badgeCounts, badgeStates, TIER_NAME } from '@/features/wrapped/badges';
 import { auraDays, auraScore } from '@/features/mce/aura';
+import { dayNumber, markSeen, pickRoast } from '@/features/persona/fresh';
 import { useAuraAccess } from '@/features/mce/freeWeek';
 import { ProGate } from '@/features/pro/ProGate';
 import { useIsPro } from '@/features/pro/store';
@@ -95,8 +96,11 @@ export default function Me() {
   const aura = data ? auraScore(auraDays(data.txs, data.sets.map((x) => x.occurred_at), now)) : null;
   const facts = data ? roastFacts(data.txs, from, now + 1, prevSpent) : [];
   const tone: RoastTone = s.roastOn ? s.roastTone : 'toast';
-  const fact = facts.length ? facts[variant % facts.length] : null;
-  const line = fact ? roastLine(fact, tone, (n) => formatMoney(n, 'INR', { compact: true }), Math.floor(variant / Math.max(1, facts.length))) : null;
+  // one fresh line a day; "Another one" walks further down the same no-repeat order
+  const today = dayNumber(now);
+  const pick = pickRoast(facts, tone, (n) => formatMoney(n, 'INR', { compact: true }), today, s.roastSeen, variant);
+  const line = pick?.text ?? null;
+  useEffect(() => { if (pick && !s.roastSeen.some((x) => x.id === pick.id)) s.set(db, 'roastSeen', markSeen(s.roastSeen, pick.id, today)); }, [pick?.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const style = shownKey ? PERSONA_STYLE[shownKey] : null;
   const posterKey = ((s.posterPalette && s.posterPalette in PALETTES ? s.posterPalette : style?.palette) ?? 'midnight') as PaletteKey;
   const pal = PALETTES[posterKey];

@@ -156,3 +156,30 @@ export function weekCompare(days: AuraDay[]): { now: number; before: number } {
   const sum = (a: number, b: number) => days.slice(Math.max(0, a), Math.max(0, b)).reduce((x, d) => x + d.points, 0);
   return { now: sum(n - 7, n), before: sum(n - 14, n - 7) };
 }
+
+/* ---------- seasons ---------- */
+export interface Season { year: number; month: number; label: string; score: number; rank: Rank }
+/**
+ * Each calendar month is a season. A finished season keeps its final rank, so there is something to collect every month.
+ * Only months with at least one logged day count.
+ */
+export function seasonsFor(txs: Tx[], settlements: number[], now: number, n = 6): Season[] {
+  const d = new Date(now);
+  const out: Season[] = [];
+  for (let i = 1; i <= n; i++) {
+    const y = new Date(d.getFullYear(), d.getMonth() - i, 1);
+    const last = new Date(y.getFullYear(), y.getMonth() + 1, 0, 12).getTime();
+    const len = new Date(y.getFullYear(), y.getMonth() + 1, 0).getDate();
+    const inMonth = txs.some((t) => t.occurred_at >= y.getTime() && t.occurred_at <= last + 12 * 3600_000);
+    if (!inMonth) continue;
+    const s = auraScore(auraDays(txs, settlements, last, len));
+    out.push({ year: y.getFullYear(), month: y.getMonth(), label: y.toLocaleDateString('en-IN', { month: 'short', year: '2-digit' }), score: s.score, rank: s.rank });
+  }
+  return out;
+}
+
+/** Days left in the current season (this calendar month), counting today. */
+export function seasonDaysLeft(now: number): number {
+  const d = new Date(now);
+  return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate() - d.getDate() + 1;
+}

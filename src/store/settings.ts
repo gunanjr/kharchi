@@ -31,6 +31,7 @@ export type Settings = {
   personaPrev: string; // last shown persona key, keeps it stable month to month
   roastOn: boolean; // opt-in; toast is the default
   roastTone: 'gentle' | 'playful' | 'savage';
+  roastSeen: import('@/features/persona/fresh').Seen[]; // roast lines already shown (id + day), so lines never repeat early
   warranties: import('@/features/warranty/warranty').Warranty[]; // Pro: warranty vault
   friendCode: string; // this install's code, made once
   friendOffer: string; // a friend's code entered here (unlocks the Friend offer)
@@ -39,6 +40,8 @@ export type Settings = {
   profileName: string; // shown on the profile and on shared posters ('' = none)
   profileColor: string; // avatar colour behind the first letter of the name ('' = ink)
   posterPalette: string; // '' = the persona's own colours, or a palette key from components/story/Poster
+  challenges: import('@/features/challenges/challenges').ActiveChallenge[]; // Pro: running challenges (at most 2)
+  challengeWins: { key: string; at: number }[]; // finished challenges, kept as a trophy shelf
   auraStartedAt: number; // first time the aura was shown; free users get a basic aura for 7 days from here
   proPins: Record<'home' | 'insights' | 'groups', string[]>; // Pro widgets pinned to other tabs (ids from features/pro/widgets)
 };
@@ -73,6 +76,7 @@ export const defaultSettings: Settings = {
   personaPrev: '',
   roastOn: false,
   roastTone: 'playful',
+  roastSeen: [],
   warranties: [],
   friendCode: '',
   friendOffer: '',
@@ -80,6 +84,8 @@ export const defaultSettings: Settings = {
   profileName: '',
   profileColor: '',
   posterPalette: '',
+  challenges: [],
+  challengeWins: [],
   auraStartedAt: 0,
   proPins: { home: ['comingUp'], insights: ['radar', 'deepdive', 'dues', 'wrappedYear'], groups: ['spaces', 'bruh', 'reimburse'] },
 };

@@ -12,7 +12,7 @@ import { BrandMark } from '@/components/Wordmark';
 import { Poster, Big, PALETTES, type PaletteKey } from '@/components/story/Poster';
 import { useQuery } from '@/db/provider';
 import { listTransactions } from '@/features/tracker/repo';
-import { auraDays, auraScore, eraFor, movesFor, promptsFor, weekCompare, RANKS } from '@/features/mce/aura';
+import { auraDays, auraScore, eraFor, movesFor, promptsFor, weekCompare, seasonsFor, seasonDaysLeft, RANKS } from '@/features/mce/aura';
 import { AuraOrb, RankMark, auraColors } from '@/features/mce/AuraOrb';
 import { useIsPro } from '@/features/pro/store';
 import { useAuraAccess } from '@/features/mce/freeWeek';
@@ -59,7 +59,7 @@ export default function MainCharacterEnergy() {
   const [hidden, setHidden] = useState<string[]>([]); // prompts the user took off their card
   const now = Date.now();
   const q = useQuery(async (d) => ({
-    txs: await listTransactions(d, { from: now - 120 * DAY, to: now + 1 }),
+    txs: await listTransactions(d, { from: now - 250 * DAY, to: now + 1 }),
     sets: (await d.all<{ occurred_at: number }>('SELECT occurred_at FROM settlements WHERE deleted_at IS NULL')).map((x) => x.occurred_at),
   }), []);
   const money = (n: number) => formatMoney(n, 'INR', { compact: true });
@@ -76,6 +76,7 @@ export default function MainCharacterEnergy() {
   const maxDay = Math.max(1, ...days.map((d) => d.points));
   const best = days.reduce<typeof days[number] | null>((b, d) => (!b || d.points > b.points ? d : b), null);
   const activeDays = days.filter((d) => d.points > 0).length;
+  const seasons = q.data ? seasonsFor(q.data.txs, q.data.sets, now, 6) : [];
   const pw = Math.min(360, width - layout.gutter * 2);
   const goPro = () => router.push('/pro');
 
@@ -255,6 +256,23 @@ export default function MainCharacterEnergy() {
             <Text style={{ fontFamily: fonts.medium, fontSize: 11, color: SOFT }}>{days[0] ? new Date(days[0].day).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : ''}</Text>
             <Text style={{ fontFamily: fonts.medium, fontSize: 11, color: SOFT }}>Today</Text>
           </Row>
+        </View>
+        <View style={{ backgroundColor: CARD, borderRadius: 22, padding: space.lg, gap: space.md, borderWidth: 1, borderColor: LINE }}>
+          <Row style={{ justifyContent: 'space-between' }}>
+            <Label>SEASONS</Label>
+            <Text style={{ fontFamily: fonts.semibold, fontSize: 12, color: SOFT }}>This one ends in {seasonDaysLeft(now)} days</Text>
+          </Row>
+          {seasons.length ? (
+            <Row style={{ gap: space.sm, flexWrap: 'wrap' }}>
+              {seasons.map((x) => (
+                <View key={x.label} style={{ width: 92, borderRadius: 16, padding: space.sm, gap: 4, backgroundColor: auraColors(x.rank.key)[0] }}>
+                  <Text style={{ fontFamily: fonts.bold, fontSize: 11, color: 'rgba(20,24,31,0.65)' }}>{x.label.toUpperCase()}</Text>
+                  <RankMark rank={x.rank.key} size={18} color="#14181F" off="rgba(20,24,31,0.2)" />
+                  <Text style={{ fontFamily: fonts.bold, fontSize: 12.5, color: '#14181F' }} numberOfLines={1}>{x.rank.title}</Text>
+                </View>
+              ))}
+            </Row>
+          ) : <Text style={{ fontFamily: fonts.medium, fontSize: 13, color: SOFT }}>Your first season badge arrives at the end of this month.</Text>}
         </View>
         {best && best.points > 0 ? (
           <View style={{ backgroundColor: CARD, borderRadius: 22, padding: space.lg, gap: 4, borderWidth: 1, borderColor: LINE }}>

@@ -63,3 +63,16 @@ describe('moves and week compare', () => {
     expect(weekCompare(days)).toEqual({ now: 140, before: 70 });
   });
 });
+
+describe('seasons', () => {
+  const { seasonsFor, seasonDaysLeft } = jest.requireActual('../aura') as typeof import('../aura');
+  it('scores each past month that has entries and counts days left', () => {
+    const NOW = new Date(2026, 9, 20, 12).getTime();
+    const txs = Array.from({ length: 30 }, (_, i) => ({ type: 'income' as const, amount: 100, merchant: null, category_id: null, occurred_at: new Date(2026, 8, 1 + i, 12).getTime() }));
+    const s = seasonsFor(txs, [], NOW, 3);
+    expect(s).toHaveLength(1);
+    expect(s[0].month).toBe(8);
+    expect(s[0].score).toBeGreaterThan(50);
+    expect(seasonDaysLeft(NOW)).toBe(12);
+  });
+});
