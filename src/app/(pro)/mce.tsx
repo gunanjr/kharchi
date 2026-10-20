@@ -15,6 +15,7 @@ import { listTransactions } from '@/features/tracker/repo';
 import { auraDays, auraScore, eraFor, movesFor, promptsFor, weekCompare, seasonsFor, seasonDaysLeft, RANKS } from '@/features/mce/aura';
 import { AuraOrb, RankMark, auraColors } from '@/features/mce/AuraOrb';
 import { useIsPro } from '@/features/pro/store';
+import { useSeason } from '@/theme/ThemeProvider';
 import { useAuraAccess } from '@/features/mce/freeWeek';
 import { useSettings } from '@/store/settings';
 import { formatMoney } from '@/domain/money';
@@ -22,7 +23,7 @@ import { fonts, layout, space } from '@/theme/tokens';
 
 const DAY = 86_400_000;
 const ERA_PALETTE: Record<string, PaletteKey> = { saving: 'mint', travel: 'ocean', cafe: 'tangerine', treat: 'bubblegum', glow: 'grape', weekend: 'sunshine', soft: 'lime' };
-const BG = '#0B0D12', INK = '#FFFFFF', SOFT = 'rgba(255,255,255,0.62)', CARD = '#151A23', LINE = 'rgba(255,255,255,0.08)';
+const INK = '#FFFFFF', SOFT = 'rgba(255,255,255,0.62)', LINE = 'rgba(255,255,255,0.1)';
 type Section = 'today' | 'era' | 'card' | 'history';
 const SECTIONS: { key: Section; label: string }[] = [{ key: 'today', label: 'Today' }, { key: 'era', label: 'Era' }, { key: 'card', label: 'Aura card' }, { key: 'history', label: 'History' }];
 
@@ -51,6 +52,8 @@ export default function MainCharacterEnergy() {
   const router = useRouter();
   const pro = useIsPro();
   const { access, daysLeft } = useAuraAccess();
+  const season = useSeason();
+  const BG = season.base, CARD = season.tile; // the Pro palette (season or the user's pick)
   const { width } = useWindowDimensions();
   const name = useSettings((s) => s.profileName);
   const eraShot = useRef<React.ElementRef<typeof ViewShot>>(null);
@@ -65,7 +68,8 @@ export default function MainCharacterEnergy() {
   const money = (n: number) => formatMoney(n, 'INR', { compact: true });
   const days = q.data ? auraDays(q.data.txs, q.data.sets, now) : [];
   const a = auraScore(days);
-  const [c1, , light] = auraColors(a.rank.key);
+  // highlights follow the Pro palette so this screen matches the Pro tab
+  const c1 = season.accent, light = season.accent;
   const dt = new Date(now);
   const era = q.data ? eraFor(q.data.txs, dt.getFullYear(), dt.getMonth()) ?? eraFor(q.data.txs, dt.getFullYear(), dt.getMonth() - 1) : null;
   const prompts = q.data ? promptsFor(q.data.txs, q.data.sets, now, money) : [];
@@ -117,7 +121,7 @@ export default function MainCharacterEnergy() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -layout.gutter }} contentContainerStyle={{ paddingHorizontal: layout.gutter, gap: space.sm }}>
           {RANKS.map((r, i) => {
             const here = i === rankIdx, passed = i < rankIdx;
-            const [rc] = auraColors(r.key);
+            const rc = season.accent;
             return (
               <View key={r.key} style={{ width: 112, borderRadius: 20, padding: space.md, gap: 4, backgroundColor: here ? rc : CARD, borderWidth: 1, borderColor: here ? rc : LINE, opacity: passed || here ? 1 : 0.55 }}>
                 <RankMark rank={r.key} size={24} color={here ? '#14181F' : rc} off={here ? 'rgba(20,24,31,0.2)' : LINE} />
@@ -148,14 +152,14 @@ export default function MainCharacterEnergy() {
   const today = access === 'locked' ? (
     <Locked pro={false} title="Your free aura week is over" onUnlock={goPro}>
       <View style={{ alignItems: 'center', gap: space.sm, paddingVertical: space.xl }}>
-        <AuraOrb rank={a.rank.key} score={a.score} size={Math.min(220, width * 0.56)} />
+        <AuraOrb rank={a.rank.key} score={a.score} size={Math.min(220, width * 0.56)} color={season.accent} />
         <Text style={{ fontFamily: fonts.brandBlack, fontSize: 34, lineHeight: 42, color: INK }}>{a.rank.title}</Text>
       </View>
     </Locked>
   ) : (
     <>
       <View style={{ alignItems: 'center', gap: space.sm }}>
-        <AuraOrb rank={a.rank.key} score={a.score} size={Math.min(220, width * 0.56)} />
+        <AuraOrb rank={a.rank.key} score={a.score} size={Math.min(220, width * 0.56)} color={season.accent} />
         <Text style={{ fontFamily: fonts.brandBlack, fontSize: 34, lineHeight: 42, color: INK, letterSpacing: -1 }} numberOfLines={1} adjustsFontSizeToFit>{a.rank.title}</Text>
         <Row style={{ gap: 8 }}>
           <View style={{ backgroundColor: light, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 }}><Text style={{ fontFamily: fonts.bold, fontSize: 13, color: '#14181F' }}>+{a.today?.points ?? 0} today</Text></View>

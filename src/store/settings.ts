@@ -42,6 +42,7 @@ export type Settings = {
   posterPalette: string; // '' = the persona's own colours, or a palette key from components/story/Poster
   challenges: import('@/features/challenges/challenges').ActiveChallenge[]; // Pro: running challenges (at most 2)
   challengeWins: { key: string; at: number }[]; // finished challenges, kept as a trophy shelf
+  proPalette: number; // -1 = follow the season (changes monthly); 0 to 11 = keep that month's palette
   auraStartedAt: number; // first time the aura was shown; free users get a basic aura for 7 days from here
   proPins: Record<'home' | 'insights' | 'groups', string[]>; // Pro widgets pinned to other tabs (ids from features/pro/widgets)
 };
@@ -86,6 +87,7 @@ export const defaultSettings: Settings = {
   posterPalette: '',
   challenges: [],
   challengeWins: [],
+  proPalette: -1,
   auraStartedAt: 0,
   proPins: { home: ['comingUp'], insights: ['radar', 'deepdive', 'dues', 'wrappedYear'], groups: ['spaces', 'bruh', 'reimburse'] },
 };

@@ -92,7 +92,9 @@ export default function Story() {
   const gesture = Gesture.Simultaneous(pan, pinch, twist);
   const moved = useAnimatedStyle(() => ({ transform: [{ translateX: tx.value }, { translateY: ty.value }, { scale: sc.value }, { rotate: `${rot.value}rad` }] }));
   const reset = () => { tx.value = 0; ty.value = 0; sc.value = 1; rot.value = 0; snapRef.current = { x: false, y: false, r: false }; };
-  const keys = q.data ? worthSharing(q.data.txs, now) : [];
+  // every sticker is always available (strongest first), so a tapped preview always opens with its sticker
+  const worthy = q.data ? worthSharing(q.data.txs, now) : [];
+  const keys: StickerKey[] = [...worthy, ...(['streak', 'less', 'nospend', 'aura'] as StickerKey[]).filter((k) => !worthy.includes(k))];
   const key = pick && keys.includes(pick) ? pick : keys[0] ?? 'aura';
   const locked = !pro && key !== 'streak';
 

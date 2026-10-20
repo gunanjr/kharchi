@@ -51,3 +51,23 @@ describe('no-spend challenge can be missed', () => {
     expect(v.status).toBe('missed');
   });
 });
+
+describe('custom challenges', () => {
+  const start = T(2026, 9, 1, 9);
+  it('skip a category: breaks on a spend there, wins after the days pass', () => {
+    const spec = { kind: 'skipcat' as const, category: 'cat_food', categoryName: 'Food', days: 3 };
+    const ok = challengeView({ id: 'c', key: 'custom', startedAt: start, custom: spec }, [exp(T(2026, 9, 2), 100, 'cat_shopping')], T(2026, 9, 4, 9), money);
+    expect(ok.status).toBe('won');
+    expect(ok.def.title).toBe('No Food for 3 days');
+    const broke = challengeView({ id: 'c', key: 'custom', startedAt: start, custom: spec }, [exp(T(2026, 9, 2), 100, 'cat_food')], T(2026, 9, 3, 9), money);
+    expect(broke.status).toBe('missed');
+  });
+  it('daily cap: any day over the cap ends it; fixed costs never count', () => {
+    const spec = { kind: 'daycap' as const, cap: 50000, days: 5 };
+    const run = challengeView({ id: 'c', key: 'custom', startedAt: start, custom: spec }, [exp(T(2026, 9, 1), 40000), exp(T(2026, 9, 2), 900000, 'cat_rent')], T(2026, 9, 3, 9), money);
+    expect(run.status).toBe('running');
+    expect(run.progress).toBe(2);
+    const over = challengeView({ id: 'c', key: 'custom', startedAt: start, custom: spec }, [exp(T(2026, 9, 2), 60000)], T(2026, 9, 3, 9), money);
+    expect(over.status).toBe('missed');
+  });
+});

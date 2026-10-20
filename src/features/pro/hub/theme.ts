@@ -26,9 +26,10 @@ export function lighten(hex: string, amt: number): string {
   return `#${[(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => f(v).toString(16).padStart(2, '0')).join('')}`;
 }
 
-export function seasonTheme(now: number): SeasonTheme {
+/** The month's theme; `pick` (0 to 11) lets a Pro user keep a palette they like instead of the season's. */
+export function seasonTheme(now: number, pick?: number | null): SeasonTheme {
   const d = new Date(now);
-  const [base, accent] = BASES[d.getMonth()];
+  const [base, accent] = BASES[pick !== null && pick !== undefined && pick >= 0 && pick < 12 ? pick : d.getMonth()];
   return {
     name: d.toLocaleDateString('en-IN', { month: 'long' }),
     base, tile: lighten(base, 0.07), tile2: lighten(base, 0.14), accent,
@@ -40,3 +41,7 @@ export function seasonTheme(now: number): SeasonTheme {
 export const TOOL_COLORS: Record<string, string> = {
   vault: '#1460FF', dues: '#0C9C74', warranty: '#4B1FD1', spaces: '#FF2E7E', radar: '#FF6A00', reimburse: '#0A7EA4', tax: '#5B6573', deepdive: '#8B5CFF', wrappedYear: '#E0A400', bruh: '#C2185B', challenges: '#FF8106',
 };
+
+export const PALETTE_COUNT = BASES.length;
+export const paletteName = (i: number) => new Date(2026, i, 1).toLocaleDateString('en-IN', { month: 'long' });
+export const paletteSwatch = (i: number) => BASES[i];

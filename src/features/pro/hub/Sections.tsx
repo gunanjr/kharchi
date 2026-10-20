@@ -5,7 +5,7 @@ import { Press, Text, Row } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { useDb } from '@/db/provider';
 import { AuraOrb, RankMark, auraColors } from '@/features/mce/AuraOrb';
-import { movesFor, seasonDaysLeft } from '@/features/mce/aura';
+import { movesFor, seasonDaysLeft, RANKS } from '@/features/mce/aura';
 import { CHALLENGES, type ChallengeKey } from '@/features/challenges/challenges';
 import { status as warrantyStatus, endsAt } from '@/features/warranty/warranty';
 import { useSettings } from '@/store/settings';
@@ -15,6 +15,7 @@ import { haptic } from '@/lib/haptics';
 import { fonts, space } from '@/theme/tokens';
 import type { useProStats } from '@/features/pro/widgets';
 import { Caps, StoryRail } from './Blocks';
+import { ForecastCard } from './Report';
 import type { SeasonTheme } from './theme';
 
 type Stats = NonNullable<ReturnType<typeof useProStats>>;
@@ -45,17 +46,24 @@ function More({ t, title, href }: { t: SeasonTheme; title: string; href: Href })
   );
 }
 
-export function AuraSection({ t, stats }: { t: SeasonTheme; stats: Stats }) {
+export function SeasonSection({ t, stats }: { t: SeasonTheme; stats: Stats }) {
   const moves = movesFor(stats.txs, stats.sets, Date.now(), money);
+  const days = seasonDaysLeft(Date.now());
+  const next = RANKS[RANKS.findIndex((r) => r.key === stats.aura.rank.key) + 1];
   return (
     <View style={{ gap: space.md }}>
+      <View style={{ borderRadius: 28, backgroundColor: t.accent, padding: space.lg, gap: 6 }}>
+        <Text style={{ fontFamily: fonts.bold, fontSize: 11, letterSpacing: 1.5, color: 'rgba(20,24,31,0.6)' }}>{t.name.toUpperCase()} SEASON</Text>
+        <Text style={{ fontFamily: fonts.brandBlack, fontSize: 40, lineHeight: 44, letterSpacing: -1.2, color: '#14181F' }}>{days} days left</Text>
+        <Text style={{ fontFamily: fonts.semibold, fontSize: 14, color: 'rgba(20,24,31,0.72)' }}>{next && stats.aura.toNext !== null ? `${stats.aura.toNext} aura to reach ${next.title}. Your rank on the last day is yours to keep.` : 'Top rank. Hold it to the last day and it is yours.'}</Text>
+      </View>
       <Panel t={t}>
         <Row style={{ gap: space.lg }}>
           <AuraOrb rank={stats.aura.rank.key} score={stats.aura.score} size={120} color={t.accent} track={t.line} />
           <View style={{ flex: 1, gap: 6 }}>
             <RankMark rank={stats.aura.rank.key} size={22} color={t.accent} off={t.line} />
             <Text style={{ fontFamily: fonts.brandBlack, fontSize: 24, lineHeight: 28, color: t.ink }}>{stats.aura.rank.title}</Text>
-            <Text style={{ fontFamily: fonts.medium, fontSize: 12.5, color: t.soft }}>+{stats.aura.today?.points ?? 0} today · season ends in {seasonDaysLeft(Date.now())} days</Text>
+            <Text style={{ fontFamily: fonts.medium, fontSize: 12.5, color: t.soft }}>+{stats.aura.today?.points ?? 0} aura today</Text>
           </View>
         </Row>
       </Panel>
@@ -83,47 +91,7 @@ export function AuraSection({ t, stats }: { t: SeasonTheme; stats: Stats }) {
           </Row>
         </Panel>
       ) : null}
-      <More t={t} title="Era, aura card and history" href="/mce" />
-    </View>
-  );
-}
-
-export function ChallengesSection({ t, stats, locked }: { t: SeasonTheme; stats: Stats; locked: boolean }) {
-  const router = useRouter();
-  const db = useDb();
-  const active = useSettings((s) => s.challenges);
-  const wins = useSettings((s) => s.challengeWins);
-  const set = useSettings((s) => s.set);
-  async function start(key: ChallengeKey) {
-    if (locked) return router.push('/pro');
-    if (active.some((c) => c.key === key) || active.length >= 2) return router.push('/challenges');
-    await set(db, 'challenges', [...active, { id: uuid(), key, startedAt: Date.now() }]);
-    haptic.light();
-  }
-  return (
-    <View style={{ gap: space.md }}>
-      {stats.running.map((v) => (
-        <Panel key={v.def.key} t={t} onPress={() => router.push('/challenges')} label={v.def.title}>
-          <Row style={{ justifyContent: 'space-between' }}><Caps color={t.accent}>{`DAY ${v.dayOf} OF ${v.def.days}`}</Caps><Text style={{ fontFamily: fonts.semibold, fontSize: 12, color: t.soft }}>{v.daysLeft} days left</Text></Row>
-          <Text style={{ fontFamily: fonts.brandBlack, fontSize: 24, color: t.ink }}>{v.def.title}</Text>
-          <Row style={{ gap: 3 }}>{Array.from({ length: Math.min(v.goal, 30) }, (_, i) => <View key={i} style={{ flex: 1, height: 8, borderRadius: 3, backgroundColor: i < Math.round((v.progress / v.goal) * Math.min(v.goal, 30)) ? t.accent : t.line }} />)}</Row>
-          <Text style={{ fontFamily: fonts.medium, fontSize: 13, color: t.soft }}>{v.line}</Text>
-        </Panel>
-      ))}
-      <Caps color={t.soft}>{stats.running.length ? 'START ANOTHER' : 'PICK ONE'}</Caps>
-      <Row style={{ flexWrap: 'wrap', gap: space.sm }}>
-        {CHALLENGES.map((d) => {
-          const running = active.some((c) => c.key === d.key);
-          return (
-            <Press key={d.key} onPress={() => start(d.key)} accessibilityLabel={`Start ${d.title}`} style={{ width: '48.5%', minHeight: 132, borderRadius: 22, backgroundColor: running ? t.tile2 : t.tile, padding: space.md, gap: 6, borderWidth: 1, borderColor: running ? t.accent : t.line }}>
-              <Text style={{ fontFamily: fonts.brandBlack, fontSize: 17, lineHeight: 21, color: t.ink }}>{d.title}</Text>
-              <Text style={{ fontFamily: fonts.medium, fontSize: 12, lineHeight: 16, color: t.soft }} numberOfLines={3}>{d.pitch}</Text>
-              <Text style={{ fontFamily: fonts.bold, fontSize: 12, color: t.accent, marginTop: 'auto' }}>{running ? 'Running' : locked ? 'Pro' : 'Start'}</Text>
-            </Press>
-          );
-        })}
-      </Row>
-      {wins.length ? <Panel t={t}><Caps color={t.soft}>TROPHY SHELF</Caps><Text style={{ fontFamily: fonts.brandBlack, fontSize: 30, color: t.ink }}>{wins.length}</Text><Text style={{ fontFamily: fonts.medium, fontSize: 12.5, color: t.soft }}>challenges finished</Text></Panel> : null}
+      <More t={t} title="Your era, aura card and history" href="/mce" />
     </View>
   );
 }
@@ -147,6 +115,7 @@ export function MoneySection({ t, stats, locked }: { t: SeasonTheme; stats: Stat
   const subs = stats.radar.items.filter((v) => v.status === 'active' && !v.cancelled).sort((a, b) => a.renewsInDays - b.renewsInDays).slice(0, 5);
   return (
     <View style={{ gap: space.md }}>
+      <ForecastCard t={t} stats={stats} locked={locked} />
       <Panel t={t}>
         <Caps color={t.accent}>DUE SOON</Caps>
         {stats.dues.length ? stats.dues.slice(0, 5).map((d, i, a) => <Line key={d.id} t={t} title={d.name} sub={d.inDays <= 0 ? 'Due today' : d.inDays === 1 ? 'Due tomorrow' : `In ${d.inDays} days`} right={d.amount ? mask(money(d.amount)) : undefined} onPress={() => router.push('/dues')} last={i === a.length - 1} />) : <Text style={{ fontFamily: fonts.medium, fontSize: 13, color: t.soft }}>Nothing due this week.</Text>}
@@ -165,33 +134,6 @@ export function MoneySection({ t, stats, locked }: { t: SeasonTheme; stats: Stat
         <More t={t} title="Tax totals" href="/tax" />
         <More t={t} title="Spaces" href="/spaces" />
       </Row>
-    </View>
-  );
-}
-
-export function ProtectSection({ t, stats, locked }: { t: SeasonTheme; stats: Stats; locked: boolean }) {
-  const router = useRouter();
-  const warranties = useSettings((s) => s.warranties);
-  const now = Date.now();
-  const list = [...warranties].sort((a, b) => endsAt(a) - endsAt(b)).slice(0, 4);
-  return (
-    <View style={{ gap: space.md }}>
-      <Panel t={t} onPress={() => router.push('/settings/vault')} label="Vault">
-        <Row style={{ justifyContent: 'space-between' }}><Caps color={t.accent}>VAULT</Caps><Icon name={locked ? 'lock' : 'chevron'} size={14} color={t.soft} /></Row>
-        <Text style={{ fontFamily: fonts.brandBlack, fontSize: 22, color: t.ink }}>{locked ? 'Encrypted backups' : stats.stat.vault}</Text>
-        <Text style={{ fontFamily: fonts.medium, fontSize: 12.5, color: t.soft }}>Encrypted on your phone, saved to a folder you pick. Only your recovery code opens it.</Text>
-      </Panel>
-      <Panel t={t}>
-        <Caps color={t.accent}>WARRANTIES</Caps>
-        {list.length ? list.map((w, i) => {
-          const st = warrantyStatus(w, now);
-          return <Line key={w.id} t={t} title={w.item} sub={st.status === 'expired' ? 'Expired' : `${st.daysLeft} days left`} onPress={() => router.push('/warranty')} last={i === list.length - 1} />;
-        }) : <Text style={{ fontFamily: fonts.medium, fontSize: 13, color: t.soft }}>Add a bill and get reminded before cover ends.</Text>}
-      </Panel>
-      <Panel t={t}>
-        <Caps color={t.accent}>PRIVATE MODE</Caps>
-        <Text style={{ fontFamily: fonts.medium, fontSize: 13, color: t.soft }}>Mark any entry “Keep private” and it hides from lists until you unlock with your fingerprint or face. Totals still count it.</Text>
-      </Panel>
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { Modal, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Screen, Text, Row, Press, Button, Chip } from '@/components/ui';
 import { Icon, type IconName } from '@/components/Icon';
@@ -11,21 +11,25 @@ import { PRODUCTS } from '@/features/pro/entitlement';
 import { WIDGETS, PIN_TABS, useProStats, type PinTab } from '@/features/pro/widgets';
 import { seasonDaysLeft } from '@/features/mce/aura';
 import { useStatus } from '@/features/profile/useStatus';
-import { seasonTheme } from '@/features/pro/hub/theme';
 import { Caps, SeasonHero, Bento, StoryRail, ToolRail, Ticket } from '@/features/pro/hub/Blocks';
-import { AuraSection, ChallengesSection, StoriesSection, MoneySection, ProtectSection } from '@/features/pro/hub/Sections';
+import { SeasonSection, StoriesSection, MoneySection } from '@/features/pro/hub/Sections';
+import { ReportSection } from '@/features/pro/hub/Report';
+import { ChallengeBoard } from '@/features/challenges/ChallengeBoard';
+import { ToastHost } from '@/components/Toast';
+import { seasonTheme as themeFor, PALETTE_COUNT, paletteName, paletteSwatch } from '@/features/pro/hub/theme';
+import { ProThemeProvider } from '@/theme/ThemeProvider';
 import { useSettings } from '@/store/settings';
 import { useTheme } from '@/theme/ThemeProvider';
 import { fonts, layout, space } from '@/theme/tokens';
 
-type Section = 'all' | 'aura' | 'challenges' | 'stories' | 'money' | 'protect';
+type Section = 'all' | 'season' | 'challenges' | 'report' | 'stories' | 'money';
 const RAIL: { key: Section; label: string; icon: IconName }[] = [
   { key: 'all', label: 'All', icon: 'menu' },
-  { key: 'aura', label: 'Aura', icon: 'bolt' },
+  { key: 'season', label: 'Season', icon: 'bolt' },
   { key: 'challenges', label: 'Challenges', icon: 'flame' },
+  { key: 'report', label: 'Report', icon: 'ribbon' },
   { key: 'stories', label: 'Stories', icon: 'image' },
   { key: 'money', label: 'Money', icon: 'chart' },
-  { key: 'protect', label: 'Protect', icon: 'shield' },
 ];
 const PLAN_NAME: Record<string, string> = { [PRODUCTS.monthly]: 'Monthly', [PRODUCTS.yearly]: 'Yearly', [PRODUCTS.lifetime]: 'Lifetime' };
 const TOOLS = ['vault', 'dues', 'radar', 'warranty', 'spaces', 'reimburse', 'tax', 'deepdive', 'wrappedYear'];
@@ -35,6 +39,10 @@ const TOOLS = ['vault', 'dues', 'radar', 'warranty', 'spaces', 'reimburse', 'tax
  * sections (Aura, Challenges, Stories, Money, Protect) open right here under a sticky rail instead of sending you away.
  */
 export default function ProTab() {
+  return <ProThemeProvider><ProTabInner /></ProThemeProvider>;
+}
+
+function ProTabInner() {
   const router = useRouter();
   const db = useDb();
   const pro = useIsPro();
@@ -47,7 +55,8 @@ export default function ProTab() {
   const [section, setSection] = useState<Section>('all');
   const [editing, setEditing] = useState(false);
   const now = Date.now();
-  const t = seasonTheme(now);
+  const pick = useSettings((s) => s.proPalette);
+  const t = themeFor(now, pick);
   const locked = !pro;
   const ch = stats?.running[0];
   const headline = ch ? `Day ${ch.dayOf} of ${ch.def.days}` : stats ? stats.aura.rank.title : ' ';
@@ -60,7 +69,7 @@ export default function ProTab() {
   const content = !stats ? <SkeletonList n={3} /> : section === 'all' ? (
     <View style={{ gap: space.xl }}>
       {locked ? <Ticket t={t} title="7 days of Pro, free" line="Everything on this tab, unlocked. Then ₹999 a year or ₹129 a month. Cancel any time." cta="Start free week" onPress={() => router.push('/pro')} /> : null}
-      <SeasonHero t={t} stats={stats} />
+      <SeasonHero t={t} stats={stats} onPress={() => setSection('season')} />
       <Bento t={t} stats={stats} locked={locked} />
       <View style={{ gap: space.md }}>
         <Row style={{ justifyContent: 'space-between' }}>
@@ -78,11 +87,11 @@ export default function ProTab() {
         <Text style={{ fontFamily: fonts.semibold, fontSize: 13, color: t.soft }}>{pro ? 'Manage plan · Restore' : 'Plans · Friend codes · Restore'}</Text>
       </Press>
     </View>
-  ) : section === 'aura' ? <AuraSection t={t} stats={stats} />
-    : section === 'challenges' ? <ChallengesSection t={t} stats={stats} locked={locked} />
+  ) : section === 'season' ? <SeasonSection t={t} stats={stats} />
+    : section === 'challenges' ? <ChallengeBoard />
+    : section === 'report' ? <ReportSection t={t} stats={stats} locked={locked} />
     : section === 'stories' ? <StoriesSection t={t} stats={stats} />
-    : section === 'money' ? <MoneySection t={t} stats={stats} locked={locked} />
-    : <ProtectSection t={t} stats={stats} locked={locked} />;
+    : <MoneySection t={t} stats={stats} locked={locked} />;
 
   return (
     <Screen style={{ backgroundColor: t.base }}>
@@ -137,25 +146,41 @@ export default function ProTab() {
         </View>
       </ScrollView>
 
-      {editing ? (
+      <Modal visible={editing} transparent animationType="none" onRequestClose={() => setEditing(false)}>
         <Sheet onClose={() => setEditing(false)}>
-          <View style={{ gap: space.md }}>
-            <Text v="h3">Pin to your tabs</Text>
-            <Text v="small" color={colors.textMuted}>Choose which Pro tools show up on Home, Insights and Groups.</Text>
-            <ScrollView style={{ maxHeight: 420 }} contentContainerStyle={{ gap: space.md }}>
+          <ScrollView style={{ maxHeight: 640 }} contentContainerStyle={{ gap: space.lg, padding: space.lg }}>
+            <Text v="h2">Customise Pro</Text>
+            <View style={{ gap: space.sm }}>
+              <Text v="title">Pro colours</Text>
+              <Text v="small" color={colors.textMuted}>Follow the season (a new palette every month), or keep one you like.</Text>
+              <Row style={{ flexWrap: 'wrap', gap: space.sm }}>
+                <Chip label="Follow the season" selected={pick < 0} onPress={() => setSetting(db, 'proPalette', -1)} />
+                {Array.from({ length: PALETTE_COUNT }, (_, i) => (
+                  <Press key={i} onPress={() => setSetting(db, 'proPalette', i)} accessibilityLabel={`${paletteName(i)} palette`} accessibilityState={{ selected: pick === i }}
+                    style={{ width: 64, borderRadius: 14, overflow: 'hidden', borderWidth: 3, borderColor: pick === i ? colors.primary : 'transparent' }}>
+                    <View style={{ height: 34, backgroundColor: paletteSwatch(i)[0], alignItems: 'flex-end', padding: 4 }}><View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: paletteSwatch(i)[1] }} /></View>
+                    <Text style={{ fontSize: 10, fontFamily: fonts.semibold, textAlign: 'center', paddingVertical: 3, color: colors.text }}>{paletteName(i).slice(0, 3)}</Text>
+                  </Press>
+                ))}
+              </Row>
+            </View>
+            <View style={{ gap: space.sm }}>
+              <Text v="title">Pin to your tabs</Text>
+              <Text v="small" color={colors.textMuted}>Choose which Pro tools show up on Home, Insights and Groups.</Text>
               {WIDGETS.filter((w) => w.id !== 'aura').map((w) => (
                 <View key={w.id} style={{ gap: 6 }}>
-                  <Text v="title">{w.title}</Text>
+                  <Text v="small" style={{ fontFamily: fonts.semibold }}>{w.title}</Text>
                   <Row style={{ gap: space.sm }}>
                     {PIN_TABS.filter((x) => (w.id === 'comingUp' ? x.key === 'home' : true)).map((x) => <Chip key={x.key} label={x.label} selected={pins[x.key].includes(w.id)} onPress={() => togglePin(x.key, w.id)} />)}
                   </Row>
                 </View>
               ))}
-            </ScrollView>
+            </View>
             <Button title="Done" kind="accent" onPress={() => setEditing(false)} />
-          </View>
+          </ScrollView>
         </Sheet>
-      ) : null}
+      </Modal>
+      <ToastHost />
     </Screen>
   );
 }

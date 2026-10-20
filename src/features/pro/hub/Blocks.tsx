@@ -6,7 +6,7 @@ import { Press, Text, Row } from '@/components/ui';
 import { Icon, type IconName } from '@/components/Icon';
 import { AuraOrb, RankMark, RANK_ORDER, auraColors } from '@/features/mce/AuraOrb';
 import { RANKS, seasonDaysLeft } from '@/features/mce/aura';
-import { dayTrack, runLength, monthLines, monthCells } from '@/features/story/stickers';
+import { dayTrack, runLength, monthLines, monthCells, worthSharing } from '@/features/story/stickers';
 import { StreakSticker, LessSticker, NoSpendSticker, AuraSticker } from '@/features/story/StickerViews';
 import { WIDGETS, type useProStats } from '@/features/pro/widgets';
 import { formatMoney } from '@/domain/money';
@@ -18,12 +18,11 @@ const money = (n: number) => formatMoney(n, 'INR', { compact: true });
 export const Caps = ({ children, color }: { children: React.ReactNode; color: string }) => <Text style={{ fontFamily: fonts.bold, fontSize: 11, letterSpacing: 1.5, color }}>{children}</Text>;
 
 /** The month's season, the way a store does its festive banner: big name, countdown, the rank ladder. */
-export function SeasonHero({ t, stats }: { t: SeasonTheme; stats: Stats }) {
-  const router = useRouter();
+export function SeasonHero({ t, stats, onPress }: { t: SeasonTheme; stats: Stats; onPress: () => void }) {
   const lvl = RANK_ORDER.indexOf(stats.aura.rank.key);
   const days = seasonDaysLeft(Date.now());
   return (
-    <Press onPress={() => router.push('/mce')} accessibilityLabel={`${t.name} season, ${days} days left`} style={{ borderRadius: 28, backgroundColor: t.tile, padding: space.lg, gap: space.md, borderWidth: 1, borderColor: t.line }}>
+    <Press onPress={onPress} accessibilityLabel={`${t.name} season, ${days} days left`} style={{ borderRadius: 28, backgroundColor: t.tile, padding: space.lg, gap: space.md, borderWidth: 1, borderColor: t.line }}>
       <Row style={{ justifyContent: 'space-between' }}>
         <Caps color={t.accent}>— SEASON —</Caps>
         <View style={{ borderRadius: 999, borderWidth: 1, borderColor: t.accent, paddingHorizontal: 10, paddingVertical: 3 }}>
@@ -128,12 +127,15 @@ export function StoryRail({ t, stats }: { t: SeasonTheme; stats: Stats }) {
   const track = dayTrack(stats.txs, now);
   const l = monthLines(stats.txs, now);
   const c = monthCells(stats.txs, now);
-  const items: { key: string; label: string; node: React.ReactNode }[] = [
+  // only stickers worth showing off are previewed (no "0 no-spend days")
+  const worthy = worthSharing(stats.txs, now);
+  const all: { key: string; label: string; node: React.ReactNode }[] = [
     { key: 'streak', label: 'Streak', node: <StreakSticker days={runLength(track)} track={track} /> },
-    ...(l.pct !== null ? [{ key: 'less', label: 'Spent less', node: <LessSticker pct={l.pct} cur={l.cur} prev={l.prev} prevLabel={l.prevLabel} /> }] : []),
+    { key: 'less', label: 'Spent less', node: <LessSticker pct={l.pct ?? 0} cur={l.cur} prev={l.prev} prevLabel={l.prevLabel} /> },
     { key: 'nospend', label: 'No-spend', node: <NoSpendSticker count={c.noSpend} cells={c.cells} firstWeekday={c.firstWeekday} month={new Date(now).toLocaleDateString('en-IN', { month: 'long' })} /> },
     { key: 'aura', label: 'Aura', node: <AuraSticker score={stats.aura.score} rank={stats.aura.rank.key} title={stats.aura.rank.title} /> },
   ];
+  const items = all.filter((x) => worthy.includes(x.key as never));
   const BG = ['#14181F', '#FF8106', '#1460FF', '#0C9C74'];
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20 }} contentContainerStyle={{ paddingHorizontal: 20, gap: space.sm }}>

@@ -10,7 +10,7 @@ const sod = (t: number) => { const d = new Date(t); d.setHours(0, 0, 0, 0); retu
 // fixed costs never count against a challenge
 const FIXED = new Set(['cat_rent', 'cat_bills', 'cat_subscriptions', 'cat_health', 'cat_education']);
 
-export type ChallengeKey = 'nospend7' | 'log30' | 'lowweek' | 'calmweekend';
+export type ChallengeKey = 'nospend7' | 'log30' | 'lowweek' | 'calmweekend' | 'custom';
 export interface ChallengeDef { key: ChallengeKey; title: string; pitch: string; days: number; goal: number; unit: string }
 export const CHALLENGES: ChallengeDef[] = [
   { key: 'nospend7', title: '7 no-spend days', pitch: 'Seven days with no spending, within two weeks. Log them so they count.', days: 14, goal: 7, unit: 'no-spend days' },
@@ -18,9 +18,12 @@ export const CHALLENGES: ChallengeDef[] = [
   { key: 'lowweek', title: 'A lighter week', pitch: 'Spend 20% less than your usual week, for one week. Bills and rent never count.', days: 7, goal: 7, unit: 'days' },
   { key: 'calmweekend', title: 'Calm weekend', pitch: 'A Saturday and Sunday under your usual weekday spend, both logged.', days: 2, goal: 2, unit: 'days' },
 ];
-export const challengeDef = (k: ChallengeKey) => CHALLENGES.find((c) => c.key === k)!;
+/** A challenge the user writes: skip one category, or stay under a daily amount, for a number of days. */
+export interface CustomSpec { kind: 'skipcat' | 'daycap'; category?: string; categoryName?: string; cap?: number; days: number }
+export const customTitle = (c: CustomSpec, money: (n: number) => string) => (c.kind === 'skipcat' ? `No ${c.categoryName ?? 'category'} for ${c.days} days` : `Under ${money(c.cap ?? 0)} a day, ${c.days} days`);
+export const challengeDef = (k: ChallengeKey) => CHALLENGES.find((c) => c.key === k) ?? { key: 'custom' as const, title: 'Your challenge', pitch: '', days: 7, goal: 7, unit: 'days' };
 
-export interface ActiveChallenge { id: string; key: ChallengeKey; startedAt: number }
+export interface ActiveChallenge { id: string; key: ChallengeKey; startedAt: number; custom?: CustomSpec }
 export type ChallengeStatus = 'running' | 'won' | 'missed';
 export interface ChallengeView { def: ChallengeDef; progress: number; goal: number; status: ChallengeStatus; dayOf: number; daysLeft: number; line: string; ends: number }
 
@@ -42,6 +45,7 @@ export function usualWeek(txs: Tx[], from: number): number {
 
 /** Where a challenge stands today. Missed means the finish line can no longer be reached in the time left. */
 export function challengeView(c: ActiveChallenge, txs: Tx[], now: number, money: (n: number) => string): ChallengeView {
+  if (c.key === 'custom' && c.custom) return customView(c, c.custom, txs, now, money);
   const def = challengeDef(c.key);
   // challenges start the morning after they are joined... unless joined before noon, then today counts
   const start = new Date(c.startedAt).getHours() < 12 ? sod(c.startedAt) : sod(c.startedAt) + DAY;
@@ -90,4 +94,28 @@ export function challengeView(c: ActiveChallenge, txs: Tx[], now: number, money:
     return { def, progress, goal: 2, status, dayOf: Math.min(2, Math.max(0, Math.floor((today - sat) / DAY) + 1)), daysLeft: Math.max(0, Math.ceil((sat + 2 * DAY - today) / DAY) - 1), line, ends: sat + 2 * DAY };
   }
   return { def, progress, goal: def.goal, status, dayOf, daysLeft, line, ends };
+}
+
+function customView(c: ActiveChallenge, spec: CustomSpec, txs: Tx[], now: number, money: (n: number) => string): ChallengeView {
+  const days = Math.max(1, Math.min(60, spec.days));
+  const def: ChallengeDef = { key: 'custom', title: customTitle(spec, money), pitch: '', days, goal: days, unit: 'days' };
+  const start = new Date(c.startedAt).getHours() < 12 ? sod(c.startedAt) : sod(c.startedAt) + DAY;
+  const ends = start + days * DAY;
+  const today = sod(now);
+  const dayOf = Math.max(0, Math.min(days, Math.floor((today - start) / DAY) + 1));
+  const daysLeft = Math.max(0, Math.ceil((ends - today) / DAY) - 1);
+  const inside = txs.filter((t) => t.occurred_at >= start && t.occurred_at < Math.min(ends, today + DAY));
+  let broken = false;
+  if (spec.kind === 'skipcat') broken = inside.some((t) => t.type === 'expense' && !t.excluded && t.category_id === spec.category);
+  else {
+    const per = new Map<number, number>();
+    for (const t of inside) if (variable(t)) per.set(sod(t.occurred_at), (per.get(sod(t.occurred_at)) ?? 0) + t.amount);
+    broken = [...per.values()].some((v) => v > (spec.cap ?? 0));
+  }
+  // a day counts once it has passed without breaking the rule
+  const passed = Math.max(0, Math.min(days, Math.floor((Math.min(today, ends) - start) / DAY)));
+  const status: ChallengeStatus = broken ? 'missed' : today >= ends ? 'won' : 'running';
+  const progress = status === 'won' ? days : passed;
+  const line = broken ? (spec.kind === 'skipcat' ? `A ${spec.categoryName ?? 'category'} spend ended it. Try again any time.` : 'A day went over. Try again any time.') : `${progress} of ${days} days`;
+  return { def, progress, goal: days, status, dayOf, daysLeft, line, ends };
 }
