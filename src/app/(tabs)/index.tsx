@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Screen, Header, Text, Card, Enter, Press, SectionHeader, IconTile, Button } from '@/components/ui';
+import { Wordmark } from '@/components/Wordmark';
 import { PrivacyNote } from '@/components/PrivacyNote';
 import { SpendHero } from '@/features/tracker/ui/SpendHero';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -52,7 +53,7 @@ export default function Home() {
         contentContainerStyle={{ paddingBottom: 168, gap: space.xl }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
       >
-        <Header title="Kharchi" subtitle={new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })} />
+        <Header title="BruhMe" titleNode={<Wordmark height={38} />} subtitle={new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })} />
         {q.error ? <ErrorState error={q.error} onRetry={q.refetch} /> : null}
         {q.loading && !d ? <SkeletonList n={4} /> : null}
         {d && (

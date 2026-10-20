@@ -6,7 +6,7 @@ import * as A from './analytics';
 
 /** Everything the Insights screen needs, from one query of the last 7 months. */
 export async function loadInsights(db: Db, now = Date.now()) {
-  const all = await listTransactions(db, { from: startOfMonth(now, -6), to: now + 1 });
+  const all = await listTransactions(db, { from: startOfMonth(now, -12), to: now + 1 });
   const cur = all.filter((t) => t.occurred_at >= startOfMonth(now));
   const prevAll = all.filter((t) => t.occurred_at >= startOfMonth(now, -1) && t.occurred_at <= endOfMonth(now, -1));
   const samePointPrev = prevAll.filter((t) => t.occurred_at <= startOfMonth(now, -1) + (now - startOfMonth(now)));

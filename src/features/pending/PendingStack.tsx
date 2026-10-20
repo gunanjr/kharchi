@@ -1,3 +1,4 @@
+import { useCarousel } from '@/lib/carousel';
 import React, { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useDb, useQuery, bumpData } from '@/db/provider';
@@ -18,6 +19,7 @@ const QUICK_EXPENSE = ['cat_food', 'cat_groceries', 'cat_transport', 'cat_shoppi
 const QUICK_INCOME = ['cat_salary', 'cat_refund', 'cat_gift', 'cat_income_other'];
 
 export function PendingStack() {
+  const car = useCarousel(1);
   const db = useDb();
   const { colors } = useTheme();
   const { byId } = useCategories();
@@ -48,13 +50,13 @@ export function PendingStack() {
           </Row>
         </Card>
       )}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} snapToAlignment="start" decelerationRate="fast" contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingBottom: 14, gap: space.md }} style={{ marginBottom: -14 }}>
+      <View style={{ paddingHorizontal: layout.gutter }}><ScrollView {...car.props} contentContainerStyle={{ paddingBottom: 14, gap: car.gap }} style={{ marginBottom: -14 }}>
         {(data ?? []).map((p, i) => {
           const sug = p.suggested_category_id ? byId.get(p.suggested_category_id) : null;
           const ids = (p.direction === 'debit' ? QUICK_EXPENSE : QUICK_INCOME).filter((id) => id !== p.suggested_category_id);
           return (
             <Enter key={p.id} i={i}>
-              <Card style={{ width: 300, gap: space.md }}>
+              <Card style={{ width: car.card, gap: space.md }}>
                 <Row>
                   <CategoryDot cat={sug} />
                   <View style={{ flex: 1 }}>
@@ -79,7 +81,7 @@ export function PendingStack() {
             </Enter>
           );
         })}
-      </ScrollView>
+      </ScrollView></View>
     </View>
   );
 }

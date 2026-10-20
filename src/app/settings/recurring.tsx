@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { MerchantTile } from '@/features/brands/MerchantTile';
 import { SubScreen, Card, Text, Row, Button, Field, Segmented, IconTile } from '@/components/ui';
 import { EmptyState } from '@/components/Feedback';
 import { CategoryChips } from '@/components/CategoryPicker';
@@ -32,7 +33,7 @@ export default function Recurring() {
           <Card key={r.id} style={{ gap: space.xs }}>
             <Row style={{ justifyContent: 'space-between', gap: space.md }}>
               <Row style={{ flex: 1, gap: space.md }}>
-                <IconTile size={40} icon="repeat" />
+                <MerchantTile name={t.merchant} fallback={<IconTile size={40} icon="repeat" />} />
                 <Text v="title" numberOfLines={1} style={{ flex: 1 }}>{t.merchant ?? 'Recurring'} · {formatMoney(t.amount, 'INR', { trimZeros: true })}</Text>
               </Row>
               <Button title="Stop" kind="ghost" size="sm" onPress={async () => { await softDelete(db, 'recurring', r.id); bumpData(); }} />

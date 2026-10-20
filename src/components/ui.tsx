@@ -385,13 +385,13 @@ export function Group({ title, children, style }: { title?: string; children: Re
 
 /* ------------------------------------------------------------ page chrome */
 
-export function Header({ title, subtitle, right }: { title: string; subtitle?: string; right?: React.ReactNode }) {
+export function Header({ title, subtitle, right, titleNode }: { title: string; subtitle?: string; right?: React.ReactNode; titleNode?: React.ReactNode }) {
   const { colors } = useTheme();
   return (
     <View style={{ paddingHorizontal: layout.gutter, paddingTop: space.lg, paddingBottom: space.md, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: space.md }}>
       <View style={{ flex: 1 }}>
         {subtitle ? <Text v="caps" color={colors.textMuted} style={{ marginBottom: 4 }}>{subtitle.toUpperCase()}</Text> : null}
-        <Text v="h1" accessibilityRole="header">{title}</Text>
+        {titleNode ?? <Text v="h1" accessibilityRole="header">{title}</Text>}
       </View>
       {right}
     </View>

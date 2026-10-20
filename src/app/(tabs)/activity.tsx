@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { FlatList, ScrollView, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Screen, Header, Text, Field, Row, Chip, Enter, Card } from '@/components/ui';
 import { TxRow } from '@/components/TxRow';
 import { EmptyState, SkeletonList, ErrorState } from '@/components/Feedback';
@@ -22,9 +22,11 @@ export default function Activity() {
   const db = useDb();
   const { colors } = useTheme();
   const { byId } = useCategories();
-  const [search, setSearch] = useState('');
+  const params = useLocalSearchParams<{ cat?: string; q?: string }>();
+  const [search, setSearch] = useState(params.q ?? '');
   const [type, setType] = useState<TxType | undefined>();
-  const [cat, setCat] = useState<string | undefined>();
+  const [cat, setCat] = useState<string | undefined>(params.cat);
+  React.useEffect(() => { setCat(params.cat); setSearch(params.q ?? ''); }, [params.cat, params.q]);
   const [tag, setTag] = useState<string | undefined>();
   const [onlyOut, setOnlyOut] = useState(false);
   const q = useQuery((db) => listTransactions(db, { search: tag ? `${search} ${tag}`.trim() : search, type, categoryId: cat, limit: 400, includeExcluded: true, onlyExcluded: onlyOut }), [search, type, cat, tag, onlyOut]);

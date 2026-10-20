@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Pressable, View } from 'react-native';
+import { Image, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SubScreen, Text, Card, Row, Button, Enter } from '@/components/ui';
 import { EmptyState } from '@/components/Feedback';

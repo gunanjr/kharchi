@@ -12,7 +12,6 @@ import type { Person, SplitType } from '@/domain/types';
 import { useTheme } from '@/theme/ThemeProvider';
 import { space, radius, type as T } from '@/theme/tokens';
 import { haptic } from '@/lib/haptics';
-import { Comments } from './Comments';
 import { prefillSplit } from '../editPrefill';
 
 type Item = { desc: string; amount: string; who: string[] };
@@ -178,7 +177,6 @@ export function GroupExpenseForm({ groupId, members, groupCurrency, existing, on
 
       {preview.error && effectiveTotal > 0 ? <Text color={colors.danger} accessibilityRole="alert">{preview.error}</Text> : null}
       <Button title={existing ? 'Save changes' : 'Add expense'} onPress={save} disabled={!canSave} loading={saving} />
-      {existing ? <Comments expenseId={existing.id} members={members} /> : null}
     </ScrollView>
   );
 }

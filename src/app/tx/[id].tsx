@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { ScrollView, Switch, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Screen, Text, Button, Row, Field, Card, Money, RoundButton, Tag } from '@/components/ui';
+import { Screen, Text, Button, Row, Field, Card, Money, RoundButton, Tag, Press } from '@/components/ui';
+import { Icon } from '@/components/Icon';
 import { CategoryChips } from '@/components/CategoryPicker';
 import { CategoryDot } from '@/components/TxRow';
 import { ErrorState } from '@/components/Feedback';
@@ -17,6 +18,10 @@ import { formatDay, formatTime } from '@/lib/date';
 import { useTheme } from '@/theme/ThemeProvider';
 import { layout, space } from '@/theme/tokens';
 import { parseTags, readTags } from '@/features/tracker/tags';
+import { BrandIcon } from '@/features/brands/BrandIcon';
+import { IconPickerSheet } from '@/features/brands/IconPickerSheet';
+import { resolveBrand } from '@/features/brands/match';
+import { useMerchantPhoto } from '@/features/brands/custom';
 
 export default function TxDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -26,6 +31,8 @@ export default function TxDetail() {
   const { byId, categories } = useCategories();
   const q = useQuery((d) => getTransaction(d, id), [id]);
   const [editing, setEditing] = useState(false);
+  const [iconOpen, setIconOpen] = useState(false);
+  const photo = useMerchantPhoto(q.data?.merchant);
   const [amount, setAmount] = useState('');
   const [merchant, setMerchant] = useState('');
   const [note, setNote] = useState('');
@@ -72,7 +79,12 @@ export default function TxDetail() {
       </Row>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingTop: space.md, paddingBottom: 60, gap: space.lg }} keyboardShouldPersistTaps="handled">
         <View style={{ alignItems: 'center', gap: space.sm, paddingVertical: space.md }}>
-          <CategoryDot cat={cat} size={76} />
+          {tx.merchant && !readOnly ? (
+            <Press onPress={() => setIconOpen(true)} accessibilityLabel={`Change icon for ${tx.merchant}`} scale={0.96}>
+              {photo || resolveBrand(tx.merchant) ? <BrandIcon brand={resolveBrand(tx.merchant)} photo={photo} size={76} /> : <CategoryDot cat={cat} size={76} />}
+              <View style={{ position: 'absolute', right: -4, bottom: -4, width: 28, height: 28, borderRadius: 14, backgroundColor: colors.ink, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.bg }}><Icon name="camera" size={14} color={colors.onInk} /></View>
+            </Press>
+          ) : photo || resolveBrand(tx.merchant) ? <BrandIcon brand={resolveBrand(tx.merchant)} photo={photo} size={76} /> : <CategoryDot cat={cat} size={76} />}
           <View style={{ alignSelf: 'stretch', marginTop: space.sm }}>
             <Money size="hero" align="center" color={tx.type === 'income' ? colors.income : colors.text} text={formatMoney(tx.amount, tx.currency, { trimZeros: true })} />
           </View>
@@ -120,6 +132,7 @@ export default function TxDetail() {
           </>
         )}
       </ScrollView>
+      {iconOpen ? <IconPickerSheet merchant={tx.merchant} onClose={() => setIconOpen(false)} /> : null}
       <ToastHost />
     </Screen>
   );

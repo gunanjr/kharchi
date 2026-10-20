@@ -3,7 +3,8 @@ import { Alert } from 'react-native';
 import { SubScreen, Card, Text, Button } from '@/components/ui';
 import { ToastHost, toast } from '@/components/Toast';
 import { useDb, bumpData } from '@/db/provider';
-import { exportBackup, restoreBackup, wipeAll } from '@/db/backup';
+import { exportBackup, wipeAll } from '@/db/backup';
+import { useRestoreFlow } from '@/features/vault/ui/useRestoreFlow';
 import { listTransactions, listCategories, listAccounts, addTransaction , seedDefaults } from '@/features/tracker/repo';
 import { importCsv, toCsv } from '@/features/tracker/csv';
 import { pickTextFile, shareTextFile } from '@/features/settings/files';
@@ -14,7 +15,7 @@ export default function DataScreen() {
 
   async function exportCsv() {
     const [tx, cats, accs] = await Promise.all([listTransactions(db, { includeExcluded: true }), listCategories(db), listAccounts(db)]);
-    await shareTextFile(`kharchi-transactions-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(tx, cats, Object.fromEntries(accs.map((a) => [a.id, a.name]))), 'text/csv');
+    await shareTextFile(`bruhme-transactions-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(tx, cats, Object.fromEntries(accs.map((a) => [a.id, a.name]))), 'text/csv');
   }
   async function importFromCsv() {
     const f = await pickTextFile(['text/csv', 'text/comma-separated-values', 'text/plain', '*/*']);
@@ -34,19 +35,10 @@ export default function DataScreen() {
     toast(`Imported ${rows.length} transactions${skipped ? `, skipped ${skipped}` : ''}`);
   }
   async function backup() {
-    await shareTextFile(`kharchi-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(await exportBackup(db)), 'application/json');
+    await shareTextFile(`bruhme-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(await exportBackup(db)), 'application/json');
   }
-  async function restore() {
-    const f = await pickTextFile(['application/json', '*/*']);
-    if (!f) return;
-    try {
-      await restoreBackup(db, JSON.parse(f.text));
-      bumpData();
-      toast('Backup restored');
-    } catch (e) {
-      toast(`Restore failed: ${(e as Error).message}`);
-    }
-  }
+  const restoreFlow = useRestoreFlow();
+  const restore = restoreFlow.start;
   function wipe() {
     Alert.alert('Delete all my data?', 'This permanently erases every transaction, group, budget and setting on this phone. Export a backup first if unsure.', [
       { text: 'Cancel', style: 'cancel' },
@@ -71,6 +63,7 @@ export default function DataScreen() {
         <Text v="h2">Delete all my data</Text>
         <Button title="Delete everything" kind="danger" onPress={wipe} />
       </Card>
+      {restoreFlow.element}
       <ToastHost />
     </SubScreen>
   );

@@ -1,27 +1,48 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ScrollView, View, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Screen, Header, Text, Card, Row, Button, Enter, Field, Chip, GlyphPick, Money, IconTile, SectionHeader, Group, ListRow } from '@/components/ui';
+import { Screen, Header, Text, Card, Row, Button, Enter, Field, Chip, GlyphPick, Money, IconTile, Segmented, RoundButton, Press } from '@/components/ui';
 import { EmptyState, SkeletonList } from '@/components/Feedback';
 import { Sheet } from '@/components/Sheet';
 import { ToastHost, toast } from '@/components/Toast';
 import { useDb, useQuery, bumpData } from '@/db/provider';
 import { addPerson, createGroup, ensureSelf, friendBalances, groupSummary, listGroups, listPeople } from '@/features/groups/repo';
+import { memberLine, overview, sortByOutstanding } from '@/features/groups/overview';
+import { BruhSheet } from '@/features/groups/ui/BruhSheet';
+import type { NudgeInput } from '@/features/groups/nudge';
 import { formatMoney } from '@/domain/money';
 import { useTheme } from '@/theme/ThemeProvider';
 import { GROUP_ICONS, groupGlyph } from '@/components/glyphs';
-import { Glyph } from '@/components/Icon';
-import { space, layout } from '@/theme/tokens';
+import { Glyph, Icon } from '@/components/Icon';
+import { radius, space, layout } from '@/theme/tokens';
 
 const ICONS = ['👥', '✈️', '🏠', '🍽️', '🎉', '💼', '🏖️', '🎬'];
 
-function BalanceLabel({ net, currency = 'INR' }: { net: number; currency?: string }) {
+/** Overlapping initials, up to four people and a "+n". */
+function Faces({ names, size = 28 }: { names: string[]; size?: number }) {
   const { colors } = useTheme();
-  if (net === 0) return <Text v="small" color={colors.textMuted}>settled up</Text>;
+  const shown = names.slice(0, 4);
   return (
-    <View style={{ alignItems: 'flex-end' }}>
-      <Text v="caps" color={net > 0 ? colors.income : colors.expense}>{net > 0 ? 'YOU ARE OWED' : 'YOU OWE'}</Text>
-      <Money size="md" align="right" color={net > 0 ? colors.income : colors.expense} text={formatMoney(Math.abs(net), currency, { trimZeros: true })} />
+    <View style={{ flexDirection: 'row', alignItems: 'center' }} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+      {shown.map((n, i) => (
+        <View key={i} style={{ width: size, height: size, borderRadius: size / 2, marginLeft: i ? -size * 0.3 : 0, backgroundColor: colors.surfaceAlt, borderWidth: 2, borderColor: colors.surface, alignItems: 'center', justifyContent: 'center' }}>
+          <Text v="caps" color={colors.link} style={{ letterSpacing: 0, fontSize: size * 0.4 }}>{(n[0] ?? '?').toUpperCase()}</Text>
+        </View>
+      ))}
+      {names.length > shown.length ? <Text v="small" color={colors.textMuted} style={{ marginLeft: 6 }}>+{names.length - shown.length}</Text> : null}
+    </View>
+  );
+}
+
+/** One line that says where a balance stands, in words and colour. */
+function Status({ net, currency = 'INR', align = 'right' }: { net: number; currency?: string; align?: 'left' | 'right' }) {
+  const { colors } = useTheme();
+  if (net === 0) return <Text v="small" color={colors.textMuted} style={{ textAlign: align }}>All settled</Text>;
+  const owed = net > 0;
+  return (
+    <View style={{ alignItems: align === 'right' ? 'flex-end' : 'flex-start' }}>
+      <Text v="small" color={owed ? colors.income : colors.expense} style={{ fontFamily: 'Geist_600SemiBold' }}>{owed ? 'You are owed' : 'You owe'}</Text>
+      <Money size="md" align={align} color={owed ? colors.income : colors.expense} text={formatMoney(Math.abs(net), currency, { trimZeros: true })} />
     </View>
   );
 }
@@ -29,56 +50,128 @@ function BalanceLabel({ net, currency = 'INR' }: { net: number; currency?: strin
 export default function Groups() {
   const router = useRouter();
   const { colors } = useTheme();
+  const [bruh, setBruh] = useState<NudgeInput | null>(null);
   const [newGroup, setNewGroup] = useState(false);
   const [newFriend, setNewFriend] = useState(false);
+  const [view, setView] = useState<'groups' | 'friends'>('groups');
   const q = useQuery(async (d) => {
-    await ensureSelf(d);
+    const me = await ensureSelf(d);
     const groups = await listGroups(d);
-    const sums = await Promise.all(groups.map((g) => groupSummary(d, g.id)));
+    const sums = (await Promise.all(groups.map((g) => groupSummary(d, g.id)))).filter((s): s is NonNullable<typeof s> => !!s);
     const friends = await friendBalances(d);
-    return { sums: sums.filter((s) => !!s), friends };
+    return { me, sums, friends };
   }, []);
+  const o = useMemo(() => overview(q.data?.friends ?? []), [q.data]);
+  const sums = useMemo(() => sortByOutstanding(q.data?.sums ?? []), [q.data]);
+  const friends = useMemo(() => [...(q.data?.friends ?? [])].sort((a, b) => Math.abs(b.net) - Math.abs(a.net)), [q.data]);
+  const has = !!q.data && (q.data.sums.length > 0 || q.data.friends.length > 0);
 
   return (
     <Screen>
-      <Header title="Groups" right={<Row style={{ gap: space.sm }}><Button title="Scan" accessibilityLabel="Scan a bill" kind="secondary" size="sm" icon="scan" onPress={() => router.push('/scan-bill')} /><Button title="Friend" kind="secondary" size="sm" icon="personAdd" onPress={() => setNewFriend(true)} /><Button title="Group" size="sm" icon="plus" onPress={() => setNewGroup(true)} /></Row>} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingTop: space.sm, gap: space.md, paddingBottom: 168 }}>
+      <Header title="Groups" right={<Row style={{ gap: space.sm }}><RoundButton icon="scan" label="Scan a bill" onPress={() => router.push('/scan-bill')} size={44} /><RoundButton icon="personAdd" label="Add a friend" onPress={() => setNewFriend(true)} size={44} /><Button title="Group" size="sm" icon="plus" onPress={() => setNewGroup(true)} /></Row>} />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingTop: space.sm, gap: space.lg, paddingBottom: 168 }}>
         {q.loading && !q.data ? <SkeletonList n={3} /> : null}
-        {q.data && q.data.sums.length === 0 && (
-          <EmptyState art="group" title="Split anything, with anyone" body="Create a group for a trip, flat or dinner. Unlimited groups, friends and expenses. No paywall." action="Create a group" onAction={() => setNewGroup(true)} />
-        )}
-        {q.data?.sums.map((s, i) => s && (
-          <Enter key={s.group.id} i={i}>
-            <Card onPress={() => router.push(`/group/${s.group.id}`)} accessibilityLabel={`${s.group.name}, ${s.members.length} people`}>
-              <Row style={{ justifyContent: 'space-between', gap: space.md }}>
-                <Row style={{ flex: 1, gap: space.md }}>
-                  <IconTile size={52} tone="ink"><Glyph name={groupGlyph(s.group.icon)} size={24} color={colors.onInk} /></IconTile>
-                  <View style={{ flex: 1 }}><Text v="title" numberOfLines={1}>{s.group.name}</Text><Text v="small" color={colors.textMuted}>{s.members.length} people · {formatMoney(s.totalSpent, s.group.currency, { compact: true })} spent</Text></View>
-                </Row>
-                <BalanceLabel net={s.myBalance} currency={s.group.currency} />
-              </Row>
-            </Card>
-          </Enter>
-        ))}
-        {q.data && q.data.friends.length > 0 && (
-          <View style={{ gap: space.sm, marginTop: space.md }}>
-            <SectionHeader title="Friends" action="Split with a friend" onAction={() => router.push('/group-expense')} />
-            <Group>
-              {q.data.friends.map((f) => (
-                <ListRow
-                  key={f.person.id}
-                  title={f.person.name}
-                  leading={<IconTile size={40} tone="plain"><Text v="title" color={colors.link}>{f.person.name[0]?.toUpperCase()}</Text></IconTile>}
-                  right={<BalanceLabel net={f.net} />}
-                  onPress={() => router.push(`/friend/${f.person.id}`)}
-                />
-              ))}
-            </Group>
-          </View>
-        )}
+
+        {q.data && !has ? (
+          <EmptyState art="group" title="Split anything, with anyone" body="Make a group for a trip, the flat or dinner. Add what each person paid and see who owes who. No limits on groups or friends." action="Make a group" onAction={() => setNewGroup(true)} />
+        ) : null}
+
+        {has ? (
+          <>
+            <Enter>
+              <Card tone="ink" style={{ gap: space.md }}>
+                <Text v="caps" color={colors.onHeroMuted}>ACROSS ALL YOUR FRIENDS</Text>
+                {o.net === 0 && o.owed === 0 ? (
+                  <Text v="h2" color={colors.onHero}>Nobody owes anybody. Nice.</Text>
+                ) : (
+                  <>
+                    <Text v="small" color={colors.onHeroMuted}>{o.net >= 0 ? 'Overall you are owed' : 'Overall you owe'}</Text>
+                    <Money size="xl" color={colors.onHero} text={formatMoney(Math.abs(o.net), 'INR', { trimZeros: true })} />
+                  </>
+                )}
+                <View style={{ flexDirection: 'row', gap: space.lg, paddingTop: space.md, borderTopWidth: 1, borderTopColor: colors.onHeroLine }}>
+                  {([
+                    { icon: 'arrowDown' as const, label: o.owedBy ? `Owed to you by ${o.owedBy}` : 'Owed to you', v: o.owed },
+                    { icon: 'arrowUp' as const, label: o.oweTo ? `You owe ${o.oweTo}` : 'You owe', v: o.owe },
+                  ]).map((x) => (
+                    <View key={x.icon} style={{ flex: 1, flexDirection: 'row', gap: space.sm, alignItems: 'center' }}>
+                      <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: 'rgba(255,255,255,0.14)', alignItems: 'center', justifyContent: 'center' }}>
+                        <Icon name={x.icon} size={15} color={colors.onHero} />
+                      </View>
+                      <View style={{ flex: 1, gap: 1 }}>
+                        <Text v="small" color={colors.onHeroMuted} numberOfLines={1}>{x.label}</Text>
+                        <Money size="md" color={colors.onHero} text={formatMoney(x.v, 'INR', { trimZeros: true })} />
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              </Card>
+            </Enter>
+
+            <Segmented options={[{ key: 'groups', label: `Groups ${sums.length}` }, { key: 'friends', label: `Friends ${friends.length}` }]} value={view} onChange={setView} />
+
+            {view === 'groups' ? (
+              <View style={{ gap: space.md }}>
+                {sums.map((s, i) => {
+                  const others = s.members.filter((m) => !m.is_self).map((m) => m.name.split(' ')[0]);
+                  return (
+                    <Enter key={s.group.id} i={i}>
+                      <Card onPress={() => router.push(`/group/${s.group.id}`)} accessibilityLabel={`${s.group.name}, ${s.members.length} people`} style={{ gap: space.md }}>
+                        <Row style={{ gap: space.md }}>
+                          <IconTile size={52} tone="ink"><Glyph name={groupGlyph(s.group.icon)} size={24} color={colors.onInk} /></IconTile>
+                          <View style={{ flex: 1 }}>
+                            <Text v="h3" numberOfLines={1}>{s.group.name}</Text>
+                            <Text v="small" color={colors.textMuted} numberOfLines={1}>{memberLine(others)}</Text>
+                          </View>
+                          <Icon name="chevron" color={colors.textSubtle} size={18} />
+                        </Row>
+                        <Row style={{ justifyContent: 'space-between', alignItems: 'flex-end', paddingTop: space.md, borderTopWidth: 1, borderTopColor: colors.border }}>
+                          <View style={{ gap: 6 }}>
+                            <Faces names={s.members.map((m) => (m.is_self ? 'You' : m.name))} />
+                            <Text v="small" color={colors.textMuted}>{formatMoney(s.totalSpent, s.group.currency, { compact: true })} spent in total</Text>
+                          </View>
+                          <Status net={s.myBalance} currency={s.group.currency} />
+                        </Row>
+                      </Card>
+                    </Enter>
+                  );
+                })}
+                <Press accessibilityLabel="Make a group" onPress={() => setNewGroup(true)} style={{ borderRadius: radius.lg, borderWidth: 1.5, borderStyle: 'dashed', borderColor: colors.border, minHeight: 76, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: space.sm }}>
+                  <Icon name="plus" color={colors.link} size={20} />
+                  <Text v="title" color={colors.link}>Make a group</Text>
+                </Press>
+              </View>
+            ) : (
+              <View style={{ gap: space.md }}>
+                {friends.length === 0 ? <EmptyState art="group" title="No friends yet" body="Add the people you split with, then nudge them when they owe you." action="Add a friend" onAction={() => setNewFriend(true)} /> : null}
+                {friends.map((f, i) => (
+                  <Enter key={f.person.id} i={i}>
+                    <Card onPress={() => router.push(`/friend/${f.person.id}`)} accessibilityLabel={f.person.name} style={{ gap: space.md }}>
+                      <Row style={{ gap: space.md }}>
+                        <IconTile size={44} tone="plain"><Text v="title" color={colors.link}>{(f.person.name[0] ?? '?').toUpperCase()}</Text></IconTile>
+                        <View style={{ flex: 1 }}>
+                          <Text v="title" numberOfLines={1}>{f.person.name}</Text>
+                          <Text v="small" color={f.net > 0 ? colors.income : f.net < 0 ? colors.expense : colors.textMuted} numberOfLines={1}>
+                            {f.net > 0 ? 'owes you' : f.net < 0 ? 'you owe them' : 'all settled'}
+                          </Text>
+                        </View>
+                        {f.net !== 0 ? <Money size="md" align="right" color={f.net > 0 ? colors.income : colors.expense} text={formatMoney(Math.abs(f.net), 'INR', { trimZeros: true })} /> : null}
+                      </Row>
+                      {f.net > 0 ? (
+                        <Button title="Bruh them" size="sm" icon="send" onPress={() => setBruh({ amount: f.net, name: f.person.name })} style={{ alignSelf: 'flex-start' }} />
+                      ) : null}
+                    </Card>
+                  </Enter>
+                ))}
+                <Button title="Split with a friend" kind="secondary" icon="plus" onPress={() => router.push('/group-expense')} />
+              </View>
+            )}
+          </>
+        ) : null}
       </ScrollView>
       <ToastHost />
       <NewGroupModal visible={newGroup} onClose={() => setNewGroup(false)} onCreated={(id) => { setNewGroup(false); router.push(`/group/${id}`); }} />
+      <BruhSheet input={bruh} onClose={() => setBruh(null)} />
       <NewFriendModal visible={newFriend} onClose={() => setNewFriend(false)} />
     </Screen>
   );

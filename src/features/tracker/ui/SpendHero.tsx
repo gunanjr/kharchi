@@ -20,7 +20,7 @@ const CHART_HEIGHT = 92;
  * The Home hero: one solid card with the label, a time-frame pill, the hide-amounts eye and an arrow to Insights, the
  * figure (the paise quieter than the rupees), the change against the stretch before, an interactive trend line, five
  * axis labels, and Income and Kept as a footer. Ported from the Fermor app's Home hero (same structure and behaviour),
- * drawn with Kharchi's colours and its own data: what was spent. Entries the user left out of totals are not counted.
+ * drawn in the app's own colours and data: what was spent. Entries the user left out of totals are not counted.
  *
  * The card is not pressable. The chart owns its touches (press and hold to explore); the page locks its scroll while a
  * finger slides along it, through `onExploreChange`.

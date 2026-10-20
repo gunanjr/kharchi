@@ -1,9 +1,9 @@
 {
-  "appName": "Kharchi",
+  "appName": "BruhMe",
   "slug": "kharchi",
   "scheme": "kharchi",
-  "androidPackage": "app.kharchi.tracker",
-  "iosBundleId": "app.kharchi.tracker",
+  "androidPackage": "com.bruhme.app",
+  "iosBundleId": "com.bruhme.app",
   "defaultCurrency": "INR",
   "privacyPolicyUrl": "https://gunanjr.github.io/kharchi/",
   "supportEmail": "bollugunwanth@gmail.com"

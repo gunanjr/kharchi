@@ -46,7 +46,6 @@ export async function openExpoDb(): Promise<Db> {
   if (!q.has('empty')) {
     await seedEverything(db);
   }
-  if (q.has('plus')) await useSettings.getState().set(db, 'plusPreview', true);
   if (!q.has('onboarding')) await useSettings.getState().set(db, 'onboarded', true);
   if (q.get('theme') === 'dark' || q.get('theme') === 'light') await useSettings.getState().set(db, 'theme', q.get('theme') as any);
   return db;

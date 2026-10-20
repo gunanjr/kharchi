@@ -71,7 +71,7 @@ CREATE INDEX idx_bills_status ON bills(status);
 `,
   /* 4: savings goals */ `
 CREATE TABLE goals (
-  id TEXT PRIMARY KEY, name TEXT NOT NULL, icon TEXT NOT NULL DEFAULT 'target', color TEXT NOT NULL DEFAULT '#F0A31B',
+  id TEXT PRIMARY KEY, name TEXT NOT NULL, icon TEXT NOT NULL DEFAULT 'target', color TEXT NOT NULL DEFAULT '#FF8106',
   target INTEGER NOT NULL, deadline INTEGER, achieved_at INTEGER, ${SYNC});
 CREATE TABLE goal_entries (
   id TEXT PRIMARY KEY, goal_id TEXT NOT NULL, amount INTEGER NOT NULL, note TEXT, occurred_at INTEGER NOT NULL, ${SYNC});
@@ -84,5 +84,25 @@ CREATE TABLE feedback (
 `,
   /* 6: leave a transaction out of totals */ `
 ALTER TABLE transactions ADD COLUMN excluded INTEGER NOT NULL DEFAULT 0;
+`,
+  /* 7: repair. Databases built before the migrations were renumbered may lack tables that a later numbering adds. Safe to repeat. */ `
+CREATE TABLE IF NOT EXISTS bills (
+  id TEXT PRIMARY KEY, photo_path TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'new',
+  store TEXT, total INTEGER, items TEXT, bill_date INTEGER, group_expense_id TEXT, ${SYNC});
+CREATE INDEX IF NOT EXISTS idx_bills_status ON bills(status);
+CREATE TABLE IF NOT EXISTS goals (
+  id TEXT PRIMARY KEY, name TEXT NOT NULL, icon TEXT NOT NULL DEFAULT 'target', color TEXT NOT NULL DEFAULT '#FF8106',
+  target INTEGER NOT NULL, deadline INTEGER, achieved_at INTEGER, ${SYNC});
+CREATE TABLE IF NOT EXISTS goal_entries (
+  id TEXT PRIMARY KEY, goal_id TEXT NOT NULL, amount INTEGER NOT NULL, note TEXT, occurred_at INTEGER NOT NULL, ${SYNC});
+CREATE INDEX IF NOT EXISTS idx_goal_entries ON goal_entries(goal_id);
+CREATE TABLE IF NOT EXISTS feedback (
+  id TEXT PRIMARY KEY, kind TEXT NOT NULL, message TEXT NOT NULL, include_info INTEGER NOT NULL DEFAULT 1,
+  status TEXT NOT NULL DEFAULT 'saved', sent_at INTEGER, ${SYNC});
+`,
+  /* 8: trip mode (optional dates and a daily budget on a group) */ `
+ALTER TABLE groups_ ADD COLUMN trip_start INTEGER;
+ALTER TABLE groups_ ADD COLUMN trip_end INTEGER;
+ALTER TABLE groups_ ADD COLUMN daily_budget INTEGER;
 `,
 ];

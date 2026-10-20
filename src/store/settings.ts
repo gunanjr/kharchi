@@ -4,7 +4,7 @@ import { now } from '@/lib/id';
 
 export type Settings = {
   theme: 'system' | 'light' | 'dark';
-  lang: 'en' | 'hi';
+  lang: 'en'; // English only
   currency: string;
   onboarded: boolean;
   biometricLock: boolean;
@@ -13,14 +13,17 @@ export type Settings = {
   senderAllowlist: string; // comma separated; empty = all financial senders
   hapticsEnabled: boolean;
   weeklySummary: boolean;
-  plusPreview: boolean; // local Plus switch; there is no billing
   accent: 'marigold' | 'teal' | 'rose' | 'indigo';
+  myUpi: string; // the user's own UPI ID, added to settle-up messages as a tap-to-pay link; stays on the phone
+  merchantIcons: Record<string, string>; // merchant key -> private photo path the user chose as its icon
+  vaultUri: string; // the folder the user picked for Vault backups ('' = Vault off)
+  vaultLastAt: number;
+  vaultLastHash: string;
   hideAmounts: boolean; // masks every amount (for public places); the eye on Home
-  plusWaitlist: '' | 'monthly' | 'yearly'; // the plan a person said they would pick when Plus launches
 };
 
 export const defaultSettings: Settings = {
-  theme: 'system',
+  theme: 'light',
   lang: 'en',
   currency: 'INR',
   onboarded: false,
@@ -30,10 +33,13 @@ export const defaultSettings: Settings = {
   senderAllowlist: '',
   hapticsEnabled: true,
   weeklySummary: false,
-  plusPreview: false,
   accent: 'marigold',
   hideAmounts: false,
-  plusWaitlist: '',
+  myUpi: '',
+  merchantIcons: {},
+  vaultUri: '',
+  vaultLastAt: 0,
+  vaultLastHash: '',
 };
 
 type Store = Settings & {

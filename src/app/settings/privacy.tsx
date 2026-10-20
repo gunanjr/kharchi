@@ -15,8 +15,8 @@ const POINTS: [string, string][] = [
   [
     'No network',
     storeBuild
-      ? 'This build does not even have permission to use the internet, so your data physically cannot leave your phone. There are no ads, no analytics and no tracking.'
-      : 'Nothing in the app sends data anywhere. There are no ads, no analytics and no tracking.',
+      ? 'This build does not have permission to use the internet, so the app cannot send your entries anywhere. It has no ads, no analytics and no tracking. If you export, back up or share something, it goes where you choose, and we cannot take it back from there.'
+      : 'The app does not send your entries anywhere. It has no ads, no analytics and no tracking. If you export, back up or share something, it goes where you choose.',
   ],
   [
     'Messages',
@@ -25,7 +25,7 @@ const POINTS: [string, string][] = [
       : 'The app never reads your messages in the background. A message is only looked at when you paste or share it in, and its text is not kept.',
   ],
   ['What is kept', 'The amount, merchant, account last-4, date, your notes and categories, and a one-way hash used to avoid duplicates.'],
-  ['You are in control', 'Export a backup, import a CSV, or erase everything with Delete all my data (Settings → Export & backup).'],
+  ['You are in control', 'Export a backup, import a CSV, or erase the app’s data with Delete all my data (More, Export and backup). That removes what is stored in the app; copies you exported or shared elsewhere stay where you put them.'],
 ];
 
 export default function Privacy() {

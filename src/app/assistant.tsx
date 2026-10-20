@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, ScrollView, View } from 'react-native';
 import { SubScreen, Text, Chip, Row, Card, Segmented, IconTile, Button, ListRow, Group } from '@/components/ui';
 import { Donut, BarList, LineArea } from '@/components/charts';
 import { EmptyState } from '@/components/Feedback';
@@ -105,7 +105,11 @@ export default function Assistant() {
         {picking && current ? (
           <>
             <Segmented options={groups.map((g) => ({ key: g.key, label: g.short }))} value={current.key} onChange={setGroup} />
-            <Group>{current.items.map((it) => <ListRow key={it.id} title={it.label} onPress={() => ask(it.question)} />)}</Group>
+            <View style={{ height: 248 }}>
+              <ScrollView showsVerticalScrollIndicator nestedScrollEnabled keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: space.sm }}>
+                <Group>{current.items.map((it) => <ListRow key={it.id} title={it.label} onPress={() => ask(it.question)} />)}</Group>
+              </ScrollView>
+            </View>
           </>
         ) : (
           <Button title="Ask another question" kind="secondary" icon="chat" onPress={() => setPicking(true)} />

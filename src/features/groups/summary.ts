@@ -2,7 +2,7 @@ import { formatMoney } from '@/domain/money';
 import type { GroupSummary } from './repo';
 
 /** Plain-text group summary for sharing (WhatsApp etc). */
-export function groupSummaryText(s: GroupSummary, appName = 'Kharchi'): string {
+export function groupSummaryText(s: GroupSummary, appName = 'BruhMe'): string {
   const name = new Map(s.members.map((m) => [m.id, m.name]));
   const cur = s.group.currency;
   const lines = [`${s.group.icon ?? ''} ${s.group.name}`.trim(), `Total spent: ${formatMoney(s.totalSpent, cur, { trimZeros: true })}`, ''];

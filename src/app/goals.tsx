@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Modal, View } from 'react-native';
-import { useRouter } from 'expo-router';
 import { SubScreen, Card, Text, Row, Button, Enter, Money, IconTile, Tag, ProgressBar } from '@/components/ui';
 import { EmptyState } from '@/components/Feedback';
 import { Glyph } from '@/components/Icon';
@@ -11,17 +10,13 @@ import { useQuery, useDb, bumpData } from '@/db/provider';
 import { listGoals, removeGoal, type GoalProgress } from '@/features/goals/repo';
 import { ContributeForm, NewGoalForm } from '@/features/goals/ui';
 import { goalGlyph } from '@/components/glyphs';
-import { canAddGoal, FREE_LIMITS } from '@/features/entitlements';
-import { usePlus } from '@/features/entitlements/usePlus';
 import { formatMoney } from '@/domain/money';
 import { formatDay } from '@/lib/date';
 import { useTheme } from '@/theme/ThemeProvider';
 import { space } from '@/theme/tokens';
 
 export default function Goals() {
-  const router = useRouter();
   const db = useDb();
-  const plus = usePlus();
   const { colors } = useTheme();
   const q = useQuery((d) => listGoals(d), []);
   const [creating, setCreating] = useState(false);
@@ -30,13 +25,7 @@ export default function Goals() {
   const saved = goals.reduce((a, g) => a + g.saved, 0);
   const target = goals.reduce((a, g) => a + g.goal.target, 0);
 
-  function newGoal() {
-    if (!canAddGoal(plus, goals.length)) {
-      toast(`Free includes ${FREE_LIMITS.goals} goals. Plus has no limit.`);
-      return router.push('/plus');
-    }
-    setCreating(true);
-  }
+  const newGoal = () => setCreating(true);
 
   return (
     <SubScreen title="Goals" right={<Button title="New" size="sm" icon="plus" onPress={newGoal} />}>

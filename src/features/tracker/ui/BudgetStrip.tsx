@@ -1,3 +1,4 @@
+import { useCarousel } from '@/lib/carousel';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { useQuery } from '@/db/provider';
@@ -23,6 +24,7 @@ export function BudgetStrip() {
   const { colors } = useTheme();
   const router = useRouter();
   const { byId } = useCategories();
+  const car = useCarousel(2);
   const q = useQuery(async (db) => {
     const now = Date.now();
     const budgets = await listBudgets(db);
@@ -39,14 +41,14 @@ export function BudgetStrip() {
   return (
     <View style={{ gap: space.sm }}>
       <SectionHeader title="Budgets" action="Manage" onAction={() => router.push('/budgets')} style={{ paddingHorizontal: layout.gutter }} />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingBottom: 14, gap: space.md }} style={{ marginBottom: -14 }}>
+      <View style={{ paddingHorizontal: layout.gutter }}><ScrollView {...car.props} contentContainerStyle={{ paddingBottom: 14, gap: car.gap }} style={{ marginBottom: -14 }}>
         {q.data.map((p) => {
           const cat = p.budget.category_id ? byId.get(p.budget.category_id) : null;
           const tone = toneOf(cat?.color);
           const g = categoryGlyph(cat);
           const over = p.status === 'over';
           return (
-            <Card key={p.budget.id} onPress={() => router.push('/budgets')} style={{ width: 220, gap: space.md }} accessibilityLabel={`${cat?.name ?? 'Overall'} budget ${p.pct} percent used`}>
+            <Card key={p.budget.id} onPress={() => router.push('/budgets')} style={{ width: car.card, gap: space.md }} accessibilityLabel={`${cat?.name ?? 'Overall'} budget ${p.pct} percent used`}>
               <Row style={{ gap: space.sm }}>
                 <IconTile size={36}>{g ? <Glyph name={g} size={17} color={tone} /> : <Glyph name="flag-outline" size={17} color={colors.text} />}</IconTile>
                 <Text v="title" numberOfLines={1} style={{ flex: 1 }}>{cat?.name ?? 'Overall'}</Text>
@@ -58,7 +60,7 @@ export function BudgetStrip() {
             </Card>
           );
         })}
-      </ScrollView>
+      </ScrollView></View>
     </View>
   );
 }

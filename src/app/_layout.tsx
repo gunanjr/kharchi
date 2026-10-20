@@ -10,12 +10,15 @@ import { Geist_400Regular } from '@expo-google-fonts/geist/400Regular';
 import { Geist_500Medium } from '@expo-google-fonts/geist/500Medium';
 import { Geist_600SemiBold } from '@expo-google-fonts/geist/600SemiBold';
 import { Geist_700Bold } from '@expo-google-fonts/geist/700Bold';
+import { Nunito_800ExtraBold } from '@expo-google-fonts/nunito/800ExtraBold';
+import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black';
 import { DbProvider } from '@/db/provider';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 import { useSettings } from '@/store/settings';
 import { ErrorBoundary } from '@/components/Feedback';
 import { BiometricGate } from '@/features/security/BiometricGate';
 import { useAppBootstrap } from '@/features/bootstrap';
+import { useVaultAuto } from '@/features/vault/useVaultAuto';
 import '@/features/native/headless';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -39,6 +42,7 @@ function Shell() {
   const router = useRouter();
   const segments = useSegments();
   useAppBootstrap();
+  useVaultAuto();
 
   useEffect(() => {
     const inOnboarding = segments[0] === 'onboarding';
@@ -62,7 +66,7 @@ function Shell() {
 }
 
 export default function RootLayout() {
-  const [loaded] = useFonts({ Geist_400Regular, Geist_500Medium, Geist_600SemiBold, Geist_700Bold });
+  const [loaded] = useFonts({ Geist_400Regular, Geist_500Medium, Geist_600SemiBold, Geist_700Bold, Nunito_800ExtraBold, Nunito_900Black });
   useEffect(() => {
     if (loaded) SplashScreen.hideAsync().catch(() => {});
   }, [loaded]);

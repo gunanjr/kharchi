@@ -2,7 +2,7 @@ import { createTestDb } from '@/db/testDb';
 import { saveFeedback, listFeedback, markSent, removeFeedback, buildMail, buildCrashMail, cleanMessage, MAX_LEN, THANKS } from '../repo';
 
 jest.mock('expo-crypto', () => ({ randomUUID: () => require('crypto').randomUUID() }));
-const info = { app: 'Kharchi', version: '1.0.0', os: 'android', osVersion: '15' };
+const info = { app: 'BruhMe', version: '1.0.0', os: 'android', osVersion: '15' };
 
 test('feedback is saved, listed newest first, marked sent and removable', async () => {
   const db = await createTestDb();
@@ -31,7 +31,7 @@ test('hostile text is stored as plain data', async () => {
 
 test('the email holds only the message and, if allowed, the app and phone type', () => {
   const m = buildMail('problem', 'Totals look wrong', true, info, 'help@example.com');
-  expect(m.subject).toBe('Kharchi problem report');
+  expect(m.subject).toBe('BruhMe problem report');
   expect(m.body).toContain('Totals look wrong');
   expect(m.body).toContain('App 1.0.0 on android 15');
   expect(m.url.startsWith('mailto:help@example.com?subject=')).toBe(true);

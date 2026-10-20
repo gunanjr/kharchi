@@ -28,6 +28,7 @@ const map = {
   heart: 'heart-outline',
   eye: 'eye-outline',
   camera: 'camera-outline',
+  image: 'image-outline',
   receipt: 'receipt-outline',
   eyeOff: 'eye-off-outline',
   trash: 'trash-outline',

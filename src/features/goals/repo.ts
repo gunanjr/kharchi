@@ -31,7 +31,7 @@ export interface GoalProgress {
 export async function addGoal(db: Db, g: { name: string; target: number; icon?: string; color?: string; deadline?: number | null }): Promise<string> {
   if (!g.name.trim()) throw new Error('Give the goal a name');
   if (!isValidMinor(g.target)) throw new Error('Target must be a positive amount');
-  return insertRow(db, 'goals', { name: g.name.trim(), target: g.target, icon: g.icon ?? 'target', color: g.color ?? '#F0A31B', deadline: g.deadline ?? null });
+  return insertRow(db, 'goals', { name: g.name.trim(), target: g.target, icon: g.icon ?? 'target', color: g.color ?? '#FF8106', deadline: g.deadline ?? null });
 }
 
 export const removeGoal = (db: Db, id: string) => softDelete(db, 'goals', id);

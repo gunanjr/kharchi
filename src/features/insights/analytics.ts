@@ -2,7 +2,7 @@ import type { Transaction } from '@/domain/types';
 import { DAY, daysInMonth, startOfDay, startOfMonth } from '@/lib/date';
 import { merchantKey } from '@/features/parser/merchants';
 
-type Tx = Pick<Transaction, 'type' | 'amount' | 'category_id' | 'merchant' | 'note' | 'occurred_at'>;
+type Tx = Pick<Transaction, 'type' | 'amount' | 'category_id' | 'merchant' | 'note' | 'occurred_at'> & { id?: string };
 
 const expenses = (t: Tx[]) => t.filter((x) => x.type === 'expense');
 const sum = (t: Tx[]) => t.reduce((a, x) => a + x.amount, 0);
@@ -70,7 +70,8 @@ export function detectSubscriptions(txs: Tx[]): Subscription[] {
   for (const t of expenses(txs)) {
     const k = merchantKey(t.merchant || t.note);
     if (!k) continue;
-    groups.set(k, [...(groups.get(k) ?? []), t]);
+    const g = groups.get(k);
+    if (g) g.push(t); else groups.set(k, [t]);
   }
   const out: Subscription[] = [];
   for (const list of groups.values()) {
@@ -98,14 +99,21 @@ export interface Anomaly { tx: Tx; reason: string; typical: number }
 /** Spend far above the user's own norm for that category (robust: median + 3x MAD, min 4 prior samples). */
 export function detectAnomalies(txs: Tx[], since: number): Anomaly[] {
   const byCat = new Map<string | null, Tx[]>();
-  for (const t of expenses(txs)) byCat.set(t.category_id, [...(byCat.get(t.category_id) ?? []), t]);
+  for (const t of expenses(txs)) {
+    const g = byCat.get(t.category_id);
+    if (g) g.push(t); else byCat.set(t.category_id, [t]);
+  }
   const out: Anomaly[] = [];
-  for (const list of byCat.values()) {
-    for (const t of list.filter((x) => x.occurred_at >= since)) {
-      const prior = list.filter((x) => x !== t && x.occurred_at < t.occurred_at).map((x) => x.amount).sort((a, b) => a - b);
+  for (const raw of byCat.values()) {
+    const list = [...raw].sort((x, y) => x.occurred_at - y.occurred_at);
+    for (let i = 0; i < list.length; i++) {
+      const t = list[i];
+      if (t.occurred_at < since) continue;
+      // The 200 entries just before this one are plenty for a stable norm, and keep the work bounded on big histories.
+      const prior = list.slice(Math.max(0, i - 200), i).filter((x) => x.occurred_at < t.occurred_at).map((x) => x.amount).sort((p, q) => p - q);
       if (prior.length < 4) continue;
       const med = prior[Math.floor(prior.length / 2)];
-      const mad = [...prior].map((a) => Math.abs(a - med)).sort((a, b) => a - b)[Math.floor(prior.length / 2)] || med * 0.2;
+      const mad = prior.map((v) => Math.abs(v - med)).sort((p, q) => p - q)[Math.floor(prior.length / 2)] || med * 0.2;
       if (t.amount > med + 6 * mad && t.amount > med * 2.5) out.push({ tx: t, typical: med, reason: `${(t.amount / med).toFixed(1)}× your usual in this category` });
     }
   }

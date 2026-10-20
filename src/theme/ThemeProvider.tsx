@@ -21,16 +21,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const system = useColorScheme();
   const pref = useSettings((s) => s.theme);
   const dark = pref === 'system' ? system === 'dark' : pref === 'dark';
-  const plus = useSettings((s) => s.plusPreview);
   const accent = useSettings((s) => s.accent);
   const value = useMemo(() => {
     const base = dark ? palette.dark : palette.light;
-    // Accent colours are a Plus feature: without Plus the app always uses marigold.
-    const a = ACCENTS[plus ? accent : 'marigold'][dark ? 'dark' : 'light'];
+    const a = ACCENTS[accent][dark ? 'dark' : 'light'];
     const rgb = a.fill.slice(1).match(/../g)!.map((h) => parseInt(h, 16)).join(',');
     const colors: Colors = { ...base, primary: a.fill, link: a.link, primarySoft: `rgba(${rgb},0.16)` };
     return { colors, dark, shadows: makeShadows(colors, dark) };
-  }, [dark, plus, accent]);
+  }, [dark, accent]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

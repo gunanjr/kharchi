@@ -1,3 +1,5 @@
+import { useCarousel } from '@/lib/carousel';
+import { MerchantTile } from '@/features/brands/MerchantTile';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -64,6 +66,7 @@ export function TodayCard({ pulse }: { pulse: Pulse }) {
 
 /** Balances of every account, as small tiles that scroll sideways. */
 export function AccountsStrip({ pulse }: { pulse: Pulse }) {
+  const car = useCarousel(2);
   const { colors } = useTheme();
   const router = useRouter();
   if (!pulse.accounts.length) return null;
@@ -71,13 +74,13 @@ export function AccountsStrip({ pulse }: { pulse: Pulse }) {
   return (
     <View style={{ gap: space.sm }}>
       <SectionHeader title="Accounts" action="Manage" onAction={() => router.push('/settings/accounts')} style={{ paddingHorizontal: layout.gutter }} />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingBottom: 14, gap: space.md }} style={{ marginBottom: -14 }}>
-        <Card tone="ink" onPress={() => router.push('/settings/accounts')} accessibilityLabel={`All accounts ${formatMoney(total, 'INR')}`} style={{ width: 168, gap: space.md, justifyContent: 'space-between' }}>
+      <View style={{ paddingHorizontal: layout.gutter }}><ScrollView {...car.props} contentContainerStyle={{ paddingBottom: 14, gap: car.gap }} style={{ marginBottom: -14 }}>
+        <Card tone="ink" onPress={() => router.push('/settings/accounts')} accessibilityLabel={`All accounts ${formatMoney(total, 'INR')}`} style={{ width: car.card, gap: space.md, justifyContent: 'space-between' }}>
           <Text v="caps" color={colors.onHeroMuted}>ALL ACCOUNTS</Text>
           <Money size="lg" color={colors.onHero} text={formatMoney(total, 'INR', { compact: true })} />
         </Card>
         {pulse.accounts.map(({ account, balance }) => (
-          <Card key={account.id} onPress={() => router.push('/settings/accounts')} accessibilityLabel={`${account.name} ${formatMoney(balance, 'INR')}`} style={{ width: 168, gap: space.md }}>
+          <Card key={account.id} onPress={() => router.push('/settings/accounts')} accessibilityLabel={`${account.name} ${formatMoney(balance, 'INR')}`} style={{ width: car.card, gap: space.md }}>
             <IconTile size={36}><Glyph name={accountGlyph(account.type)} size={17} color={colors.text} /></IconTile>
             <View style={{ gap: 2 }}>
               <Text v="small" color={colors.textMuted} numberOfLines={1}>{account.name}</Text>
@@ -85,13 +88,14 @@ export function AccountsStrip({ pulse }: { pulse: Pulse }) {
             </View>
           </Card>
         ))}
-      </ScrollView>
+      </ScrollView></View>
     </View>
   );
 }
 
 /** Savings goals as ring cards, or a gentle prompt to start one. */
 export function GoalsStrip({ goals }: { goals: GoalProgress[] }) {
+  const car = useCarousel(2);
   const { colors } = useTheme();
   const router = useRouter();
   if (!goals.length)
@@ -109,9 +113,9 @@ export function GoalsStrip({ goals }: { goals: GoalProgress[] }) {
   return (
     <View style={{ gap: space.sm }}>
       <SectionHeader title="Goals" action="See all" onAction={() => router.push('/goals')} style={{ paddingHorizontal: layout.gutter }} />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingBottom: 14, gap: space.md }} style={{ marginBottom: -14 }}>
+      <View style={{ paddingHorizontal: layout.gutter }}><ScrollView {...car.props} contentContainerStyle={{ paddingBottom: 14, gap: car.gap }} style={{ marginBottom: -14 }}>
         {goals.map((p) => (
-          <Card key={p.goal.id} onPress={() => router.push('/goals')} accessibilityLabel={`${p.goal.name}, ${p.pct} percent`} style={{ width: 176, gap: space.md, alignItems: 'flex-start' }}>
+          <Card key={p.goal.id} onPress={() => router.push('/goals')} accessibilityLabel={`${p.goal.name}, ${p.pct} percent`} style={{ width: car.card, gap: space.md, alignItems: 'flex-start' }}>
             <ProgressRing pct={p.pct} size={64} stroke={7} color={p.done ? colors.income : p.goal.color}>
               <Glyph name={goalGlyph(p.goal.icon)} size={22} color={p.done ? colors.income : p.goal.color} />
             </ProgressRing>
@@ -121,7 +125,7 @@ export function GoalsStrip({ goals }: { goals: GoalProgress[] }) {
             </View>
           </Card>
         ))}
-      </ScrollView>
+      </ScrollView></View>
     </View>
   );
 }
@@ -139,7 +143,7 @@ export function ComingUp({ pulse }: { pulse: Pulse }) {
             key={u.id}
             title={u.name}
             sub={formatDay(u.due)}
-            leading={<IconTile size={40} icon="repeat" />}
+            leading={<MerchantTile name={u.name} fallback={<IconTile size={40} icon="repeat" />} />}
             right={<Money size="sm" align="right" text={formatMoney(u.amount, 'INR', { trimZeros: true })} />}
             onPress={() => router.push('/settings/recurring')}
           />

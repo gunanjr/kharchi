@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { View } from 'react-native';
-import { useRouter } from 'expo-router';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import { SubScreen, Card, Text, Row, Button, Enter, Money, RoundButton, ProgressBar } from '@/components/ui';
@@ -10,8 +9,6 @@ import { ToastHost, toast } from '@/components/Toast';
 import { useQuery } from '@/db/provider';
 import { loadReview } from '@/features/insights/review';
 import { useCategories } from '@/features/tracker/hooks';
-import { usePlus } from '@/features/entitlements/usePlus';
-import { FREE_LIMITS } from '@/features/entitlements';
 import { formatMoney } from '@/domain/money';
 import { startOfMonth, monthLabel } from '@/lib/date';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -31,12 +28,9 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
 }
 
 export default function Review() {
-  const router = useRouter();
   const { colors } = useTheme();
-  const plus = usePlus();
   const { byId } = useCategories();
   const [offset, setOffset] = useState(0); // 0 = this month, -1 = last month ...
-  const earliestFree = -FREE_LIMITS.reviewMonthsBack;
   const month = startOfMonth(Date.now(), offset);
   const q = useQuery((db) => loadReview(db, month), [month]);
   const shot = useRef<React.ElementRef<typeof ViewShot>>(null);
@@ -44,10 +38,6 @@ export default function Review() {
   const inr = (n: number) => formatMoney(n, 'INR', { trimZeros: true });
 
   async function share() {
-    if (!plus.has('review_share')) {
-      toast('Sharing the review card is a Plus feature');
-      return router.push('/plus');
-    }
     try {
       const uri = await shot.current?.capture?.();
       if (uri && (await Sharing.isAvailableAsync())) await Sharing.shareAsync(uri, { mimeType: 'image/png' });
@@ -59,7 +49,7 @@ export default function Review() {
   return (
     <SubScreen title="Monthly review">
       <Row style={{ justifyContent: 'space-between' }}>
-        <RoundButton icon="back" label="Previous month" onPress={() => { if (offset <= earliestFree && !plus.has('full_history')) { toast('Older months are a Plus feature'); return router.push('/plus'); } setOffset(offset - 1); }} />
+        <RoundButton icon="back" label="Previous month" onPress={() => setOffset(offset - 1)} />
         <Text v="h3">{monthLabel(month)}</Text>
         <RoundButton icon="chevron" label="Next month" onPress={() => offset < 0 && setOffset(offset + 1)} />
       </Row>
@@ -94,12 +84,12 @@ export default function Review() {
                   {r.biggest ? <Stat label="Biggest expense" value={inr(r.biggest.amount)} sub={r.biggest.merchant ?? undefined} /> : null}
                   {r.busiestWeekday !== null ? <Stat label="Heaviest day" value={DOW[r.busiestWeekday]} /> : null}
                 </Row>
-                <Text v="small" color={colors.onHeroMuted}>Made with Kharchi</Text>
+                <Text v="small" color={colors.onHeroMuted}>Made with BruhMe</Text>
               </Card>
             </ViewShot>
           </Enter>
           <Enter i={1}>
-            <Button title={plus.has('review_share') ? 'Share as image' : 'Share as image (Plus)'} kind="secondary" icon={plus.has('review_share') ? 'share' : 'lock'} onPress={share} />
+            <Button title="Share as image" kind="secondary" icon="share" onPress={share} />
           </Enter>
           <Enter i={2}>
             <Card style={{ flexDirection: 'row', gap: space.md, alignItems: 'center' }}>

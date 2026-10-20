@@ -14,7 +14,7 @@ export default function WidgetsAndShortcuts() {
   const hasNative = !!native;
   const pin = (fn: (() => boolean | void) | undefined) => {
     const r = fn?.();
-    if (r === false) toast('Your launcher can’t pin widgets from here. Long-press the home screen → Widgets → Kharchi.');
+    if (r === false) toast('Your launcher can’t pin widgets from here. Long-press the home screen → Widgets → BruhMe.');
   };
 
   return (

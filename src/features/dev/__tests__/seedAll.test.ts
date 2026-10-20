@@ -1,7 +1,7 @@
 import { createTestDb } from '@/db/testDb';
 import { seedDefaults, listTransactions, listAccounts, listBudgets } from '@/features/tracker/repo';
 import { seedEverything } from '../seedAll';
-import { listGroups, groupSummary, listExpenses, listComments, listPeople } from '@/features/groups/repo';
+import { listGroups, groupSummary, listExpenses, listPeople } from '@/features/groups/repo';
 import { listGoals } from '@/features/goals/repo';
 import { listPending } from '@/features/pending/service';
 import { loadPulse } from '@/features/tracker/pulse';
@@ -38,10 +38,6 @@ test('the complete demo fills every part of the app and stays consistent', async
     for (const e of await listExpenses(db, g.id)) types.add(e.split_type);
   }
   for (const t of ['equal', 'exact', 'percent', 'shares', 'adjustment', 'itemized']) expect(types).toContain(t);
-  const exp = (await listExpenses(db, groups.find((g) => g.name === 'Office lunch club')!.id))[0];
-  expect(exp).toBeTruthy();
-  const withComments = (await Promise.all((await listExpenses(db, null)).concat(await listExpenses(db, groups[0].id)).map((e) => listComments(db, e.id)))).flat();
-  expect(withComments.length).toBeGreaterThan(0);
   expect((await listPeople(db)).length).toBeGreaterThanOrEqual(6);
 
   expect((await listPending(db)).length).toBeGreaterThan(0);

@@ -7,6 +7,9 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { radius, space, toneOf } from '@/theme/tokens';
 import { formatMoney } from '@/domain/money';
 import { formatTime } from '@/lib/date';
+import { BrandIcon } from '@/features/brands/BrandIcon';
+import { resolveBrand } from '@/features/brands/match';
+import { useMerchantPhoto } from '@/features/brands/custom';
 import type { Category, Transaction } from '@/domain/types';
 
 /** Category mark: a soft squircle tile holding a line glyph in the category's tone. */
@@ -26,12 +29,14 @@ export function TxRow({ tx, cat, onPress, onLongPress }: { tx: Transaction; cat?
   const { colors } = useTheme();
   const sign = tx.type === 'income' ? '+' : tx.type === 'expense' ? '−' : '';
   const color = tx.type === 'income' ? colors.income : tx.type === 'expense' ? colors.text : colors.textMuted;
+  const photo = useMerchantPhoto(tx.merchant);
+  const brand = tx.type === 'transfer' ? null : resolveBrand(tx.merchant);
   const title = tx.merchant || tx.note || cat?.name || (tx.type === 'transfer' ? 'Transfer' : 'Transaction');
   const sub = [cat?.name, tx.note && tx.merchant ? tx.note : null, formatTime(tx.occurred_at)].filter(Boolean).join(' · ');
   const label = `${title}, ${sign === '−' ? 'spent' : sign === '+' ? 'received' : 'moved'} ${formatMoney(tx.amount, tx.currency)}, ${sub}`;
   return (
     <Press onPress={onPress} onLongPress={onLongPress} accessibilityLabel={tx.excluded ? `${label}, not counted in totals` : label} scale={0.985} style={{ opacity: tx.excluded ? 0.55 : 1, minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.sm, borderRadius: radius.md }}>
-      {tx.type === 'transfer' ? <IconTile size={46} icon="swap" /> : <CategoryDot cat={cat} />}
+      {tx.type === 'transfer' ? <IconTile size={46} icon="swap" /> : photo || brand ? <BrandIcon brand={brand} photo={photo} /> : <CategoryDot cat={cat} />}
       <View style={{ flex: 1 }}>
         <Text v="title" numberOfLines={1}>{title}</Text>
         <Text v="small" color={colors.textMuted} numberOfLines={1}>{sub}</Text>

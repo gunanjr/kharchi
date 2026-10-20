@@ -7,7 +7,7 @@ export const RANGES: readonly Range[] = ['1M', '3M', '6M', '1Y'];
 export const RANGE_LABEL: Record<Range, string> = { '1M': '1 month', '3M': '3 months', '6M': '6 months', '1Y': '1 year' };
 /** What the change line is measured against for each time frame. */
 export const VERSUS_LABEL: Record<Range, string> = { '1M': 'last month', '3M': '3 months ago', '6M': '6 months ago', '1Y': 'last year' };
-const SPAN: Record<Range, number> = { '1M': 30, '3M': 91, '6M': 182, '1Y': 365 };
+export const SPAN: Record<Range, number> = { '1M': 30, '3M': 91, '6M': 182, '1Y': 365 };
 
 export interface FramePoint { date: string; valuePaise: string }
 export interface FrameData {

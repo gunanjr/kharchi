@@ -75,7 +75,8 @@ export default function Feedback() {
         <Card style={{ gap: space.md }}>
           <Text v="h3">Tell us what you think</Text>
           <Segmented options={(Object.keys(KIND_LABEL) as FeedbackKind[]).map((k) => ({ key: k, label: k === 'problem' ? 'Problem' : k === 'idea' ? 'Idea' : 'Praise' }))} value={kind} onChange={setKind} />
-          <Field label={KIND_LABEL[kind]} value={text} onChangeText={(t) => setText(t.slice(0, MAX_LEN))} multiline placeholder={kind === 'problem' ? 'What happened, and on which screen?' : kind === 'idea' ? 'What would make Kharchi better for you?' : 'What works well for you?'} style={{ minHeight: 110, textAlignVertical: 'top' }} />
+          <Field label={KIND_LABEL[kind]} value={text} onChangeText={(t) => setText(t.slice(0, MAX_LEN))} multiline placeholder={kind === 'problem' ? 'What happened, and on which screen?' : kind === 'idea' ? 'What would make BruhMe better for you?' : 'What works well for you?'} style={{ minHeight: 110, textAlignVertical: 'top' }} />
+          <Text v="small" color={colors.textMuted}>Rather talk than type? Tap the microphone on your keyboard and speak. Your keyboard turns it into text here, and nothing is recorded by {appConfig.appName}.</Text>
           <Row style={{ justifyContent: 'space-between', gap: space.md }}>
             <View style={{ flex: 1 }}>
               <Text v="small">Include app version and phone type</Text>

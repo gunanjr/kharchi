@@ -13,7 +13,7 @@ export const KIND_LABEL: Record<FeedbackKind, string> = { problem: 'Something is
 /** The reply shown straight after a message is sent. It promises only what is true: the team reads what arrives. */
 export const THANKS: Record<FeedbackKind, string> = {
   problem: 'Thank you for telling us. Problems you report are how we find what to fix first, and we read every message.',
-  idea: 'Thank you for the suggestion. We keep improving Kharchi based on ideas like yours, and nothing sent to us goes unread.',
+  idea: 'Thank you for the suggestion. We keep improving the app based on ideas like yours, and nothing sent to us goes unread.',
   praise: 'Thank you, that really helps. We will keep the things you like working well.',
 };
 

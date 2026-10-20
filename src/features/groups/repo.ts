@@ -16,6 +16,9 @@ export interface Group {
   icon: string | null;
   kind: string | null;
   simplify: number;
+  trip_start: number | null;
+  trip_end: number | null;
+  daily_budget: number | null;
   created_at: number;
   updated_at: number;
   deleted_at: number | null;
@@ -45,6 +48,8 @@ export async function createGroup(db: Db, g: { name: string; currency?: string; 
 }
 export const listGroups = (db: Db) => db.all<Group>(`SELECT * FROM groups_ WHERE ${ALIVE} ORDER BY updated_at DESC`);
 export const getGroup = (db: Db, id: string) => db.get<Group>(`SELECT * FROM groups_ WHERE id=?`, [id]);
+export const setGroupTrip = (db: Db, id: string, t: { start: number; end: number; dailyBudget: number | null } | null) =>
+  updateRow(db, 'groups_', id, t ? { trip_start: t.start, trip_end: t.end, daily_budget: t.dailyBudget } : { trip_start: null, trip_end: null, daily_budget: null });
 export const setGroupSimplify = (db: Db, id: string, on: boolean) => updateRow(db, 'groups_', id, { simplify: on ? 1 : 0 });
 export const deleteGroup = (db: Db, id: string) => softDelete(db, 'groups_', id);
 
@@ -227,6 +232,7 @@ export interface GroupSummary {
   transfers: Transfer[]; // simplified or pairwise depending on group.simplify
   myBalance: number;
   totalSpent: number;
+  settlements: SettlementRow[];
 }
 
 export async function groupSummary(db: Db, groupId: string): Promise<GroupSummary | undefined> {
@@ -238,7 +244,7 @@ export async function groupSummary(db: Db, groupId: string): Promise<GroupSummar
   const balances = computeBalances(like, sl, group.currency);
   const transfers = group.simplify ? simplifyDebts(balances) : pairwiseDebts(like, sl, group.currency);
   const totalSpent = exps.reduce((a, e) => a + Math.round(e.amount * (e.currency === group.currency ? 1 : e.rate)), 0);
-  return { group, members, balances, transfers, myBalance: balances[me.id] ?? 0, totalSpent };
+  return { group, members, balances, transfers, myBalance: balances[me.id] ?? 0, totalSpent, settlements: sets };
 }
 
 /** Net money between "me" and each friend across ALL groups and non-group expenses (INR-only; foreign-currency groups are skipped). */

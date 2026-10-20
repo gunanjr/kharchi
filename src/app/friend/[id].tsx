@@ -10,6 +10,8 @@ import { ensureSelf, friendBalances, listPeople, updatePerson } from '@/features
 import { isValidVpa } from '@/features/groups/upi';
 import { scheduleReminder } from '@/features/groups/reminders';
 import { formatMoney } from '@/domain/money';
+import { BruhSheet } from '@/features/groups/ui/BruhSheet';
+import type { NudgeInput } from '@/features/groups/nudge';
 import { useTheme } from '@/theme/ThemeProvider';
 import { space } from '@/theme/tokens';
 
@@ -18,6 +20,7 @@ export default function Friend() {
   const db = useDb();
   const { colors } = useTheme();
   const [settle, setSettle] = useState(false);
+  const [bruh, setBruh] = useState<NudgeInput | null>(null);
   const [upi, setUpi] = useState<string | null>(null);
   const q = useQuery(async (d) => ({ me: await ensureSelf(d), people: await listPeople(d), fb: await friendBalances(d) }), [id]);
   const p = q.data?.people.find((x) => x.id === id);
@@ -31,11 +34,12 @@ export default function Friend() {
         {net === 0 ? <Text v="h2" color={colors.onHero}>You’re settled up</Text> : (
           <>
             <Text v="caps" color={colors.onHeroMuted}>{net > 0 ? `${p.name.toUpperCase()} OWES YOU` : `YOU OWE ${p.name.toUpperCase()}`}</Text>
-            <Money size="hero" color={net > 0 ? colors.incomeOnHero : colors.expenseOnHero} text={formatMoney(Math.abs(net), 'INR', { trimZeros: true })} />
+            <Money size="hero" color={net > 0 ? colors.onHero : colors.onHero} text={formatMoney(Math.abs(net), 'INR', { trimZeros: true })} />
           </>
         )}
         {net !== 0 && <Button title="Settle up" kind="accent" onPress={() => setSettle(true)} />}
-        {net > 0 && <Button title="Remind me to ask in 3 days" kind="secondary" icon="bell" onPress={async () => { const r = await scheduleReminder(p.name, formatMoney(net, 'INR', { trimZeros: true }), 3); toast(r === 'scheduled' ? 'Reminder set for 3 days from now' : r === 'denied' ? 'Allow notifications to use reminders' : 'Reminders work in the installed app (not Expo Go)'); }} />}
+        {net > 0 && <Button title="Bruh them" kind="primary" icon="send" onPress={() => setBruh({ amount: net, name: p.name })} />}
+        {net > 0 && <Button title="Remind me to bruh them in 3 days" kind="secondary" icon="bell" onPress={async () => { const r = await scheduleReminder(p.name, formatMoney(net, 'INR', { trimZeros: true }), 3); toast(r === 'scheduled' ? 'Reminder set for 3 days from now' : r === 'denied' ? 'Allow notifications to use reminders' : 'Reminders work in the installed app (not Expo Go)'); }} />}
       </Card>
       <Card style={{ gap: space.md }}>
         <Field label="UPI ID" value={upi ?? p.upi_id ?? ''} onChangeText={setUpi} autoCapitalize="none" placeholder="name@okaxis" />
@@ -47,6 +51,7 @@ export default function Friend() {
         </Sheet>
       </Modal>
       <ToastHost />
+      <BruhSheet input={bruh} onClose={() => setBruh(null)} />
     </SubScreen>
   );
 }

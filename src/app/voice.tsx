@@ -18,7 +18,7 @@ const EXAMPLES = ['Spent 180 on lunch', 'Paid 250 for petrol', 'Received 2000 fr
 type Item = { draft: Draft; saved: boolean; method: 'upi' | 'card' | 'cash' | null };
 
 /**
- * Say or type an expense. Dictation comes from the keyboard's own microphone key, so Kharchi never asks for the
+ * Say or type an expense. Dictation comes from the keyboard's own microphone key, so the app never asks for the
  * microphone and never records. The sentence is read on the phone by simple rules; each expense found is a draft to review.
  */
 export default function Voice() {
