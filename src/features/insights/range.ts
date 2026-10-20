@@ -46,7 +46,8 @@ export function buildRangeInsights(all: Transaction[], now: number, range: Range
     range,
     frame: buildFrame(all, now, range),
     cats,
-    merchants: topMerchants(spend, 6),
+    // places you chose to spend at: rent, bills and subscriptions are not places
+    merchants: topMerchants(spend.filter((t) => !['cat_rent', 'cat_bills', 'cat_subscriptions'].includes(t.category_id ?? '')), 6),
     months: monthlyTrend(all, now, MONTHS_FOR[range]),
     weekday,
     priciest: max > 0 ? weekday.indexOf(max) : null,

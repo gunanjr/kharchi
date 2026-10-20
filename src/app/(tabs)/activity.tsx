@@ -80,7 +80,7 @@ export default function Activity() {
           <Enter i={Math.min(index, 4)}>
             <Row style={{ justifyContent: 'space-between', paddingTop: space.lg, paddingBottom: space.sm, paddingHorizontal: 4 }}>
               <Text v="caps" color={colors.textMuted}>{section.title.toUpperCase()}</Text>
-              {section.total > 0 && <Text v="small" color={colors.textMuted} style={{ fontVariant: ['tabular-nums'] }}>{formatMoney(section.total, 'INR', { trimZeros: true })}</Text>}
+              {section.total > 0 && <Text v="small" color={colors.textMuted} style={{ fontVariant: ['tabular-nums'] }}>{formatMoney(Math.round(section.total / 100) * 100, 'INR', { trimZeros: true })}</Text>}
             </Row>
             <Card pad={false} style={{ paddingHorizontal: space.lg, paddingVertical: space.xs }}>
               {section.data.map((tx) => (

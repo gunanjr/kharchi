@@ -65,7 +65,8 @@ export function formatMoney(
     const whole = Math.floor(abs / base);
     const frac = abs % base;
     body = group(String(whole), currency);
-    if (d > 0 && !(trimZeros && frac === 0)) body += `.${String(frac).padStart(d, '0')}`;
+    // compact figures are summaries: whole units only (₹581, not ₹581.00)
+    if (d > 0 && !compact && !(trimZeros && frac === 0)) body += `.${String(frac).padStart(d, '0')}`;
   }
   const s = showSymbol ? sym(currency) : '';
   const prefix = neg ? '-' : sign && minor > 0 ? '+' : '';

@@ -14,7 +14,7 @@ export function HomePins() {
   return (
     <>
       {pins.includes('comingUp') ? <ComingUp /> : null}
-      <View style={{ paddingHorizontal: layout.gutter }}><ProStrip tab="home" exclude={['aura', 'comingUp']} title="Pinned" /></View>
+      {pins.some((id) => id !== 'aura' && id !== 'comingUp') ? <View style={{ paddingHorizontal: layout.gutter }}><ProStrip tab="home" exclude={['aura', 'comingUp']} title="Pinned" /></View> : null}
     </>
   );
 }

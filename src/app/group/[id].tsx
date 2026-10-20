@@ -205,7 +205,7 @@ export default function GroupDetail() {
               <View key={day.label} style={{ gap: space.sm }}>
                 <Row style={{ justifyContent: 'space-between', paddingHorizontal: 4 }}>
                   <Text v="caps" color={colors.textMuted}>{day.label.toUpperCase()}</Text>
-                  <Text v="small" color={colors.textMuted} style={{ fontVariant: ['tabular-nums'] }}>{formatMoney(day.total, s.group.currency, { trimZeros: true })}</Text>
+                  <Text v="small" color={colors.textMuted} style={{ fontVariant: ['tabular-nums'] }}>{formatMoney(Math.round(day.total / 100) * 100, s.group.currency, { trimZeros: true })}</Text>
                 </Row>
                 <Card pad={false} style={{ paddingHorizontal: space.lg, paddingVertical: space.xs }}>
                   {day.items.map((e, i) => {

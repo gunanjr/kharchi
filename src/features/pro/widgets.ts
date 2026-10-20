@@ -22,7 +22,7 @@ export const WIDGETS: ProWidget[] = [
   { id: 'aura', icon: 'bolt', title: 'Main Character Energy', sub: 'Your aura and rank', href: '/mce', group: 'you' },
   { id: 'challenges', icon: 'flame', title: 'Challenges', sub: 'Short goals with a finish line', href: '/challenges', group: 'you' },
   { id: 'bruh', icon: 'person', title: 'Money profile', sub: 'Persona, Roast or toast', href: '/me', group: 'you' },
-  { id: 'comingUp', icon: 'calendar', title: 'Coming up', sub: 'Bills and renewals this week', href: '/dues', group: 'plan' },
+  { id: 'comingUp', icon: 'calendar', title: 'Bills this week', sub: 'Bills and renewals this week', href: '/dues', group: 'plan' },
   { id: 'dues', icon: 'calendar', title: 'Due dates', sub: 'Never pay late', href: '/dues', group: 'plan' },
   { id: 'radar', icon: 'repeat', title: 'Subscriptions', sub: 'Renewals and price rises', href: '/radar', group: 'plan' },
   { id: 'spaces', icon: 'wallet', title: 'Spaces', sub: 'Side hustle, home, trips', href: '/spaces', group: 'plan' },

@@ -36,7 +36,8 @@ export default function Insights() {
   const q = useQuery((db) => loadInsights(db), []);
   const d = q.data;
   const r = useMemo(() => (d ? buildRangeInsights(d.all, Date.now(), range) : null), [d, range]);
-  const inr = (n: number) => formatMoney(n, 'INR', { trimZeros: true });
+  // summary figures in whole rupees (the headline keeps paise)
+  const inr = (n: number) => formatMoney(Math.round(n / 100) * 100, 'INR', { trimZeros: true });
   const cmp = (n: number) => formatMoney(n, 'INR', { compact: true });
   const name = (id: string | null) => (id ? byId.get(id)?.name ?? 'Other' : 'Uncategorised');
 
@@ -79,7 +80,7 @@ export default function Insights() {
                 </Row>
               ) : <Text v="small" color={colors.onHeroMuted}>Nothing earlier to compare with yet</Text>}
               <View style={{ flexDirection: 'row', gap: space.lg, paddingTop: space.md, borderTopWidth: 1, borderTopColor: colors.onHeroLine }}>
-                <View style={{ flex: 1, gap: 2 }}><Text v="small" color={colors.onHeroMuted}>Income</Text><Money size="md" color={colors.onHero} text={inr(r.frame.income)} /></View>
+                <View style={{ flex: 1, gap: 2 }}><Text v="small" color={colors.onHeroMuted}>Income</Text><Money size="md" color={colors.onHero} text={cmp(r.frame.income)} /></View>
                 <View style={{ flex: 1, gap: 2 }}>
                   <Text v="small" color={colors.onHeroMuted}>{r.frame.income - r.frame.spent >= 0 ? 'Kept' : 'Over income by'}</Text>
                   <Money size="md" color={r.frame.income - r.frame.spent >= 0 ? colors.incomeOnHero : colors.expenseOnHero} text={inr(Math.abs(r.frame.income - r.frame.spent))} />

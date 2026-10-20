@@ -68,7 +68,7 @@ export default function Entries() {
         renderSectionHeader={({ section }) => (
           <Row style={{ justifyContent: 'space-between', paddingTop: space.lg, paddingBottom: space.xs }}>
             <Text v="caps" color={colors.textMuted}>{section.title.toUpperCase()}</Text>
-            <Money size="sm" color={colors.textMuted} text={formatMoney(section.total, 'INR', { trimZeros: true })} />
+            <Money size="sm" color={colors.textMuted} text={formatMoney(Math.round(section.total / 100) * 100, 'INR', { trimZeros: true })} />
           </Row>
         )}
         renderItem={({ item }) => <TxRow tx={item} cat={item.category_id ? byId.get(item.category_id) : null} onPress={() => router.push(`/tx/${item.id}`)} />}

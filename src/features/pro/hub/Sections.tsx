@@ -112,7 +112,7 @@ export function MoneySection({ t, stats, locked }: { t: SeasonTheme; stats: Stat
       <ForecastCard t={t} stats={stats} locked={locked} />
       <Panel t={t}>
         <Caps color={t.accent}>DUE SOON</Caps>
-        {stats.dues.length ? stats.dues.slice(0, 5).map((d, i, a) => <Line key={d.id} t={t} title={d.name} sub={d.inDays <= 0 ? 'Due today' : d.inDays === 1 ? 'Due tomorrow' : `In ${d.inDays} days`} right={d.amount ? mask(money(d.amount)) : undefined} onPress={() => router.push('/dues')} last={i === a.length - 1} />) : <Text style={{ fontFamily: fonts.medium, fontSize: 13, color: t.soft }}>Nothing due this week.</Text>}
+        {stats.dues.length ? stats.dues.slice(0, 5).map((d, i, a) => <Line key={d.id} t={t} title={d.name} sub={d.inDays < 0 ? `Overdue by ${-d.inDays} ${d.inDays === -1 ? 'day' : 'days'}` : d.inDays === 0 ? 'Due today' : d.inDays === 1 ? 'Due tomorrow' : `In ${d.inDays} days`} right={d.amount ? mask(money(d.amount)) : undefined} onPress={() => router.push('/dues')} last={i === a.length - 1} />) : <Text style={{ fontFamily: fonts.medium, fontSize: 13, color: t.soft }}>Nothing due this week.</Text>}
       </Panel>
       <Panel t={t}>
         <Row style={{ justifyContent: 'space-between' }}><Caps color={t.accent}>REPEATING CHARGES</Caps><Text style={{ fontFamily: fonts.brandBlack, fontSize: 14, color: t.ink }}>{mask(`${money(stats.radar.monthlyActive)}/mo`)}</Text></Row>
