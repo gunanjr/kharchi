@@ -5,11 +5,11 @@ import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import { SubScreen, Card, Text, Row, Button, Chip, Press, Segmented, Field, Swatch } from '@/components/ui';
 import { Sheet } from '@/components/Sheet';
-import { Avatar } from '@/features/profile/StatusRow';
+import { Avatar, AVATAR_COLORS } from '@/features/profile/StatusRow';
 import { useStatus } from '@/features/profile/useStatus';
 import { SkeletonList } from '@/components/Feedback';
 import { ToastHost, toast } from '@/components/Toast';
-import { Poster, Big, Hero, PALETTES, type PaletteKey } from '@/components/story/Poster';
+import { Poster, Big, PALETTES, type PaletteKey } from '@/components/story/Poster';
 import { Medal } from '@/components/story/Medal';
 import { useDb, useQuery } from '@/db/provider';
 import { listTransactions } from '@/features/tracker/repo';
@@ -25,7 +25,6 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { fonts, space } from '@/theme/tokens';
 
 const DAY = 86_400_000;
-const AVATARS = ['😎', '🦊', '🐼', '🐯', '🦁', '🐸', '🐧', '🦄', '🌻', '🍀', '🎧', '🏀', '🎨', '📚', '☕', '🚀'];
 const TONES: { key: RoastTone; label: string }[] = [{ key: 'toast', label: 'Toast' }, { key: 'gentle', label: 'Gentle' }, { key: 'playful', label: 'Playful' }, { key: 'savage', label: 'Savage' }];
 
 const StatTile = ({ value, label, ink, soft }: { value: string; label: string; ink: string; soft: string }) => (
@@ -98,7 +97,7 @@ export default function Me() {
         <Avatar size={60} />
         <View style={{ flex: 1 }}>
           <Text v="h3" numberOfLines={1}>{s.profileName || 'Add your name'}</Text>
-          <Text v="small" color={colors.textMuted} numberOfLines={1}>{status.data ? `${status.data.streak} day streak · ${status.data.aura.score} aura` : ' '}</Text>
+          <Text v="small" color={colors.textMuted} numberOfLines={1}>{status.data ? `${status.data.streak} day streak · ${status.data.aura.score} aura · ${status.data.aura.rank.title}` : ' '}</Text>
         </View>
         <Button title="Edit" kind="secondary" size="sm" icon="edit" onPress={() => { setNameText(s.profileName); setEditing(true); }} />
       </Card>
@@ -113,7 +112,6 @@ export default function Me() {
                   <Poster palette={posterKey} label={s.profileName ? `${s.profileName}’s money persona` : 'My money persona'} width={pw} height={Math.round(pw * 1.45)}>
                     {persona?.status === 'ok' && style ? (
                       <View style={{ gap: 10 }}>
-                        <Hero e={persona.emoji} size={84} />
                         <Big color={pal.ink} size={44}>{persona.name}</Big>
                         <Text style={{ fontFamily: fonts.bold, fontSize: 17, color: pal.ink }}>{style.tagline}</Text>
                         <Row style={{ gap: 6, flexWrap: 'wrap' }}>
@@ -194,15 +192,15 @@ export default function Me() {
             <Text v="h3">Edit profile</Text>
             <Field label="Name" value={nameText} onChangeText={setNameText} placeholder="Your name" maxLength={24} />
             <View style={{ gap: space.sm }}>
-              <Text v="small" color={colors.textMuted}>Avatar</Text>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                {['', ...AVATARS].map((e) => (
-                  <Press key={e || 'none'} onPress={() => s.set(db, 'profileEmoji', e)} accessibilityLabel={e || 'First letter'} accessibilityState={{ selected: s.profileEmoji === e }}
-                    style={{ width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surfaceAlt, borderWidth: 2, borderColor: s.profileEmoji === e ? colors.primary : 'transparent' }}>
-                    {e ? <Text style={{ fontSize: 22, lineHeight: 28 }}>{e}</Text> : <Text v="title">{(nameText.trim()[0] ?? 'A').toUpperCase()}</Text>}
+              <Text v="small" color={colors.textMuted}>Avatar colour</Text>
+              <Row style={{ flexWrap: 'wrap', gap: 8 }}>
+                {AVATAR_COLORS.map((c) => (
+                  <Press key={c.bg} onPress={() => s.set(db, 'profileColor', c.bg)} accessibilityLabel="Avatar colour" accessibilityState={{ selected: (s.profileColor || AVATAR_COLORS[0].bg) === c.bg }}
+                    style={{ width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: c.bg, borderWidth: 3, borderColor: (s.profileColor || AVATAR_COLORS[0].bg) === c.bg ? colors.primary : 'transparent' }}>
+                    <Text style={{ fontFamily: fonts.brandBlack, fontSize: 18, color: c.ink }}>{(nameText.trim()[0] ?? 'A').toUpperCase()}</Text>
                   </Press>
                 ))}
-              </View>
+              </Row>
             </View>
             <View style={{ gap: space.sm }}>
               <Text v="small" color={colors.textMuted}>Poster colour</Text>

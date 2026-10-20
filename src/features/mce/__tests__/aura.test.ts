@@ -45,3 +45,21 @@ test('prompts come from real thresholds and skip sensitive categories', () => {
   expect(p.find((x) => x.q === 'I’m weirdly good at')?.a).toContain('settling up');
   expect(promptsFor([], [], NOW, String)).toEqual([]);
 });
+
+describe('moves and week compare', () => {
+  const { movesFor, weekCompare } = jest.requireActual('../aura') as typeof import('../aura');
+  const NOW = new Date(2026, 9, 20, 18).getTime();
+  const m = (n: number) => `₹${n / 100}`;
+  it('offers no-spend before anything is spent, and marks logging done once there is an entry', () => {
+    const fresh = movesFor([], [], NOW, m);
+    expect(fresh.map((x) => x.key)).toEqual(['log', 'nospend', 'settle']);
+    expect(fresh.every((x) => !x.done)).toBe(true);
+    const income = movesFor([{ type: 'income', amount: 100, merchant: null, category_id: null, occurred_at: NOW - 3600_000 }], [NOW - 1000], NOW, m);
+    expect(income.find((x) => x.key === 'log')?.done).toBe(true);
+    expect(income.find((x) => x.key === 'settle')?.done).toBe(true);
+  });
+  it('sums the last 7 days against the 7 before', () => {
+    const days = Array.from({ length: 14 }, (_, i) => ({ day: i, points: i < 7 ? 10 : 20, reasons: [] }));
+    expect(weekCompare(days)).toEqual({ now: 140, before: 70 });
+  });
+});

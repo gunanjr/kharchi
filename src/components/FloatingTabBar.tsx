@@ -11,7 +11,7 @@ import { easeOut } from '@/theme/motion';
 import { haptic } from '@/lib/haptics';
 
 const ICONS: Record<string, [IconName, IconName]> = {
-  index: ['home', 'homeFill'], activity: ['list', 'listFill'], groups: ['users', 'usersFill'], insights: ['chart', 'chartFill'], more: ['menu', 'menuFill'],
+  index: ['home', 'homeFill'], activity: ['list', 'listFill'], groups: ['users', 'usersFill'], insights: ['chart', 'chartFill'], club: ['bolt', 'boltFill'],
 };
 
 /** Floating capsule tab bar: the active tab is an ink pill that slides between items. */
@@ -39,7 +39,8 @@ export function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarP
           const focused = state.index === i;
           const label = (descriptors[route.key].options.title as string) ?? route.name;
           const [off, on] = ICONS[route.name] ?? ['home', 'homeFill'];
-          const color = focused ? colors.onInk : colors.textMuted;
+          // the Pro tab carries the accent even when it is not selected, so it reads as a place of its own
+          const color = focused ? colors.onInk : route.name === 'club' ? colors.primary : colors.textMuted;
           return (
             <Press
               key={route.key}

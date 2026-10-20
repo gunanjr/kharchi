@@ -13,6 +13,16 @@ const DAY = 86_400_000;
 const sod = (t: number) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
 const SKIP = new Set(['cat_rent', 'cat_bills', 'cat_subscriptions', 'cat_health', 'cat_education']);
 
+const usualOf = (sorted: number[]) => (sorted.length >= 10 ? sorted[Math.floor(sorted.length / 2)] : 0);
+
+/** The usual daily spend (median of spending days in the 60 days before the last 30), 0 when there is not enough history. */
+export function usualDaily(txs: Tx[], now: number, days = 30): number {
+  const from = sod(now) - (days - 1) * DAY, baseFrom = from - 60 * DAY;
+  const spend = new Map<number, number>();
+  for (const t of txs) if (t.type === 'expense' && !t.excluded && !SKIP.has(t.category_id ?? '') && t.occurred_at >= baseFrom && t.occurred_at < from) spend.set(sod(t.occurred_at), (spend.get(sod(t.occurred_at)) ?? 0) + t.amount);
+  return usualOf([...spend.values()].sort((a, b) => a - b));
+}
+
 export interface AuraDay { day: number; points: number; reasons: string[] }
 
 /**
@@ -30,7 +40,7 @@ export function auraDays(txs: Tx[], settlements: number[], now: number, days = 3
   for (const t of exp) spend.set(sod(t.occurred_at), (spend.get(sod(t.occurred_at)) ?? 0) + t.amount);
   // the usual daily amount: median of spending days in the 60 days before the window
   const baseline = [...spend.entries()].filter(([d]) => d >= baseFrom && d < from).map(([, v]) => v).sort((a, b) => a - b);
-  const usual = baseline.length >= 10 ? baseline[Math.floor(baseline.length / 2)] : 0;
+  const usual = usualOf(baseline);
   const settled = new Set(settlements.map(sod));
   const out: AuraDay[] = [];
   let run = 0;
@@ -51,14 +61,14 @@ export function auraDays(txs: Tx[], settlements: number[], now: number, days = 3
   return out;
 }
 
-export interface Rank { key: string; title: string; emoji: string; min: number; next: number | null }
+export interface Rank { key: string; title: string; min: number; next: number | null }
 export const RANKS: Rank[] = [
-  { key: 'npc', title: 'NPC era', emoji: '🫥', min: 0, next: 20 },
-  { key: 'side', title: 'Side character', emoji: '🙂', min: 20, next: 40 },
-  { key: 'support', title: 'Supporting role', emoji: '😎', min: 40, next: 60 },
-  { key: 'main', title: 'Main character', emoji: '🌟', min: 60, next: 80 },
-  { key: 'armor', title: 'Plot armor', emoji: '🛡️', min: 80, next: 95 },
-  { key: 'boss', title: 'Final boss', emoji: '👑', min: 95, next: null },
+  { key: 'npc', title: 'NPC era', min: 0, next: 20 },
+  { key: 'side', title: 'Side character', min: 20, next: 40 },
+  { key: 'support', title: 'Supporting role', min: 40, next: 60 },
+  { key: 'main', title: 'Main character', min: 60, next: 80 },
+  { key: 'armor', title: 'Plot armor', min: 80, next: 95 },
+  { key: 'boss', title: 'Final boss', min: 95, next: null },
 ];
 
 /** Aura score 0 to 100 from the last 30 days (max possible is 60 a day; 35 a day on average is a perfect score). */
@@ -70,7 +80,7 @@ export function auraScore(days: AuraDay[]): { score: number; rank: Rank; toNext:
 }
 
 /* ---------- era ---------- */
-export interface Era { key: string; title: string; emoji: string; line: string }
+export interface Era { key: string; title: string; line: string }
 const FOOD = new Set(['cat_food']);
 const TRAVEL = new Set(['cat_travel', 'cat_transport']);
 const FUN = new Set(['cat_entertainment', 'cat_shopping']);
@@ -85,13 +95,13 @@ export function eraFor(txs: Tx[], year: number, month: number): Era | null {
   const total = cur.reduce((a, t) => a + t.amount, 0) || 1;
   const share = (set: Set<string>) => cur.filter((t) => set.has(t.category_id ?? '')).reduce((a, t) => a + t.amount, 0) / total;
   const weekend = cur.filter((t) => [0, 6].includes(new Date(t.occurred_at).getDay())).reduce((a, t) => a + t.amount, 0) / total;
-  if (prev > 0 && total <= prev * 0.8) return { key: 'saving', title: 'Saving Arc', emoji: '📈', line: `${Math.round((1 - total / prev) * 100)}% less than last month. Character development.` };
-  if (share(TRAVEL) >= 0.35) return { key: 'travel', title: 'Main Character Travel Arc', emoji: '✈️', line: 'Out there living the plot.' };
-  if (share(FOOD) >= 0.4) return { key: 'cafe', title: 'Café Era', emoji: '☕', line: 'Every plan starts with “let’s grab a coffee”.' };
-  if (prev > 0 && total >= prev * 1.25) return { key: 'treat', title: 'Treat Yourself Era', emoji: '🛍️', line: 'You earned it. Probably.' };
-  if (share(FUN) >= 0.4) return { key: 'glow', title: 'Glow-up Era', emoji: '✨', line: 'Investing in the main character.' };
-  if (weekend >= 0.5) return { key: 'weekend', title: 'Weekend Era', emoji: '🎉', line: 'Monday to Friday is just the trailer.' };
-  return { key: 'soft', title: 'Soft Life Era', emoji: '🌿', line: 'Calm money, no drama.' };
+  if (prev > 0 && total <= prev * 0.8) return { key: 'saving', title: 'Saving Arc', line: `${Math.round((1 - total / prev) * 100)}% less than last month. Character development.` };
+  if (share(TRAVEL) >= 0.35) return { key: 'travel', title: 'Main Character Travel Arc', line: 'Out there living the plot.' };
+  if (share(FOOD) >= 0.4) return { key: 'cafe', title: 'Café Era', line: 'Every plan starts with “let’s grab a coffee”.' };
+  if (prev > 0 && total >= prev * 1.25) return { key: 'treat', title: 'Treat Yourself Era', line: 'You earned it. Probably.' };
+  if (share(FUN) >= 0.4) return { key: 'glow', title: 'Glow-up Era', line: 'Investing in the main character.' };
+  if (weekend >= 0.5) return { key: 'weekend', title: 'Weekend Era', line: 'Monday to Friday is just the trailer.' };
+  return { key: 'soft', title: 'Soft Life Era', line: 'Calm money, no drama.' };
 }
 
 /* ---------- prompts ---------- */
@@ -108,16 +118,41 @@ export function promptsFor(txs: Tx[], settlements: number[], now: number, money:
   const logged = new Set(txs.filter((t) => t.occurred_at >= from).map((t) => sod(t.occurred_at)));
   const spendDays = new Set(exp.map((t) => sod(t.occurred_at)));
   const noSpend = [...logged].filter((d) => !spendDays.has(d)).length;
-  if (noSpend >= 3) out.push({ q: 'Green flag', a: `${noSpend} no-spend days this month 🌱` });
+  if (noSpend >= 3) out.push({ q: 'Green flag', a: `${noSpend} no-spend days this month.` });
   const wd = new Array(7).fill(0);
   for (const t of exp) wd[new Date(t.occurred_at).getDay()] += t.amount;
   const names = ['Sundays', 'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays'];
   const max = Math.max(...wd);
   if (max > 0) out.push({ q: 'My most expensive day', a: `${names[wd.indexOf(max)]}. Don’t ask.` });
   const settledRecent = settlements.filter((t) => t >= from).length;
-  if (settledRecent >= 1) out.push({ q: 'I’m weirdly good at', a: `settling up. ${settledRecent} paid back this month 🤝` });
+  if (settledRecent >= 1) out.push({ q: 'I’m weirdly good at', a: `settling up. ${settledRecent} paid back this month.` });
   else if (logged.size >= 20) out.push({ q: 'I’m weirdly good at', a: `logging every spend. ${logged.size} days this month.` });
   const small = exp.filter((t) => t.amount <= 20000).length;
   if (small >= 10) out.push({ q: 'A small thing that makes me happy', a: `${small} little treats under ${money(20000)}.` });
   return out.slice(0, 4);
+}
+
+/* ---------- today's moves ---------- */
+export interface Move { key: string; title: string; sub: string; points: number; done: boolean }
+/**
+ * What can still earn aura today, and what already did. "No-spend" and "under your usual" are mutually exclusive, so
+ * only the one still reachable is shown. Pure: same rules as auraDays.
+ */
+export function movesFor(txs: Tx[], settlements: number[], now: number, money: (n: number) => string): Move[] {
+  const today = sod(now);
+  const todayTx = txs.filter((t) => sod(t.occurred_at) === today);
+  const spent = todayTx.filter((t) => t.type === 'expense' && !t.excluded && !SKIP.has(t.category_id ?? '')).reduce((a, t) => a + t.amount, 0);
+  const usual = usualDaily(txs, now);
+  const out: Move[] = [{ key: 'log', title: 'Log your day', sub: 'Any entry counts, even a no-spend check-in', points: 10, done: todayTx.length > 0 }];
+  if (spent === 0) out.push({ key: 'nospend', title: 'Keep it a no-spend day', sub: 'Log something with no spending today', points: 15, done: todayTx.length > 0 });
+  else if (usual > 0) out.push({ key: 'under', title: `Stay under ${money(usual)}`, sub: `Your usual day. ${spent < usual ? `${money(usual - spent)} to spare` : 'Over today, there is always tomorrow'}`, points: 10, done: spent < usual });
+  out.push({ key: 'settle', title: 'Settle a debt', sub: 'Pay someone back, or mark a payment as settled', points: 20, done: settlements.some((t) => sod(t) === today) });
+  return out;
+}
+
+/** This week's aura against last week's (sum of the last 7 days vs the 7 before). */
+export function weekCompare(days: AuraDay[]): { now: number; before: number } {
+  const n = days.length;
+  const sum = (a: number, b: number) => days.slice(Math.max(0, a), Math.max(0, b)).reduce((x, d) => x + d.points, 0);
+  return { now: sum(n - 7, n), before: sum(n - 14, n - 7) };
 }

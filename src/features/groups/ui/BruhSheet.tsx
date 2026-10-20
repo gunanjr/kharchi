@@ -6,7 +6,6 @@ import * as Sharing from 'expo-sharing';
 import { Sheet } from '@/components/Sheet';
 import { BrandMark } from '@/components/Wordmark';
 import { QrCode } from '@/components/QrCode';
-import Svg, { Defs, LinearGradient as SvgGradient, Rect as SvgRect, Stop } from 'react-native-svg';
 import { Icon } from '@/components/Icon';
 import { toast } from '@/components/Toast';
 import { Button, Card, Chip, Field, Press, Row, Text } from '@/components/ui';
@@ -59,20 +58,7 @@ function BumpCard({ input, upiId, tone, theme = 'midnight', sticker = '' }: { in
   const chips = [...items, ...(input.reason && !items.includes(input.reason) ? [input.reason] : []), ...(input.daysOwed && input.daysOwed >= 2 ? [`${input.daysOwed} days`] : [])].slice(0, 4);
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
   return (
-    <View style={{ borderRadius: 32, overflow: 'hidden', backgroundColor: th.base }}>
-      <Svg width="100%" height="100%" style={{ position: 'absolute' }} preserveAspectRatio="none" viewBox="0 0 100 100">
-        <Defs>
-          <SvgGradient id={`bump-${theme}`} x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor={th.from} />
-            <Stop offset="1" stopColor={th.to} />
-          </SvgGradient>
-          <SvgGradient id="o" x1="0" y1="0" x2="1" y2="0">
-            <Stop offset="0" stopColor="#FF9A2E" />
-            <Stop offset="1" stopColor="#FE590C" />
-          </SvgGradient>
-        </Defs>
-        <SvgRect x="0" y="0" width="100" height="100" fill={`url(#bump-${theme})`} />
-      </Svg>
+    <View style={{ borderRadius: 32, overflow: 'hidden', backgroundColor: th.to }}>
       <View style={{ padding: 22, gap: 18 }}>
         <Row style={{ justifyContent: 'space-between' }}>
           <Row style={{ gap: 8 }}>

@@ -6,7 +6,7 @@ import { Icon } from '@/components/Icon';
 import { BrandMark, Wordmark } from '@/components/Wordmark';
 import { toast } from '@/components/Toast';
 import { QrCode } from '@/components/QrCode';
-import Svg, { Circle as SvgCircle, Defs, LinearGradient as SvgGradient, Rect as SvgRect, Stop } from 'react-native-svg';
+import Svg, { Circle as SvgCircle } from 'react-native-svg';
 import { isUpiId } from '@/features/groups/nudge';
 import { useDb, bumpData } from '@/db/provider';
 import { useRestoreFlow } from '@/features/vault/ui/useRestoreFlow';
@@ -34,21 +34,9 @@ function Float({ children, style }: { children: React.ReactNode; delay?: number;
 }
 
 /** The coloured stage every page's visual sits on. */
-function Panel({ from, to, children }: { from: string; to: string; children: React.ReactNode }) {
-  const gid = `pg${from.slice(1)}${to.slice(1)}`; // unique per colour pair: shared ids clash when several pages render
+function Panel({ to, children }: { from?: string; to: string; children: React.ReactNode }) {
   return (
-    <View style={{ width: '100%', flex: 1, borderRadius: 36, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 20 }}>
-      <Svg width="100%" height="100%" style={{ position: 'absolute' }} preserveAspectRatio="none" viewBox="0 0 100 100">
-        <Defs>
-          <SvgGradient id={gid} x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor={from} />
-            <Stop offset="1" stopColor={to} />
-          </SvgGradient>
-        </Defs>
-        <SvgRect x="0" y="0" width="100" height="100" fill={`url(#${gid})`} />
-        <SvgCircle cx="88" cy="10" r="22" fill="#FFFFFF" opacity="0.07" />
-        <SvgCircle cx="6" cy="94" r="18" fill="#FFFFFF" opacity="0.06" />
-      </Svg>
+    <View style={{ width: '100%', flex: 1, borderRadius: 36, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 20, backgroundColor: to }}>
       {children}
     </View>
   );

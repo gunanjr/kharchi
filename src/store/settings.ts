@@ -37,8 +37,9 @@ export type Settings = {
   sharedCode: boolean; // shared own code at least once (OG badge and stickers)
   hideAmounts: boolean; // masks every amount (for public places); the eye on Home
   profileName: string; // shown on the profile and on shared posters ('' = none)
-  profileEmoji: string; // the avatar on Home and the profile ('' = first letter of the name)
+  profileColor: string; // avatar colour behind the first letter of the name ('' = ink)
   posterPalette: string; // '' = the persona's own colours, or a palette key from components/story/Poster
+  proPins: Record<'home' | 'insights' | 'groups', string[]>; // Pro widgets pinned to other tabs (ids from features/pro/widgets)
 };
 
 export const defaultSettings: Settings = {
@@ -76,8 +77,9 @@ export const defaultSettings: Settings = {
   friendOffer: '',
   sharedCode: false,
   profileName: '',
-  profileEmoji: '',
+  profileColor: '',
   posterPalette: '',
+  proPins: { home: ['aura', 'comingUp'], insights: ['radar', 'deepdive', 'dues', 'wrappedYear'], groups: ['spaces', 'bruh', 'reimburse'] },
 };
 
 type Store = Settings & {

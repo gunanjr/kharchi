@@ -4,6 +4,7 @@ export const en = {
   'tab.groups': 'Groups',
   'tab.insights': 'Insights',
   'tab.more': 'More',
+  'tab.pro': 'Pro',
   'home.spentThisMonth': 'Spent this month',
   'home.needsInput': 'Needs your input',
   'home.recent': 'Recent',

@@ -9,7 +9,7 @@ const ITEMS = [
   ['activity', 'tab.activity'],
   ['groups', 'tab.groups'],
   ['insights', 'tab.insights'],
-  ['more', 'tab.more'],
+  ['club', 'tab.pro'],
 ] as const;
 
 export default function TabsLayout() {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { Text, isFigure } from '@/components/ui';
 import { BrandMark } from '@/components/Wordmark';
 import { fonts } from '@/theme/tokens';
@@ -21,17 +20,9 @@ export const PALETTES: Record<PaletteKey, { from: string; to: string; ink: strin
   sunshine: { from: '#FFE36A', to: '#FFB800', ink: '#1F1300', soft: 'rgba(31,19,0,0.66)', accent: '#FF2E7E', deco: '#FFF3B0' },
 };
 
-/** Just the gradient. Deliberately plain: clutter makes a card feel generated, and people don't post it. */
+/** A flat colour. No gradients or decoration: plain cards look designed, busy ones look generated. */
 function Deco({ k, w, h }: { k: PaletteKey; w: number; h: number }) {
-  const p = PALETTES[k];
-  return (
-    <Svg width={w} height={h} style={{ position: 'absolute' }}>
-      <Defs>
-        <LinearGradient id={`pg-${k}`} x1="0" y1="0" x2="1" y2="1"><Stop offset="0" stopColor={p.from} /><Stop offset="1" stopColor={p.to} /></LinearGradient>
-      </Defs>
-      <Rect x={0} y={0} width={w} height={h} fill={`url(#pg-${k})`} />
-    </Svg>
-  );
+  return <View style={{ position: 'absolute', width: w, height: h, backgroundColor: PALETTES[k].to }} />;
 }
 
 /** A poster: palette background, decoration, BruhMe header and footer. Children are the content. */

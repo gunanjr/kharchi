@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Screen, Header, Text, Card, Enter, Press, SectionHeader, IconTile, Button } from '@/components/ui';
+import { Screen, Header, Text, Card, Enter, Press, SectionHeader, IconTile, Button, RoundButton } from '@/components/ui';
 import { Wordmark } from '@/components/Wordmark';
 import { PrivateRow } from '@/components/PrivateRow';
 import { splitPrivate, usePrivateUnlock } from '@/features/privacy/private';
@@ -17,7 +17,7 @@ import { BudgetStrip } from '@/features/tracker/ui/BudgetStrip';
 import { loadCompleteDemo } from '@/features/dev/loadDemo';
 import { PulseWidgets } from '@/features/tracker/ui/PulseWidgets';
 import { Avatar, StatusRow, Chip as StatusChip } from '@/features/profile/StatusRow';
-import { ComingUp } from '@/features/profile/ComingUp';
+import { HomePins } from '@/features/pro/HomePins';
 import { ToastHost } from '@/components/Toast';
 import { useDb, useQuery, bumpData } from '@/db/provider';
 import { listTransactions, totalsBetween } from '@/features/tracker/repo';
@@ -32,7 +32,7 @@ export default function Home() {
   const spaces = useSettings((st) => st.spaces);
   const unlockedPrivate = usePrivateUnlock((st) => st.unlocked);
   const activeSpaceId = useSettings((st) => st.activeSpace);
-  const spaceName = activeSpaceId ? (() => { const x = spaces.find((y) => y.id === activeSpaceId); return x ? `${x.emoji} ${x.name}` : '🙂 Personal'; })() : '🙂 Personal';
+  const spaceName = activeSpaceId ? (() => { const x = spaces.find((y) => y.id === activeSpaceId); return x ? x.name : 'Personal'; })() : 'Personal';
   const router = useRouter();
   const db = useDb();
   const [loadingDemo, setLoadingDemo] = useState(false);
@@ -61,7 +61,7 @@ export default function Home() {
         contentContainerStyle={{ paddingBottom: 168, gap: space.xl }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
       >
-        <Header title="BruhMe" titleNode={<Wordmark height={38} />} subtitle={new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })} right={<Avatar />} />
+        <Header title="BruhMe" titleNode={<Wordmark height={38} />} subtitle={new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })} right={<View style={{ flexDirection: 'row', gap: space.sm }}><RoundButton icon="settings" label="Settings" onPress={() => router.push('/settings')} /><Avatar /></View>} />
         <View style={{ marginTop: -space.md }}>
           <StatusRow lead={spaces.length > 0 ? (
             <StatusChip onPress={() => router.push('/spaces')} label={`Space: ${spaceName}. Tap to switch`} tint={colors.surfaceAlt}>
@@ -80,7 +80,7 @@ export default function Home() {
 
             <BillsCard />
             <PendingStack />
-            <ComingUp />
+            <HomePins />
             <PulseWidgets />
             <BudgetStrip />
 

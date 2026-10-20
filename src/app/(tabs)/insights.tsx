@@ -56,13 +56,15 @@ export default function Insights() {
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingTop: space.sm, gap: space.xl, paddingBottom: 168 }}>
           <Segmented options={(['1M', '3M', '6M', '1Y'] as Range[]).map((k) => ({ key: k, label: (k === '6M' || k === '1Y') && showPro() && !isPro ? `${SHORT[k]} 🔒` : SHORT[k] }))} value={range} onChange={(k) => { if ((k === '6M' || k === '1Y') && showPro() && !isPro) { router.push('/pro'); return; } setRange(k); setMonthSel(null); }} />
 
-          <ProStrip tools={[
-            { icon: 'chart', title: 'Deep dive', sub: 'Calendar and month compare', href: '/deep-dive' },
-            { icon: 'repeat', title: 'Subscriptions', sub: 'Renewals and price rises', href: '/radar' },
-            { icon: 'calendar', title: 'Due dates', sub: 'Never pay a bill late', href: '/dues' },
-            { icon: 'ribbon', title: 'Yearly Wrapped', sub: 'Your year as a story', href: { pathname: '/wrapped', params: { tab: 'year' } } },
-            { icon: 'receipt', title: 'Tax totals', sub: 'Yearly totals for your CA', href: '/tax' },
-          ]} />
+          <Row style={{ gap: space.sm }}>
+            {([['ribbon', 'Wrapped', { pathname: '/wrapped', params: { tab: 'month', off: '1' } }], ['target', 'Goals', '/goals'], ['wallet', 'Budgets', '/budgets']] as const).map(([icon, title, href]) => (
+              <Press key={title} onPress={() => router.push(href)} accessibilityLabel={title} style={{ flex: 1, alignItems: 'center', gap: 6, paddingVertical: space.md, borderRadius: 20, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border }}>
+                <IconTile icon={icon} size={36} />
+                <Text v="small" style={{ fontFamily: 'Geist_600SemiBold' }}>{title}</Text>
+              </Press>
+            ))}
+          </Row>
+          <ProStrip tab="insights" />
 
           {/* 1. The headline */}
           <Enter i={0}>

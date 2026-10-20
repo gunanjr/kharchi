@@ -1,9 +1,9 @@
 import React from 'react';
-import { ScrollView, Share, Switch, View } from 'react-native';
+import { Share, Switch, View } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import * as LocalAuthentication from 'expo-local-authentication';
 import Constants from 'expo-constants';
-import { Screen, Header, Enter, Group, ListRow, IconTile, Segmented, Row, Swatch, Text, Card } from '@/components/ui';
+import { SubScreen, Enter, Group, ListRow, IconTile, Segmented, Row, Swatch, Text, Card } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { useIsPro } from '@/features/pro/store';
 import { showPro } from '@/features/pro/flags';
@@ -13,13 +13,14 @@ import type { IconName } from '@/components/Icon';
 import { useDb } from '@/db/provider';
 import { useSettings } from '@/store/settings';
 import { useTheme } from '@/theme/ThemeProvider';
-import { space, layout } from '@/theme/tokens';
+import { space } from '@/theme/tokens';
 import { useT } from '@/i18n';
 import { appConfig } from '@/config/app';
-import { appVariant, isExpoGo } from '@/features/native/module';
+import { appVariant } from '@/features/native/module';
 import { toast, ToastHost } from '@/components/Toast';
 
-export default function More() {
+/** Settings: preferences, capture, data. Opened from the gear on Home and the Pro tab; features live in the tabs. */
+export default function Settings() {
   const db = useDb();
   const t = useT();
   const s = useSettings();
@@ -39,24 +40,21 @@ export default function More() {
   }
 
   return (
-    <Screen>
-      <Header title={t('settings.title')} subtitle={`${appConfig.appName}${isExpoGo ? ' · Expo Go' : ''}`} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingTop: space.sm, gap: space.xl, paddingBottom: 168 }}>
+    <SubScreen title={t('settings.title')}>
+      <View style={{ gap: space.xl }}>
         {showPro() ? <Enter i={0}>
           <Card onPress={() => router.push('/pro')} accessibilityLabel="BruhMe Pro" tone="ink" style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
             <BrandMark size={40} />
             <View style={{ flex: 1 }}>
-              <Text v="title" color={colors.onHero}>{isPro ? 'Pro tools' : 'BruhMe Pro'}</Text>
-              <Text v="small" color={colors.onHeroMuted}>{isPro ? 'Your Pro tools: Main Character Energy, Vault, Spaces and 10 more' : 'Main Character Energy, Vault, Spaces and 10 more tools'}</Text>
+              <Text v="title" color={colors.onHero}>{isPro ? 'Your membership' : 'BruhMe Pro'}</Text>
+              <Text v="small" color={colors.onHeroMuted}>{isPro ? 'Your plan, restore and manage subscription' : 'Main Character Energy, Vault, Spaces and 10 more tools'}</Text>
             </View>
             <Icon name="chevron" size={18} color={colors.onHeroMuted} />
           </Card>
         </Enter> : null}
         <Enter i={0}>
           <Group title="Money">
-            {item('Goals', 'Save for a trip, a phone or a rainy day', 'target', '/goals')}
-            {item('Wrapped', 'Your week and month as a story, plus badges', 'ribbon', '/wrapped')}
-            {item('Budgets', 'Set a monthly limit and see how close you are', 'target', '/budgets')}
+            {item('Profile', 'Name, avatar and poster colour', 'person', '/me')}
             {item('Categories', 'Add or edit icons and colours', 'tag', '/settings/categories')}
             {item('Accounts', 'Cash, bank, UPI, cards, wallets', 'wallet', '/settings/accounts')}
             {item('Recurring', 'Rent, subscriptions, SIPs', 'repeat', '/settings/recurring')}
@@ -105,8 +103,8 @@ export default function More() {
             <Text v="small" color={colors.textSubtle}>Version {Constants.expoConfig?.version ?? '1.0.0'} · your records stay on this phone</Text>
           </View>
         </Enter>
-      </ScrollView>
+      </View>
       <ToastHost />
-    </Screen>
+    </SubScreen>
   );
 }

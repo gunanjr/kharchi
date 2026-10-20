@@ -7,7 +7,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { SubScreen, Card, Text, Row, Button, Segmented, Chip } from '@/components/ui';
 import { SkeletonList } from '@/components/Feedback';
 import { ToastHost, toast } from '@/components/Toast';
-import { Poster, Big, Hero, Num, PALETTES, type PaletteKey } from '@/components/story/Poster';
+import { Poster, Big, Num, PALETTES, type PaletteKey } from '@/components/story/Poster';
 import { Medal } from '@/components/story/Medal';
 import { useDb, useQuery } from '@/db/provider';
 import { listTransactions, listCategories } from '@/features/tracker/repo';
