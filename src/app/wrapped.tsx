@@ -78,6 +78,7 @@ export default function Wrapped() {
   const [yearOff, setYearOff] = useState(0);
   const shot = useRef<React.ElementRef<typeof ViewShot>>(null);
   const weekly = useSettings((s) => s.weeklySummary);
+  const sharedCode = useSettings((s) => s.sharedCode);
   const set = useSettings((s) => s.set);
   const q = useQuery(async (x) => ({ txs: await listTransactions(x, { from: now - 3 * 366 * 86_400_000, to: now + 1 }), cats: await listCategories(x), sets: await listSettlements(x, null).then(async (a) => a) }), []);
   const catName = (id: string | null) => q.data?.cats.find((c) => c.id === id)?.name ?? 'Uncategorised';
@@ -90,7 +91,7 @@ export default function Wrapped() {
     if (tab === 'year') { const w = yearWindow(d.getFullYear() - yearOff); return { r: recap(txs, w), title: `Your ${w.label}` }; }
     return null;
   })();
-  const earned = q.data ? milestones(q.data.txs, { settlements: q.data.sets.map((s) => s.occurred_at) }, now) : [];
+  const earned = q.data ? milestones(q.data.txs, { settlements: q.data.sets.map((s) => s.occurred_at), sharedCode }, now) : [];
 
   async function share() {
     try {

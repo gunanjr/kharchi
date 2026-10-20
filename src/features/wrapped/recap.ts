@@ -99,9 +99,10 @@ export function longestStreak(txs: Tx[]): { days: number; at: number } {
 }
 
 /** Milestones the user has earned. Earned only, never taken away, no negative ones. */
-export function milestones(txs: Tx[], extra: { settlements?: number[] } = {}, now = Date.now()): Milestone[] {
+export function milestones(txs: Tx[], extra: { settlements?: number[]; sharedCode?: boolean } = {}, now = Date.now()): Milestone[] {
   const all = [...txs].sort((a, b) => a.occurred_at - b.occurred_at);
   const out: Milestone[] = [];
+  if (extra.sharedCode) out.push({ key: 'og', title: 'OG Bruh', detail: 'Shared BruhMe with a friend', emoji: '👑', earnedAt: now });
   if (!all.length) return out;
   out.push({ key: 'first', title: 'First entry', detail: 'You started tracking', emoji: '🌱', earnedAt: all[0].occurred_at });
   for (const n of [100, 500, 1000]) if (all.length >= n) out.push({ key: `entries-${n}`, title: `${n} entries`, detail: `${n} things logged`, emoji: n >= 1000 ? '🏆' : n >= 500 ? '🥇' : '💯', earnedAt: all[n - 1].occurred_at });

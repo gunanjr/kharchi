@@ -16,6 +16,8 @@ import { useTheme } from '@/theme/ThemeProvider';
 import type { TxType } from '@/domain/types';
 import { readTags } from '@/features/tracker/tags';
 import { setExcluded } from '@/features/tracker/exclude';
+import { splitPrivate, usePrivateUnlock } from '@/features/privacy/private';
+import { PrivateRow } from '@/components/PrivateRow';
 
 export default function Activity() {
   const router = useRouter();
@@ -29,16 +31,17 @@ export default function Activity() {
   React.useEffect(() => { setCat(params.cat); setSearch(params.q ?? ''); }, [params.cat, params.q]);
   const [tag, setTag] = useState<string | undefined>();
   const [onlyOut, setOnlyOut] = useState(false);
+  const unlockedPrivate = usePrivateUnlock((st) => st.unlocked);
   const q = useQuery((db) => listTransactions(db, { search: tag ? `${search} ${tag}`.trim() : search, type, categoryId: cat, limit: 400, includeExcluded: true, onlyExcluded: onlyOut }), [search, type, cat, tag, onlyOut]);
   const tags = useMemo(() => {
     const n = new Map<string, number>();
     for (const t of q.data ?? []) for (const g of readTags(t.tags)) n.set(g, (n.get(g) ?? 0) + 1);
     return [...n.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([g]) => g);
-  }, [q.data]);
+  }, [q.data, unlockedPrivate]);
 
   const sections = useMemo(() => {
     const map = new Map<number, { title: string; data: NonNullable<typeof q.data>; total: number }>();
-    for (const tx of q.data ?? []) {
+    for (const tx of splitPrivate(q.data ?? [], unlockedPrivate).visible) {
       const k = startOfDay(tx.occurred_at);
       const s = map.get(k) ?? { title: formatDay(tx.occurred_at), data: [], total: 0 };
       s.data.push(tx);
@@ -66,6 +69,7 @@ export default function Activity() {
       {q.loading && !q.data ? <SkeletonList /> : null}
       <FlatList
         data={sections}
+        ListHeaderComponent={<View style={{ paddingHorizontal: layout.gutter }}><PrivateRow hidden={splitPrivate(q.data ?? [], unlockedPrivate).hidden} /></View>}
         keyExtractor={(s) => s.title}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"

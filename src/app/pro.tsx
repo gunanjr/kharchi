@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
-import { Linking, View } from 'react-native';
-import { SubScreen, Card, Text, Button, Row, Press } from '@/components/ui';
+import React, { useEffect, useState } from 'react';
+import { Linking, Share, View } from 'react-native';
+import * as Crypto from 'expo-crypto';
+import { SubScreen, Card, Text, Button, Row, Press, Field } from '@/components/ui';
+import { useDb } from '@/db/provider';
+import { useSettings } from '@/store/settings';
+import { newFriendCode, parseFriendCode } from '@/features/referral/referral';
 import { Icon, type IconName } from '@/components/Icon';
 import { ToastHost, toast } from '@/components/Toast';
 import { BrandMark } from '@/components/Wordmark';
@@ -30,6 +34,24 @@ export default function Pro() {
   const pro = useIsPro();
   const [plan, setPlan] = useState<ProductId>(PRODUCTS.yearly);
   const [busy, setBusy] = useState(false);
+  const db = useDb();
+  const myCode = useSettings((s) => s.friendCode);
+  const offer = useSettings((s) => s.friendOffer);
+  const setSetting = useSettings((s) => s.set);
+  const [codeText, setCodeText] = useState('');
+  useEffect(() => { if (!myCode) setSetting(db, 'friendCode', newFriendCode((n) => Crypto.getRandomBytes(n))); }, [myCode, db, setSetting]);
+  async function applyCode() {
+    const r = parseFriendCode(codeText, myCode);
+    if (!r.ok) return toast(r.why);
+    await setSetting(db, 'friendOffer', r.code);
+    toast('Friend code applied');
+  }
+  async function shareCode() {
+    try {
+      await Share.share({ message: `I use BruhMe to track spending and split bills. Use my code ${myCode} to get 30% off BruhMe Pro for your first year.` });
+      if (!useSettings.getState().sharedCode) { await setSetting(db, 'sharedCode', true); toast('Thanks for sharing! OG Bruh badge and stickers unlocked.'); }
+    } catch { /* closed the share sheet */ }
+  }
 
   async function buy() {
     setBusy(true);
@@ -88,6 +110,28 @@ export default function Pro() {
           </Text>
         </>
       ) : null}
+
+      <Card style={{ gap: space.md }}>
+        {offer ? (
+          <Text v="small" color={colors.income} style={{ fontFamily: fonts.semibold }}>Friend code {offer} applied: 30% off your first year (₹699 instead of ₹999), shown by Google Play at checkout.</Text>
+        ) : (
+          <>
+            <Text v="title">Have a friend code?</Text>
+            <Row style={{ gap: space.sm }}>
+              <View style={{ flex: 1 }}><Field value={codeText} onChangeText={setCodeText} placeholder="BRUH-7Q4K" autoCapitalize="characters" autoCorrect={false} /></View>
+              <Button title="Apply" kind="secondary" size="sm" disabled={!codeText.trim()} onPress={applyCode} />
+            </Row>
+          </>
+        )}
+        <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <View style={{ flex: 1 }}>
+            <Text v="small" color={colors.textMuted}>Your code</Text>
+            <Text v="title">{myCode || '…'}</Text>
+          </View>
+          <Button title="Share" icon="share" size="sm" kind="secondary" onPress={shareCode} disabled={!myCode} />
+        </Row>
+        <Text v="small" color={colors.textMuted}>Friends who use your code get 30% off their first year. You get the OG Bruh badge and an exclusive sticker pack.</Text>
+      </Card>
 
       <Row style={{ justifyContent: 'center', gap: space.lg }}>
         <Button title="Restore purchases" kind="ghost" size="sm" onPress={restore} />

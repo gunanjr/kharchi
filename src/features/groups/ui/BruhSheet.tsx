@@ -20,6 +20,7 @@ import { fillLine, FREE_TONES, isUpiId, linesIn, nudgeMessage, suggestTone, TONE
 import { useRouter } from 'expo-router';
 import { isProNow, useIsPro } from '@/features/pro/store';
 import { showPro } from '@/features/pro/flags';
+import { OG_STICKERS } from '@/features/referral/referral';
 
 function Ring({ delay }: { delay: number }) {
   const reduce = useReducedMotion();
@@ -136,6 +137,7 @@ export function BruhSheet({ input: given, onClose }: { input: NudgeInput | Nudge
   const savedLines = useSettings((s) => s.savedLines);
   const theme = useSettings((s) => s.bumpTheme);
   const sticker = useSettings((s) => s.bumpSticker);
+  const sharedCode = useSettings((s) => s.sharedCode);
   const [variant, setVariant] = useState(0);
   const [upi, setUpi] = useState('');
   const [mode, setMode] = useState<'compose' | 'bumping' | 'card'>('compose');
@@ -230,7 +232,7 @@ export function BruhSheet({ input: given, onClose }: { input: NudgeInput | Nudge
           ) : mode === 'card' ? (
             <>
               <ViewShot ref={shot} options={{ format: 'png', quality: 1 }}>
-                <BumpCard input={input} upiId={upiOk} tone={tone} theme={pro ? theme : 'midnight'} sticker={pro ? sticker : ''} />
+                <BumpCard input={input} upiId={upiOk} tone={tone} theme={pro ? theme : 'midnight'} sticker={pro || (sharedCode && OG_STICKERS.includes(sticker)) ? sticker : ''} />
               </ViewShot>
               {upiOk ? (
                 <Card tone="inset" style={{ gap: 6 }}>
@@ -255,7 +257,8 @@ export function BruhSheet({ input: given, onClose }: { input: NudgeInput | Nudge
                     ))}
                   </Row>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.sm }}>
-                    <Chip label="No sticker" selected={!sticker || !pro} onPress={() => pro && setSetting(db, 'bumpSticker', '')} />
+                    <Chip label="No sticker" selected={!sticker || (!pro && !OG_STICKERS.includes(sticker))} onPress={() => setSetting(db, 'bumpSticker', '')} />
+                    {sharedCode ? OG_STICKERS.map((e) => <Chip key={e} label={e} selected={sticker === e} onPress={() => setSetting(db, 'bumpSticker', e)} />) : null}
                     {STICKERS.map((e) => <Chip key={e} label={pro ? e : `${e} 🔒`} selected={pro && sticker === e} onPress={() => (pro ? setSetting(db, 'bumpSticker', e) : goPro())} />)}
                   </ScrollView>
                 </View>

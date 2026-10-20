@@ -17,6 +17,9 @@ import { formatMoney, parseAmountToMinor } from '@/domain/money';
 import { formatDay, formatTime } from '@/lib/date';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useSettings } from '@/store/settings';
+import { isPrivate, PRIVATE_TAG } from '@/features/privacy/private';
+import { showPro } from '@/features/pro/flags';
+import { useIsPro } from '@/features/pro/store';
 import { layout, space } from '@/theme/tokens';
 import { parseTags, readTags } from '@/features/tracker/tags';
 import { BrandIcon } from '@/features/brands/BrandIcon';
@@ -33,6 +36,7 @@ export default function TxDetail() {
   const q = useQuery((d) => getTransaction(d, id), [id]);
   const [editing, setEditing] = useState(false);
   const spaces = useSettings((st) => st.spaces);
+  const isPro = useIsPro();
   const [iconOpen, setIconOpen] = useState(false);
   const photo = useMerchantPhoto(q.data?.merchant);
   const [amount, setAmount] = useState('');
@@ -119,6 +123,21 @@ export default function TxDetail() {
               </Card>
             )}
             {tx.type !== 'transfer' && <ReceiptCard txId={tx.id} uri={tx.receipt_uri} />}
+            {showPro() && !readOnly ? (
+              <Card style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+                <View style={{ flex: 1 }}>
+                  <Text v="title">Keep private</Text>
+                  <Text v="small" color={colors.textMuted}>Hidden from lists until you unlock with your fingerprint or face. Totals still count it.{isPro ? '' : ' (Pro)'}</Text>
+                </View>
+                <Switch value={isPrivate(tx)} accessibilityLabel="Keep private" onValueChange={async (v) => {
+                  if (!isPro) { router.push('/pro'); return; }
+                  const tags = readTags(tx.tags).filter((g) => g.toLowerCase() !== PRIVATE_TAG);
+                  await updateTransaction(db, tx.id, { tags: v ? [...tags, PRIVATE_TAG] : tags });
+                  bumpData();
+                  toast(v ? 'Kept private' : 'Shown again');
+                }} />
+              </Card>
+            ) : null}
             {spaces.length > 0 && !readOnly ? (
               <Card style={{ gap: space.sm }}>
                 <Text v="caps" color={colors.textMuted}>SPACE</Text>

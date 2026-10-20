@@ -3,6 +3,8 @@ import { RefreshControl, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Screen, Header, Text, Card, Enter, Press, SectionHeader, IconTile, Button } from '@/components/ui';
 import { Wordmark } from '@/components/Wordmark';
+import { PrivateRow } from '@/components/PrivateRow';
+import { splitPrivate, usePrivateUnlock } from '@/features/privacy/private';
 import { PrivacyNote } from '@/components/PrivacyNote';
 import { SpendHero } from '@/features/tracker/ui/SpendHero';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -26,6 +28,7 @@ import { useSettings } from '@/store/settings';
 
 export default function Home() {
   const spaces = useSettings((st) => st.spaces);
+  const unlockedPrivate = usePrivateUnlock((st) => st.unlocked);
   const activeSpaceId = useSettings((st) => st.activeSpace);
   const spaceName = activeSpaceId ? (() => { const x = spaces.find((y) => y.id === activeSpaceId); return x ? `${x.emoji} ${x.name}` : '🙂 Personal'; })() : '🙂 Personal';
   const router = useRouter();
@@ -97,11 +100,12 @@ export default function Home() {
                 </>
               ) : (
                 <Card pad={false} style={{ paddingHorizontal: space.lg, paddingVertical: space.xs }}>
-                  {d.recent.map((tx, i) => (
+                  {splitPrivate(d.recent, unlockedPrivate).visible.map((tx, i) => (
                     <Enter key={tx.id} i={i + 3}>
                       <TxRow tx={tx} cat={tx.category_id ? byId.get(tx.category_id) : null} onPress={() => router.push(`/tx/${tx.id}`)} />
                     </Enter>
                   ))}
+                  <PrivateRow hidden={splitPrivate(d.recent, unlockedPrivate).hidden} />
                 </Card>
               )}
             </View>

@@ -10,6 +10,8 @@ import { useCategories } from '@/features/tracker/hooks';
 import { formatDay, startOfDay } from '@/lib/date';
 import { formatMoney } from '@/domain/money';
 import { useTheme } from '@/theme/ThemeProvider';
+import { splitPrivate, usePrivateUnlock } from '@/features/privacy/private';
+import { PrivateRow } from '@/components/PrivateRow';
 import { layout, space } from '@/theme/tokens';
 
 /**
@@ -26,7 +28,9 @@ export default function Entries() {
   const q = useQuery((db) => listTransactions(db, { categoryId: p.cat, search: p.q, from, to, type: 'expense', limit: 500 }), [p.cat, p.q, from, to]);
   const title = p.title ?? (p.cat ? byId.get(p.cat)?.name : p.q) ?? 'Entries';
 
-  const rows = q.data;
+  const unlockedPrivate = usePrivateUnlock((st) => st.unlocked);
+  const split = splitPrivate(q.data ?? [], unlockedPrivate);
+  const rows = q.data ? split.visible : undefined;
   const sections = useMemo(() => {
     const map = new Map<number, { title: string; data: NonNullable<typeof rows>; total: number }>();
     for (const tx of rows ?? []) {
@@ -54,6 +58,7 @@ export default function Entries() {
       {q.data && q.data.length === 0 ? <EmptyState art="wallet" title="Nothing here" body="No entries match this in the chosen period." /> : null}
       <SectionList
         sections={sections}
+        ListHeaderComponent={<PrivateRow hidden={split.hidden} />}
         keyExtractor={(t) => t.id}
         stickySectionHeadersEnabled={false}
         showsVerticalScrollIndicator={false}

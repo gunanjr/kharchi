@@ -32,6 +32,9 @@ export type Settings = {
   roastOn: boolean; // opt-in; toast is the default
   roastTone: 'gentle' | 'playful' | 'savage';
   warranties: import('@/features/warranty/warranty').Warranty[]; // Pro: warranty vault
+  friendCode: string; // this install's code, made once
+  friendOffer: string; // a friend's code entered here (unlocks the Friend offer)
+  sharedCode: boolean; // shared own code at least once (OG badge and stickers)
   hideAmounts: boolean; // masks every amount (for public places); the eye on Home
 };
 
@@ -66,6 +69,9 @@ export const defaultSettings: Settings = {
   roastOn: false,
   roastTone: 'playful',
   warranties: [],
+  friendCode: '',
+  friendOffer: '',
+  sharedCode: false,
 };
 
 type Store = Settings & {
