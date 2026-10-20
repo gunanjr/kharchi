@@ -46,8 +46,8 @@ export default function More() {
           <Card onPress={() => router.push('/pro')} accessibilityLabel="BruhMe Pro" tone="ink" style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
             <BrandMark size={40} />
             <View style={{ flex: 1 }}>
-              <Text v="title" color={colors.onHero}>BruhMe Pro</Text>
-              <Text v="small" color={colors.onHeroMuted}>{isPro ? 'Pro is on' : 'Vault, radar, due dates, deeper Insights and more'}</Text>
+              <Text v="title" color={colors.onHero}>{isPro ? 'Pro tools' : 'BruhMe Pro'}</Text>
+              <Text v="small" color={colors.onHeroMuted}>{isPro ? 'Your Pro tools: Main Character Energy, Vault, Spaces and 10 more' : 'Main Character Energy, Vault, Spaces and 10 more tools'}</Text>
             </View>
             <Icon name="chevron" size={18} color={colors.onHeroMuted} />
           </Card>
@@ -55,19 +55,11 @@ export default function More() {
         <Enter i={0}>
           <Group title="Money">
             {item('Goals', 'Save for a trip, a phone or a rainy day', 'target', '/goals')}
-            {item('Monthly review', 'Your month in one card', 'chart', '/review')}
-            {item('Wrapped', 'Your week, month and year as share cards', 'ribbon', '/wrapped')}
-            {showPro() ? item('Your profile', 'Money persona, streaks, Bruh score, Roast or toast (Pro)', 'person', '/me') : null}
+            {item('Wrapped', 'Your week and month as a story, plus badges', 'ribbon', '/wrapped')}
             {item('Budgets', 'Set a monthly limit and see how close you are', 'target', '/budgets')}
             {item('Categories', 'Add or edit icons and colours', 'tag', '/settings/categories')}
             {item('Accounts', 'Cash, bank, UPI, cards, wallets', 'wallet', '/settings/accounts')}
             {item('Recurring', 'Rent, subscriptions, SIPs', 'repeat', '/settings/recurring')}
-            {showPro() ? item('Reimbursements', 'Work spends as a PDF claim with receipts (Pro)', 'receipt', '/reimburse') : null}
-            {showPro() ? item('Warranties', 'Bills and warranty end dates with reminders (Pro)', 'shield', '/warranty') : null}
-            {showPro() ? item('Tax-time totals', 'Yearly totals for your CA (Pro)', 'chart', '/tax') : null}
-            {showPro() ? item('Spaces', 'Side hustle, home, trips and events kept apart (Pro)', 'wallet', '/spaces') : null}
-            {showPro() ? item('Due dates', 'Card, rent, EMI and bills with reminders (Pro)', 'calendar', '/dues') : null}
-            {showPro() ? item('Subscription radar', 'Every repeating charge, renewals and price rises (Pro)', 'repeat', '/radar') : null}
           </Group>
         </Enter>
         <Enter i={1}>
@@ -101,7 +93,6 @@ export default function More() {
         </Enter>
         <Enter i={4}>
           <Group title="Your data">
-            {showPro() ? item('Vault', 'Automatic encrypted backups to your own Drive (Pro)', 'lock', '/settings/vault') : null}
             {item('Export & backup', 'Save a copy, move to a new phone, or open in Excel', 'download', '/settings/data')}
             {item('Privacy', 'What stays on your phone', 'shield', '/settings/privacy')}
             {item(t('settings.developer'), 'Demo data and a message simulator for trying things out', 'code', '/settings/developer')}

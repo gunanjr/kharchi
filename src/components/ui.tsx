@@ -19,9 +19,19 @@ type Variant = keyof typeof T;
 
 /* ------------------------------------------------------------------ text */
 
+/** True for short figures (an amount, a score, a percentage, "12 days"): they read wrong when they wrap. */
+export function isFigure(children: React.ReactNode): boolean {
+  const parts = Array.isArray(children) ? children : [children];
+  if (!parts.every((c) => typeof c === 'string' || typeof c === 'number')) return false;
+  const str = parts.join('');
+  return /\d/.test(str) && str.length <= 18;
+}
+
 export function Text({ v = 'body', color, style, ...p }: TextProps & { v?: Variant; color?: string; style?: StyleProp<TextStyle> }) {
   const { colors } = useTheme();
-  return <RNText {...p} style={[T[v], { color: color ?? colors.text }, style]} />;
+  // Figures stay on one line app-wide and shrink to fit instead of breaking onto a second line.
+  const fit = p.numberOfLines === undefined && isFigure(p.children) ? { numberOfLines: 1, adjustsFontSizeToFit: true, minimumFontScale: 0.5 } : null;
+  return <RNText {...fit} {...p} style={[T[v], { color: color ?? colors.text }, style]} />;
 }
 
 /** Text with tabular figures so columns of money align and live values do not jitter. */

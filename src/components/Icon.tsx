@@ -33,6 +33,7 @@ const map = {
   eyeOff: 'eye-off-outline',
   trash: 'trash-outline',
   bolt: 'flash-outline',
+  flame: 'flame',
   arrowUp: 'arrow-up',
   arrowDown: 'arrow-down',
   lock: 'lock-closed-outline',

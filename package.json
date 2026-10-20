@@ -12,6 +12,7 @@
     "@types/jest": "29.5.14",
     "expo": "^57.0.30",
     "expo-asset": "~57.0.20",
+    "expo-blur": "~57.0.3",
     "expo-build-properties": "~57.0.22",
     "expo-clipboard": "~57.0.2",
     "expo-constants": "~57.0.22",

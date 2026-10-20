@@ -36,6 +36,9 @@ export type Settings = {
   friendOffer: string; // a friend's code entered here (unlocks the Friend offer)
   sharedCode: boolean; // shared own code at least once (OG badge and stickers)
   hideAmounts: boolean; // masks every amount (for public places); the eye on Home
+  profileName: string; // shown on the profile and on shared posters ('' = none)
+  profileEmoji: string; // the avatar on Home and the profile ('' = first letter of the name)
+  posterPalette: string; // '' = the persona's own colours, or a palette key from components/story/Poster
 };
 
 export const defaultSettings: Settings = {
@@ -72,6 +75,9 @@ export const defaultSettings: Settings = {
   friendCode: '',
   friendOffer: '',
   sharedCode: false,
+  profileName: '',
+  profileEmoji: '',
+  posterPalette: '',
 };
 
 type Store = Settings & {

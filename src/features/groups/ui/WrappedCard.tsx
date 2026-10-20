@@ -33,13 +33,12 @@ export function WrappedCard({ name, currency, w, period }: { name: string; curre
               <Text style={{ fontFamily: fonts.brand, fontSize: 18, color: '#FFFFFF' }} numberOfLines={1}>{a.who}</Text>
               <Text v="small" color="#B9C0CB" numberOfLines={1}>{a.detail}</Text>
             </View>
-            <Text style={{ fontFamily: 'Geist_700Bold', fontSize: 15, color: '#FFFFFF', fontVariant: ['tabular-nums'] }}>{formatMoney(a.amount, currency, { compact: true })}</Text>
+            <Text style={{ fontFamily: 'Geist_700Bold', fontSize: 15, color: '#FFFFFF', fontVariant: ['tabular-nums'] }} numberOfLines={1}>{formatMoney(a.amount, currency, { compact: true })}</Text>
           </Row>
         ))}
       </View>
       <Row style={{ justifyContent: 'space-between' }}>
         <Text style={{ fontFamily: fonts.brandBlack, fontSize: 16, color: '#FFFFFF' }}>Bruh<Text style={{ fontFamily: fonts.brandBlack, fontSize: 16, color: '#FF8106' }}>Me</Text></Text>
-        <Text v="small" color="#B9C0CB">bro, pay me back</Text>
       </Row>
     </View>
   );

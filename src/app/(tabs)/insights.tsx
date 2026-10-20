@@ -10,6 +10,7 @@ import { useQuery } from '@/db/provider';
 import { HealthCard } from '@/features/insights/ui/HealthCard';
 import { MonthBars, PaceTrack, RankedRow, StackedBar, StatBox, WeekdayBars } from '@/features/insights/ui/parts';
 import { MerchantTile } from '@/features/brands/MerchantTile';
+import { ProStrip } from '@/features/pro/ProStrip';
 import { showPro } from '@/features/pro/flags';
 import { useIsPro } from '@/features/pro/store';
 import { loadInsights } from '@/features/insights/load';
@@ -46,7 +47,7 @@ export default function Insights() {
 
   return (
     <Screen>
-      <Header title="Insights" right={<Row style={{ gap: space.sm }}>{showPro() ? <Button title="Deep dive" kind="secondary" size="sm" icon="chart" onPress={() => router.push('/deep-dive')} /> : null}<Button title="Ask" kind="secondary" size="sm" icon="chat" onPress={() => router.push('/assistant')} /></Row>} />
+      <Header title="Insights" right={<Button title="Ask" kind="secondary" size="sm" icon="chat" onPress={() => router.push('/assistant')} />} />
       {q.error ? <ErrorState error={q.error} onRetry={q.refetch} /> : null}
       {q.loading && !d ? <SkeletonList n={4} /> : null}
       {d && d.all.length === 0 ? (
@@ -54,6 +55,14 @@ export default function Insights() {
       ) : d && r ? (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingTop: space.sm, gap: space.xl, paddingBottom: 168 }}>
           <Segmented options={(['1M', '3M', '6M', '1Y'] as Range[]).map((k) => ({ key: k, label: (k === '6M' || k === '1Y') && showPro() && !isPro ? `${SHORT[k]} 🔒` : SHORT[k] }))} value={range} onChange={(k) => { if ((k === '6M' || k === '1Y') && showPro() && !isPro) { router.push('/pro'); return; } setRange(k); setMonthSel(null); }} />
+
+          <ProStrip tools={[
+            { icon: 'chart', title: 'Deep dive', sub: 'Calendar and month compare', href: '/deep-dive' },
+            { icon: 'repeat', title: 'Subscriptions', sub: 'Renewals and price rises', href: '/radar' },
+            { icon: 'calendar', title: 'Due dates', sub: 'Never pay a bill late', href: '/dues' },
+            { icon: 'ribbon', title: 'Yearly Wrapped', sub: 'Your year as a story', href: { pathname: '/wrapped', params: { tab: 'year' } } },
+            { icon: 'receipt', title: 'Tax totals', sub: 'Yearly totals for your CA', href: '/tax' },
+          ]} />
 
           {/* 1. The headline */}
           <Enter i={0}>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Linking, Share, View } from 'react-native';
+import { useRouter, type Href } from 'expo-router';
 import * as Crypto from 'expo-crypto';
 import { SubScreen, Card, Text, Button, Row, Press, Field } from '@/components/ui';
 import { useDb } from '@/db/provider';
@@ -22,23 +23,27 @@ const PLANS: { id: ProductId; name: string; price: string; per: string; note?: s
 ];
 
 // Only features that exist in this build are listed: never sell something that is not there yet (Play policy).
-const PERKS: [IconName, string, string][] = [
-  ['lock', 'Vault', 'Automatic encrypted backups to your own Drive or folder, with a recovery code'],
-  ['repeat', 'Subscription radar', 'Every repeating charge, renewal reminders and price rises'],
-  ['calendar', 'Due dates', 'Card, rent, EMI and bill reminders so you never pay late'],
-  ['chart', 'Deep dive and 1-year Insights', 'Spending calendar, compare months, budgets from your history'],
-  ['ribbon', 'Wrapped and badges', 'Monthly and yearly story cards and milestones to share'],
-  ['send', 'Bump Pro', 'All 8 tones, your own lines, card themes and stickers'],
-  ['wallet', 'Spaces', 'Side hustle, home, trips and events kept apart'],
-  ['person', 'Your money profile', 'Persona, streaks, Bruh score and Roast or toast'],
-  ['receipt', 'Reimbursements', 'Work spends as a PDF claim with receipts'],
-  ['shield', 'Warranties and tax totals', 'Warranty reminders and yearly totals for your CA'],
-  ['eyeOff', 'Private mode', 'Hide chosen entries behind your fingerprint'],
+// Every tool opens its screen, so this is also the home for Pro tools (they no longer crowd the More tab).
+const PERKS: [IconName, string, string, Href | null][] = [
+  ['bolt', 'Main Character Energy', 'Your aura, rank, era and an aura card to share', '/mce'],
+  ['lock', 'Vault', 'Encrypted backups to your own Drive', '/settings/vault'],
+  ['repeat', 'Subscription radar', 'Every repeating charge and price rise', '/radar'],
+  ['calendar', 'Due dates', 'Card, rent, EMI and bill reminders', '/dues'],
+  ['chart', 'Deep dive', 'Calendar, month compare, 1-year view', '/deep-dive'],
+  ['wallet', 'Spaces', 'Side hustle, home and trips kept apart', '/spaces'],
+  ['person', 'Money profile', 'Persona, streaks, Roast or toast', '/me'],
+  ['ribbon', 'Yearly Wrapped', 'Your whole year as a story', { pathname: '/wrapped', params: { tab: 'year' } }],
+  ['receipt', 'Reimbursements', 'Work spends as a PDF claim', '/reimburse'],
+  ['shield', 'Warranties', 'End dates with reminders', '/warranty'],
+  ['chart', 'Tax-time totals', 'Yearly totals for your CA', '/tax'],
+  ['send', 'Bump Pro', 'All tones, your lines, card themes', null],
+  ['eyeOff', 'Private mode', 'Hide entries behind your fingerprint', null],
 ];
 
 /** The Pro screen. Prices, renewal and cancellation are stated plainly before any purchase; no timers, no tricks. */
 export default function Pro() {
   const { colors } = useTheme();
+  const router = useRouter();
   const pro = useIsPro();
   const [plan, setPlan] = useState<ProductId>(PRODUCTS.yearly);
   const [busy, setBusy] = useState(false);
@@ -83,14 +88,26 @@ export default function Pro() {
         <Text v="small" color={colors.onHeroMuted} style={{ textAlign: 'center' }}>{pro ? 'Pro is on. Thank you for backing BruhMe.' : 'Everything in BruhMe, plus the features that save you time and money every week.'}</Text>
       </Card>
 
-      <Card style={{ gap: space.md }}>
-        {PERKS.map(([icon, t, d]) => (
-          <Row key={t} style={{ gap: space.md, alignItems: 'flex-start' }}>
-            <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' }}><Icon name={icon} size={17} color={colors.link} /></View>
-            <View style={{ flex: 1 }}><Text v="title">{t}</Text><Text v="small" color={colors.textMuted}>{d}</Text></View>
-          </Row>
-        ))}
-      </Card>
+      <View style={{ gap: space.sm }}>
+        <Text v="caps" color={colors.textMuted}>{pro ? 'YOUR PRO TOOLS' : 'WHAT YOU GET'}</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
+          {PERKS.map(([icon, t, d, href], i) => i === 0 ? (
+            <Press key={t} onPress={() => href && router.push(href)} accessibilityLabel={t}
+              style={{ width: '100%', borderRadius: 20, backgroundColor: colors.hero, padding: space.lg, flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+              <View style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}><Icon name={icon} size={22} color="#FFFFFF" /></View>
+              <View style={{ flex: 1 }}><Text v="title" color={colors.onHero}>{t}</Text><Text v="small" color={colors.onHeroMuted}>{d}</Text></View>
+              <Icon name="chevron" size={18} color={colors.onHeroMuted} />
+            </Press>
+          ) : (
+            <Press key={t} onPress={href ? () => router.push(href) : undefined} disabled={!href} accessibilityLabel={t}
+              style={{ width: '48.5%', minHeight: 118, borderRadius: 20, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, padding: space.md, gap: 6 }}>
+              <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' }}><Icon name={icon} size={17} color={colors.link} /></View>
+              <Text v="title" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>{t}</Text>
+              <Text v="small" color={colors.textMuted} numberOfLines={2}>{d}</Text>
+            </Press>
+          ))}
+        </View>
+      </View>
 
       {!pro ? (
         <>

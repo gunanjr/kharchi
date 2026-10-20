@@ -16,6 +16,8 @@ import { BillsCard } from '@/features/bills/BillsCard';
 import { BudgetStrip } from '@/features/tracker/ui/BudgetStrip';
 import { loadCompleteDemo } from '@/features/dev/loadDemo';
 import { PulseWidgets } from '@/features/tracker/ui/PulseWidgets';
+import { Avatar, StatusRow, Chip as StatusChip } from '@/features/profile/StatusRow';
+import { ComingUp } from '@/features/profile/ComingUp';
 import { ToastHost } from '@/components/Toast';
 import { useDb, useQuery, bumpData } from '@/db/provider';
 import { listTransactions, totalsBetween } from '@/features/tracker/repo';
@@ -59,13 +61,15 @@ export default function Home() {
         contentContainerStyle={{ paddingBottom: 168, gap: space.xl }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
       >
-        <Header title="BruhMe" titleNode={<Wordmark height={38} />} subtitle={new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })} />
-        {spaces.length > 0 ? (
-          <Press onPress={() => router.push('/spaces')} accessibilityLabel={`Space: ${spaceName}. Tap to switch`} style={{ alignSelf: 'flex-start', marginHorizontal: layout.gutter, marginTop: -4, marginBottom: space.sm, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.surfaceAlt, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 6 }}>
-            <Text v="small" style={{ fontFamily: 'Geist_600SemiBold' }}>{spaceName}</Text>
-            <Icon name="chevron" size={14} color={colors.textMuted} />
-          </Press>
-        ) : null}
+        <Header title="BruhMe" titleNode={<Wordmark height={38} />} subtitle={new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })} right={<Avatar />} />
+        <View style={{ marginTop: -space.md }}>
+          <StatusRow lead={spaces.length > 0 ? (
+            <StatusChip onPress={() => router.push('/spaces')} label={`Space: ${spaceName}. Tap to switch`} tint={colors.surfaceAlt}>
+              <Text v="small" style={{ fontFamily: 'Geist_600SemiBold' }}>{spaceName}</Text>
+              <Icon name="chevron" size={14} color={colors.textMuted} />
+            </StatusChip>
+          ) : null} />
+        </View>
         {q.error ? <ErrorState error={q.error} onRetry={q.refetch} /> : null}
         {q.loading && !d ? <SkeletonList n={4} /> : null}
         {d && (
@@ -76,6 +80,7 @@ export default function Home() {
 
             <BillsCard />
             <PendingStack />
+            <ComingUp />
             <PulseWidgets />
             <BudgetStrip />
 

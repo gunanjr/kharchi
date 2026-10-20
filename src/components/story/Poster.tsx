@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
-import Svg, { Circle, Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
-import { Text } from '@/components/ui';
+import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
+import { Text, isFigure } from '@/components/ui';
 import { BrandMark } from '@/components/Wordmark';
 import { fonts } from '@/theme/tokens';
 
 /**
  * Bold, share-ready poster backgrounds for Wrapped, the money profile and pay cards. Fixed colours (not the app theme)
- * so a shared image looks the same everywhere. Each palette has its own decoration so slides feel different.
+ * so a shared image looks the same everywhere. Kept plain on purpose.
  */
 export type PaletteKey = 'grape' | 'tangerine' | 'lime' | 'ocean' | 'bubblegum' | 'mint' | 'midnight' | 'sunshine';
 export const PALETTES: Record<PaletteKey, { from: string; to: string; ink: string; soft: string; accent: string; deco: string }> = {
@@ -21,22 +21,15 @@ export const PALETTES: Record<PaletteKey, { from: string; to: string; ink: strin
   sunshine: { from: '#FFE36A', to: '#FFB800', ink: '#1F1300', soft: 'rgba(31,19,0,0.66)', accent: '#FF2E7E', deco: '#FFF3B0' },
 };
 
+/** Just the gradient. Deliberately plain: clutter makes a card feel generated, and people don't post it. */
 function Deco({ k, w, h }: { k: PaletteKey; w: number; h: number }) {
   const p = PALETTES[k];
-  const variant = Object.keys(PALETTES).indexOf(k) % 4;
   return (
     <Svg width={w} height={h} style={{ position: 'absolute' }}>
       <Defs>
         <LinearGradient id={`pg-${k}`} x1="0" y1="0" x2="1" y2="1"><Stop offset="0" stopColor={p.from} /><Stop offset="1" stopColor={p.to} /></LinearGradient>
       </Defs>
       <Rect x={0} y={0} width={w} height={h} fill={`url(#pg-${k})`} />
-      {variant === 0 ? (<><Circle cx={w * 0.92} cy={h * 0.08} r={w * 0.32} fill={p.deco} opacity={0.35} /><Circle cx={w * 0.05} cy={h * 0.95} r={w * 0.28} fill={p.deco} opacity={0.25} /></>) : null}
-      {variant === 1 ? <Path d={`M0 ${h * 0.78} C ${w * 0.3} ${h * 0.7}, ${w * 0.6} ${h * 0.9}, ${w} ${h * 0.8} L ${w} ${h} L 0 ${h} Z`} fill={p.deco} opacity={0.35} /> : null}
-      {variant === 2 ? Array.from({ length: 6 }, (_, i) => <Circle key={i} cx={w * (0.12 + i * 0.16)} cy={h * 0.1 + (i % 2) * 18} r={5} fill={p.deco} opacity={0.6} />) : null}
-      {variant === 3 ? <Path d={`M ${w * 0.75} 0 L ${w} 0 L ${w} ${h * 0.35} Z M 0 ${h * 0.7} L ${w * 0.25} ${h} L 0 ${h} Z`} fill={p.deco} opacity={0.35} /> : null}
-      {/* sparkles */}
-      <Path d={`M ${w * 0.85} ${h * 0.55} l 4 10 l 10 4 l -10 4 l -4 10 l -4 -10 l -10 -4 l 10 -4 Z`} fill={p.ink} opacity={0.5} />
-      <Path d={`M ${w * 0.12} ${h * 0.4} l 3 7 l 7 3 l -7 3 l -3 7 l -3 -7 l -7 -3 l 7 -3 Z`} fill={p.ink} opacity={0.35} />
     </Svg>
   );
 }
@@ -56,7 +49,6 @@ export function Poster({ palette, width = 340, height = 560, label, children, st
           {label ? <View style={{ borderWidth: 1.5, borderColor: p.soft, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 3 }}><Text style={{ fontFamily: fonts.bold, fontSize: 10, letterSpacing: 1.2, color: p.ink }}>{label.toUpperCase()}</Text></View> : null}
         </View>
         <View style={{ flex: 1, justifyContent: 'center' }}>{children}</View>
-        <Text style={{ fontFamily: fonts.semibold, fontSize: 11, color: p.soft, textAlign: 'center' }}>made with BruhMe · bro, pay me back</Text>
       </View>
     </View>
   );
@@ -64,7 +56,12 @@ export function Poster({ palette, width = 340, height = 560, label, children, st
 
 /** Huge headline text sized for posters. */
 export const Big = ({ children, color, size = 48 }: { children: React.ReactNode; color: string; size?: number }) => (
-  <Text style={{ fontFamily: fonts.brandBlack, fontSize: size, lineHeight: size * 1.08, color, letterSpacing: -size * 0.03 }} adjustsFontSizeToFit numberOfLines={3}>{children}</Text>
+  <Text style={{ fontFamily: fonts.brandBlack, fontSize: size, lineHeight: size * 1.08, color, letterSpacing: -size * 0.03 }} adjustsFontSizeToFit minimumFontScale={0.4} numberOfLines={isFigure(children) ? 1 : 3}>{children}</Text>
+);
+
+/** An amount or score: always one line, shrinking to fit the width instead of wrapping. */
+export const Num = ({ children, color, size = 56 }: { children: React.ReactNode; color: string; size?: number }) => (
+  <Text style={{ fontFamily: fonts.brandBlack, fontSize: size, lineHeight: size * 1.12, color, letterSpacing: -size * 0.03 }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.4}>{children}</Text>
 );
 
 /** A big emoji that never gets clipped (explicit line height and padding). */

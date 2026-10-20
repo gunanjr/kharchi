@@ -3,10 +3,13 @@ import { Switch, View, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
-import { SubScreen, Card, Text, Row, Button, Chip, Press } from '@/components/ui';
+import { SubScreen, Card, Text, Row, Button, Chip, Press, Segmented, Field, Swatch } from '@/components/ui';
+import { Sheet } from '@/components/Sheet';
+import { Avatar } from '@/features/profile/StatusRow';
+import { useStatus } from '@/features/profile/useStatus';
 import { SkeletonList } from '@/components/Feedback';
 import { ToastHost, toast } from '@/components/Toast';
-import { Poster, Big, Hero, PALETTES } from '@/components/story/Poster';
+import { Poster, Big, Hero, PALETTES, type PaletteKey } from '@/components/story/Poster';
 import { Medal } from '@/components/story/Medal';
 import { useDb, useQuery } from '@/db/provider';
 import { listTransactions } from '@/features/tracker/repo';
@@ -22,12 +25,12 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { fonts, space } from '@/theme/tokens';
 
 const DAY = 86_400_000;
-const TONES: { key: RoastTone; label: string }[] = [{ key: 'toast', label: '🥂 Toast' }, { key: 'gentle', label: '🙂 Gentle' }, { key: 'playful', label: '😏 Playful' }, { key: 'savage', label: '💀 Savage' }];
+const AVATARS = ['😎', '🦊', '🐼', '🐯', '🦁', '🐸', '🐧', '🦄', '🌻', '🍀', '🎧', '🏀', '🎨', '📚', '☕', '🚀'];
+const TONES: { key: RoastTone; label: string }[] = [{ key: 'toast', label: 'Toast' }, { key: 'gentle', label: 'Gentle' }, { key: 'playful', label: 'Playful' }, { key: 'savage', label: 'Savage' }];
 
-const StatTile = ({ e, value, label, ink, soft }: { e: string; value: string; label: string; ink: string; soft: string }) => (
+const StatTile = ({ value, label, ink, soft }: { value: string; label: string; ink: string; soft: string }) => (
   <View style={{ flex: 1, backgroundColor: ink === '#FFFFFF' ? 'rgba(255,255,255,0.18)' : 'rgba(20,24,31,0.1)', borderRadius: 18, paddingVertical: 10, alignItems: 'center' }}>
-    <Text style={{ fontSize: 18, lineHeight: 24 }}>{e}</Text>
-    <Text style={{ fontFamily: fonts.brandBlack, fontSize: 20, color: ink }}>{value}</Text>
+    <Text style={{ fontFamily: fonts.brandBlack, fontSize: 22, color: ink }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.5}>{value}</Text>
     <Text style={{ fontFamily: fonts.semibold, fontSize: 11, color: soft }}>{label}</Text>
   </View>
 );
@@ -42,6 +45,10 @@ export default function Me() {
   const personaShot = useRef<React.ElementRef<typeof ViewShot>>(null);
   const roastShot = useRef<React.ElementRef<typeof ViewShot>>(null);
   const [variant, setVariant] = useState(0);
+  const [tab, setTab] = useState<'persona' | 'roast' | 'stats'>('persona');
+  const [editing, setEditing] = useState(false);
+  const [nameText, setNameText] = useState(s.profileName);
+  const status = useStatus();
   const now = Date.now();
   const q = useQuery(async (d) => {
     const txs = await listTransactions(d, { from: now - 400 * DAY, to: now + 1 });
@@ -69,7 +76,8 @@ export default function Me() {
   const fact = facts.length ? facts[variant % facts.length] : null;
   const line = fact ? roastLine(fact, tone, (n) => formatMoney(n, 'INR', { compact: true }), Math.floor(variant / Math.max(1, facts.length))) : null;
   const style = shownKey ? PERSONA_STYLE[shownKey] : null;
-  const pal = style ? PALETTES[style.palette] : PALETTES.midnight;
+  const posterKey = ((s.posterPalette && s.posterPalette in PALETTES ? s.posterPalette : style?.palette) ?? 'midnight') as PaletteKey;
+  const pal = PALETTES[posterKey];
   const pw = Math.min(360, width - 40);
 
   async function share(ref: React.RefObject<React.ElementRef<typeof ViewShot> | null>) {
@@ -86,13 +94,23 @@ export default function Me() {
 
   return (
     <SubScreen title="Your profile">
+      <Card style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+        <Avatar size={60} />
+        <View style={{ flex: 1 }}>
+          <Text v="h3" numberOfLines={1}>{s.profileName || 'Add your name'}</Text>
+          <Text v="small" color={colors.textMuted} numberOfLines={1}>{status.data ? `${status.data.streak} day streak · ${status.data.aura.score} aura` : ' '}</Text>
+        </View>
+        <Button title="Edit" kind="secondary" size="sm" icon="edit" onPress={() => { setNameText(s.profileName); setEditing(true); }} />
+      </Card>
       <ProGate title="Your money profile" body="Your money persona from your own habits, as a poster to share. Plus streaks, your Bruh score, badges, and a monthly Roast or toast. Worked out on your phone by fixed rules.">
         {!data ? <SkeletonList n={3} /> : (
           <>
-            {s.personaOn ? (
+            <Segmented options={[{ key: 'persona', label: 'Persona' }, { key: 'roast', label: 'Roast or toast' }, { key: 'stats', label: 'Stats' }]} value={tab} onChange={(k) => setTab(k as typeof tab)} />
+            {tab === 'persona' && !s.personaOn ? <Card><Text color={colors.textMuted}>Your persona is turned off. Turn it on in Stats.</Text></Card> : null}
+            {tab === 'persona' && s.personaOn ? (
               <View style={{ alignItems: 'center', gap: space.md }}>
                 <ViewShot ref={personaShot} options={{ format: 'png', quality: 1 }}>
-                  <Poster palette={style?.palette ?? 'midnight'} label="My money persona" width={pw} height={Math.round(pw * 1.45)}>
+                  <Poster palette={posterKey} label={s.profileName ? `${s.profileName}’s money persona` : 'My money persona'} width={pw} height={Math.round(pw * 1.45)}>
                     {persona?.status === 'ok' && style ? (
                       <View style={{ gap: 10 }}>
                         <Hero e={persona.emoji} size={84} />
@@ -101,16 +119,14 @@ export default function Me() {
                         <Row style={{ gap: 6, flexWrap: 'wrap' }}>
                           {style.traits.map((t) => <View key={t} style={{ backgroundColor: pal.ink === '#FFFFFF' ? 'rgba(255,255,255,0.22)' : 'rgba(20,24,31,0.12)', borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 }}><Text style={{ fontFamily: fonts.semibold, fontSize: 13, color: pal.ink }}>{t}</Text></View>)}
                         </Row>
-                        <Text style={{ fontFamily: fonts.medium, fontSize: 13, color: pal.soft }}>Because: {persona.why}, last 30 days</Text>
                         <Row style={{ gap: 8, marginTop: 6 }}>
-                          <StatTile e="🔥" value={String(streak?.days ?? 0)} label="day streak" ink={pal.ink} soft={pal.soft} />
-                          <StatTile e="🏅" value={String(levels)} label="badge levels" ink={pal.ink} soft={pal.soft} />
-                          <StatTile e="⚡" value={mine?.medianDays !== null && mine?.medianDays !== undefined ? `${mine.medianDays}d` : '—'} label="pays back in" ink={pal.ink} soft={pal.soft} />
+                          <StatTile value={String(streak?.days ?? 0)} label="day streak" ink={pal.ink} soft={pal.soft} />
+                          <StatTile value={String(levels)} label="badge levels" ink={pal.ink} soft={pal.soft} />
+                          <StatTile value={mine?.medianDays !== null && mine?.medianDays !== undefined ? `${mine.medianDays}d` : '—'} label="pays back in" ink={pal.ink} soft={pal.soft} />
                         </Row>
                       </View>
                     ) : (
                       <View style={{ gap: 10 }}>
-                        <Hero e="🔮" size={70} />
                         <Big color="#FFFFFF" size={36}>Your persona is loading…</Big>
                         <Text style={{ fontFamily: fonts.medium, fontSize: 15, color: PALETTES.midnight.soft }}>It appears after {persona?.status === 'not-enough' ? persona.needed : 'a few more weeks of logging'}.</Text>
                       </View>
@@ -121,27 +137,28 @@ export default function Me() {
               </View>
             ) : null}
 
-            {line ? (
+            {tab === 'roast' && !line ? <Card><Text color={colors.textMuted}>Log a few more spends this month and your Roast or toast appears here.</Text></Card> : null}
+            {tab === 'roast' && line ? (
               <View style={{ alignItems: 'center', gap: space.md }}>
                 <Row style={{ gap: space.sm, flexWrap: 'wrap', alignSelf: 'stretch' }}>{TONES.map((t) => <Chip key={t.key} label={t.label} selected={tone === t.key} onPress={() => pickTone(t.key)} />)}</Row>
                 <ViewShot ref={roastShot} options={{ format: 'png', quality: 1 }}>
                   <Poster palette={tone === 'toast' ? 'sunshine' : tone === 'savage' ? 'midnight' : 'bubblegum'} label={tone === 'toast' ? 'A toast' : `Roasted · ${tone}`} width={pw} height={Math.round(pw * 1.05)}>
-                    <Hero e={tone === 'toast' ? '🥂' : tone === 'savage' ? '💀' : '🔥'} size={58} />
                     <Big color={tone === 'toast' ? PALETTES.sunshine.ink : '#FFFFFF'} size={30}>“{line}”</Big>
                   </Poster>
                 </ViewShot>
                 <Row style={{ gap: space.sm, alignSelf: 'stretch' }}>
-                  <Button title="Another one 🔄" kind="secondary" onPress={() => setVariant(variant + 1)} style={{ flex: 1 }} />
+                  <Button title="Another one" kind="secondary" onPress={() => setVariant(variant + 1)} style={{ flex: 1 }} />
                   <Button title="Share" icon="share" onPress={() => share(roastShot)} style={{ flex: 1 }} />
                 </Row>
                 <Text v="small" color={colors.textMuted} style={{ textAlign: 'center' }}>Roasts are about a habit, never about you. Health, education and income are never mentioned.</Text>
               </View>
             ) : null}
 
+            {tab === 'stats' ? (<>
             <Row style={{ gap: space.md }}>
               <Card style={{ flex: 1, gap: 2 }}>
                 <Text v="small" color={colors.textMuted}>Logging streak</Text>
-                <Text v="h2">{streak?.days ?? 0} 🔥</Text>
+                <Text v="h2" numberOfLines={1} adjustsFontSizeToFit>{streak?.days ?? 0} days</Text>
                 <Text v="small" color={colors.textSubtle}>best {Math.max(best?.days ?? 0, streak?.days ?? 0)} · 1 missed day a week is forgiven</Text>
               </Card>
               <Card style={{ flex: 1, gap: 2 }}>
@@ -167,9 +184,37 @@ export default function Me() {
               </View>
               <Switch value={s.personaOn} onValueChange={async (v) => { await s.set(db, 'personaOn', v); if (!v) await s.set(db, 'personaPrev', ''); }} accessibilityLabel="Show my persona" />
             </Card>
+            </>) : null}
           </>
         )}
       </ProGate>
+      {editing ? (
+        <Sheet onClose={() => setEditing(false)}>
+          <View style={{ gap: space.lg }}>
+            <Text v="h3">Edit profile</Text>
+            <Field label="Name" value={nameText} onChangeText={setNameText} placeholder="Your name" maxLength={24} />
+            <View style={{ gap: space.sm }}>
+              <Text v="small" color={colors.textMuted}>Avatar</Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {['', ...AVATARS].map((e) => (
+                  <Press key={e || 'none'} onPress={() => s.set(db, 'profileEmoji', e)} accessibilityLabel={e || 'First letter'} accessibilityState={{ selected: s.profileEmoji === e }}
+                    style={{ width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surfaceAlt, borderWidth: 2, borderColor: s.profileEmoji === e ? colors.primary : 'transparent' }}>
+                    {e ? <Text style={{ fontSize: 22, lineHeight: 28 }}>{e}</Text> : <Text v="title">{(nameText.trim()[0] ?? 'A').toUpperCase()}</Text>}
+                  </Press>
+                ))}
+              </View>
+            </View>
+            <View style={{ gap: space.sm }}>
+              <Text v="small" color={colors.textMuted}>Poster colour</Text>
+              <Row style={{ flexWrap: 'wrap' }}>
+                <Chip label="Auto" selected={!s.posterPalette} onPress={() => s.set(db, 'posterPalette', '')} />
+                {(Object.keys(PALETTES) as PaletteKey[]).map((k) => <Swatch key={k} color={PALETTES[k].to} selected={s.posterPalette === k} onPress={() => s.set(db, 'posterPalette', k)} />)}
+              </Row>
+            </View>
+            <Button title="Save" kind="accent" onPress={async () => { await s.set(db, 'profileName', nameText.trim()); setEditing(false); }} />
+          </View>
+        </Sheet>
+      ) : null}
       <ToastHost />
     </SubScreen>
   );

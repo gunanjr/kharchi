@@ -108,13 +108,9 @@ function BumpCard({ input, upiId, tone, theme = 'midnight', sticker = '' }: { in
           </View>
         ) : (
           <View style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 20, padding: 14 }}>
-            <Text style={{ fontFamily: 'Geist_500Medium', fontSize: 13, color: 'rgba(255,255,255,0.8)' }}>Pay me back on your usual UPI app 🙌</Text>
+            <Text style={{ fontFamily: 'Geist_500Medium', fontSize: 13, color: 'rgba(255,255,255,0.8)' }}>Pay me back on any UPI app</Text>
           </View>
         )}
-        <Row style={{ justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: 'Geist_500Medium', fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>bro, pay me back ✨</Text>
-          <Text style={{ fontFamily: 'Geist_500Medium', fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>made with BruhMe</Text>
-        </Row>
       </View>
     </View>
   );

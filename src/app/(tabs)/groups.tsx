@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, View, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Screen, Header, Text, Card, Row, Button, Enter, Field, Chip, GlyphPick, Money, IconTile, Segmented, RoundButton, Press } from '@/components/ui';
+import { Screen, Header, Text, Card, Row, Button, Enter, Field, Chip, GlyphPick, Money, IconTile, Segmented, RoundButton, Press, SectionHeader } from '@/components/ui';
 import { EmptyState, SkeletonList } from '@/components/Feedback';
 import { Sheet } from '@/components/Sheet';
 import { ToastHost, toast } from '@/components/Toast';
@@ -15,6 +15,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { GROUP_ICONS, groupGlyph } from '@/components/glyphs';
 import { Glyph, Icon } from '@/components/Icon';
 import { radius, space, layout } from '@/theme/tokens';
+import { ProStrip } from '@/features/pro/ProStrip';
 
 const ICONS = ['👥', '✈️', '🏠', '🍽️', '🎉', '💼', '🏖️', '🎬'];
 
@@ -167,6 +168,16 @@ export default function Groups() {
               </View>
             )}
           </>
+        ) : null}
+        {has ? (
+          <View style={{ gap: space.sm }}>
+            <SectionHeader title="More with Pro" />
+            <ProStrip tools={[
+              { icon: 'wallet', title: 'Trips & events', sub: 'A Space with its own budget', href: '/spaces' },
+              { icon: 'person', title: 'Bruh score', sub: 'How fast you pay back', href: '/me' },
+              { icon: 'receipt', title: 'Reimbursements', sub: 'Work spends as a PDF claim', href: '/reimburse' },
+            ]} />
+          </View>
         ) : null}
       </ScrollView>
       <ToastHost />

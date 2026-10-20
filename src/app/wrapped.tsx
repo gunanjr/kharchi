@@ -7,7 +7,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { SubScreen, Card, Text, Row, Button, Segmented, Chip } from '@/components/ui';
 import { SkeletonList } from '@/components/Feedback';
 import { ToastHost, toast } from '@/components/Toast';
-import { Poster, Big, Hero, PALETTES, type PaletteKey } from '@/components/story/Poster';
+import { Poster, Big, Hero, Num, PALETTES, type PaletteKey } from '@/components/story/Poster';
 import { Medal } from '@/components/story/Medal';
 import { useDb, useQuery } from '@/db/provider';
 import { listTransactions, listCategories } from '@/features/tracker/repo';
@@ -33,7 +33,7 @@ function Ring({ pct, color, track }: { pct: number; color: string; track: string
 }
 const Pill = ({ text, p }: { text: string; p: PaletteKey }) => (
   <View style={{ alignSelf: 'flex-start', backgroundColor: PALETTES[p].ink === '#FFFFFF' ? 'rgba(255,255,255,0.22)' : 'rgba(20,24,31,0.12)', borderRadius: 999, paddingHorizontal: 14, paddingVertical: 7 }}>
-    <Text style={{ fontFamily: fonts.bold, fontSize: 14, color: PALETTES[p].ink }}>{text}</Text>
+    <Text style={{ fontFamily: fonts.bold, fontSize: 14, color: PALETTES[p].ink }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>{text}</Text>
   </View>
 );
 const Soft = ({ children, p }: { children: React.ReactNode; p: PaletteKey }) => <Text style={{ fontFamily: fonts.semibold, fontSize: 17, color: PALETTES[p].soft, marginBottom: 6 }}>{children}</Text>;
@@ -45,26 +45,24 @@ function slidesFor(r: Recap, title: string, label: string, catName: (id: string 
   const out: { key: string; node: React.ReactNode }[] = [];
   out.push({ key: 'intro', node: (
     <Poster palette="grape" label={label} width={w} height={h}>
-      <Hero e="🎬" size={70} />
       <Big color={PALETTES.grape.ink} size={50}>{title},{'\n'}wrapped</Big>
       <View style={{ height: 14 }} />
-      <Soft p="grape">{r.entries} spends logged · swipe →</Soft>
+      <Soft p="grape">{r.entries} spends logged</Soft>
     </Poster>
   ) });
   out.push({ key: 'total', node: (
     <Poster palette="tangerine" label={label} width={w} height={h}>
       <Soft p="tangerine">You spent</Soft>
-      <Big color={PALETTES.tangerine.ink} size={58}>{money(r.spent)}</Big>
+      <Num color={PALETTES.tangerine.ink} size={58}>{money(r.spent)}</Num>
       <View style={{ gap: 10, marginTop: 16 }}>
-        {r.changePct !== null ? <Pill p="tangerine" text={r.changePct <= 0 ? `↓ ${Math.abs(r.changePct)}% vs before 🎉` : `↑ ${r.changePct}% vs before 👀`} /> : null}
+        {r.changePct !== null ? <Pill p="tangerine" text={r.changePct <= 0 ? `↓ ${Math.abs(r.changePct)}% vs before` : `↑ ${r.changePct}% vs before`} /> : null}
         <Pill p="tangerine" text={`about ${money(Math.round(r.spent / days))} a day`} />
       </View>
     </Poster>
   ) });
   if (r.topPlaces[0]) out.push({ key: 'place', node: (
     <Poster palette="lime" label={label} width={w} height={h}>
-      <Hero e="📍" size={60} />
-      <Soft p="lime">Your main character place</Soft>
+      <Soft p="lime">Your most visited place</Soft>
       <Big color={PALETTES.lime.ink} size={52}>{r.topPlaces[0].name}</Big>
       <Row style={{ gap: 8, flexWrap: 'wrap', marginTop: 14 }}><Pill p="lime" text={`${r.topPlaces[0].count} ${r.topPlaces[0].count === 1 ? 'visit' : 'visits'}`} /><Pill p="lime" text={money(r.topPlaces[0].total)} /></Row>
       {r.topPlaces[1] ? <Text style={{ fontFamily: fonts.semibold, fontSize: 15, color: PALETTES.lime.soft, marginTop: 18 }}>Runners-up: {r.topPlaces.slice(1).map((x) => x.name).join(', ')}</Text> : null}
@@ -79,7 +77,7 @@ function slidesFor(r: Recap, title: string, label: string, catName: (id: string 
         <Row style={{ gap: 16, marginTop: 18 }}>
           <View style={{ width: 132, height: 132, alignItems: 'center', justifyContent: 'center' }}>
             <View style={{ position: 'absolute' }}><Ring pct={pct} color={PALETTES.ocean.accent} track="rgba(255,255,255,0.25)" /></View>
-            <Text style={{ fontFamily: fonts.brandBlack, fontSize: 28, color: '#fff' }}>{Math.round(pct * 100)}%</Text>
+            <Text style={{ fontFamily: fonts.brandBlack, fontSize: 28, color: '#fff' }} numberOfLines={1}>{Math.round(pct * 100)}%</Text>
           </View>
           <Text style={{ flex: 1, fontFamily: fonts.semibold, fontSize: 16, color: PALETTES.ocean.soft }}>of everything you spent · {money(r.topCategory.total)}</Text>
         </Row>
@@ -88,29 +86,26 @@ function slidesFor(r: Recap, title: string, label: string, catName: (id: string 
   }
   if (r.busiestDay) out.push({ key: 'days', node: (
     <Poster palette="bubblegum" label={label} width={w} height={h}>
-      <Hero e="🔥" size={60} />
       <Soft p="bubblegum">Your biggest day</Soft>
       <Big color={PALETTES.bubblegum.ink} size={44}>{new Date(r.busiestDay.at).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short' })}</Big>
-      <View style={{ marginTop: 12 }}><Pill p="bubblegum" text={money(r.busiestDay.total)} /></View>
-      {r.priciestWeekday !== null ? <Text style={{ fontFamily: fonts.bold, fontSize: 18, color: PALETTES.bubblegum.ink, marginTop: 22 }}>{DAYS[r.priciestWeekday]} hit different 💸</Text> : null}
+      <View style={{ marginTop: 12 }}><Num color={PALETTES.bubblegum.ink} size={40}>{money(r.busiestDay.total)}</Num></View>
+      {r.priciestWeekday !== null ? <Text style={{ fontFamily: fonts.bold, fontSize: 18, color: PALETTES.bubblegum.ink, marginTop: 22 }}>{DAYS[r.priciestWeekday]} cost you the most</Text> : null}
     </Poster>
   ) });
   out.push({ key: 'wins', node: (
     <Poster palette="mint" label={label} width={w} height={h}>
-      <Hero e="🏆" size={60} />
       <Big color={PALETTES.mint.ink} size={46}>The wins</Big>
       <View style={{ gap: 10, marginTop: 18 }}>
-        <Pill p="mint" text={`${r.noSpendDays} no-spend ${r.noSpendDays === 1 ? 'day' : 'days'} 🧘`} />
-        <Pill p="mint" text={`${wins.streak}-day best streak 🔥`} />
-        <Pill p="mint" text={`${wins.badges} badge levels earned 🏅`} />
+        <Pill p="mint" text={`${r.noSpendDays} no-spend ${r.noSpendDays === 1 ? 'day' : 'days'}`} />
+        <Pill p="mint" text={`${wins.streak}-day best streak`} />
+        <Pill p="mint" text={`${wins.badges} badge levels earned`} />
       </View>
     </Poster>
   ) });
   out.push({ key: 'outro', node: (
     <Poster palette="midnight" label={label} width={w} height={h}>
-      <Hero e="✨" size={60} />
       <Big color="#FFFFFF" size={48}>That’s a wrap.</Big>
-      <Text style={{ fontFamily: fonts.semibold, fontSize: 17, color: PALETTES.midnight.soft, marginTop: 12 }}>Share it, and tag the friend who still owes you 😏</Text>
+      <Text style={{ fontFamily: fonts.semibold, fontSize: 17, color: PALETTES.midnight.soft, marginTop: 12 }}>{r.entries} spends · {money(r.spent)}</Text>
     </Poster>
   ) });
   return out;
