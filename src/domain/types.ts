@@ -47,6 +47,7 @@ export interface Transaction extends SyncMeta {
   excluded: number; // 1 = kept in the list but left out of totals, budgets and insights
   tags: string | null; // JSON string[]
   receipt_uri: string | null;
+  space_id?: string | null;
   source: TxSource;
   fingerprint: string | null;
   group_expense_id: string | null;

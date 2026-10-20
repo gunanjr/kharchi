@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, Switch, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Screen, Text, Button, Row, Field, Card, Money, RoundButton, Tag, Press } from '@/components/ui';
+import { Screen, Text, Button, Row, Field, Card, Money, RoundButton, Tag, Press, Chip } from '@/components/ui';
 import { Icon } from '@/components/Icon';
 import { CategoryChips } from '@/components/CategoryPicker';
 import { CategoryDot } from '@/components/TxRow';
@@ -16,6 +16,7 @@ import { learnMerchant } from '@/features/parser/merchants';
 import { formatMoney, parseAmountToMinor } from '@/domain/money';
 import { formatDay, formatTime } from '@/lib/date';
 import { useTheme } from '@/theme/ThemeProvider';
+import { useSettings } from '@/store/settings';
 import { layout, space } from '@/theme/tokens';
 import { parseTags, readTags } from '@/features/tracker/tags';
 import { BrandIcon } from '@/features/brands/BrandIcon';
@@ -31,6 +32,7 @@ export default function TxDetail() {
   const { byId, categories } = useCategories();
   const q = useQuery((d) => getTransaction(d, id), [id]);
   const [editing, setEditing] = useState(false);
+  const spaces = useSettings((st) => st.spaces);
   const [iconOpen, setIconOpen] = useState(false);
   const photo = useMerchantPhoto(q.data?.merchant);
   const [amount, setAmount] = useState('');
@@ -117,6 +119,15 @@ export default function TxDetail() {
               </Card>
             )}
             {tx.type !== 'transfer' && <ReceiptCard txId={tx.id} uri={tx.receipt_uri} />}
+            {spaces.length > 0 && !readOnly ? (
+              <Card style={{ gap: space.sm }}>
+                <Text v="caps" color={colors.textMuted}>SPACE</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.sm }}>
+                  <Chip label="🙂 Personal" selected={!tx.space_id} onPress={async () => { await updateTransaction(db, tx.id, { space_id: '' }); bumpData(); toast('Moved to Personal'); }} />
+                  {spaces.map((sp) => <Chip key={sp.id} label={`${sp.emoji} ${sp.name}`} selected={tx.space_id === sp.id} onPress={async () => { await updateTransaction(db, tx.id, { space_id: sp.id }); bumpData(); toast(`Moved to ${sp.name}`); }} />)}
+                </ScrollView>
+              </Card>
+            ) : null}
             {tx.type !== 'transfer' && !readOnly && (
               <View style={{ gap: space.sm }}>
                 <Text v="caps" color={colors.textMuted}>CATEGORY</Text>

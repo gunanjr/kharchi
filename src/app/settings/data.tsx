@@ -14,7 +14,7 @@ export default function DataScreen() {
   const db = useDb();
 
   async function exportCsv() {
-    const [tx, cats, accs] = await Promise.all([listTransactions(db, { includeExcluded: true }), listCategories(db), listAccounts(db)]);
+    const [tx, cats, accs] = await Promise.all([listTransactions(db, { includeExcluded: true, allSpaces: true }), listCategories(db), listAccounts(db)]);
     await shareTextFile(`bruhme-transactions-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(tx, cats, Object.fromEntries(accs.map((a) => [a.id, a.name]))), 'text/csv');
   }
   async function importFromCsv() {

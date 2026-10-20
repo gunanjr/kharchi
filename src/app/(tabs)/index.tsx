@@ -25,6 +25,9 @@ import { useT } from '@/i18n';
 import { useSettings } from '@/store/settings';
 
 export default function Home() {
+  const spaces = useSettings((st) => st.spaces);
+  const activeSpaceId = useSettings((st) => st.activeSpace);
+  const spaceName = activeSpaceId ? (() => { const x = spaces.find((y) => y.id === activeSpaceId); return x ? `${x.emoji} ${x.name}` : '🙂 Personal'; })() : '🙂 Personal';
   const router = useRouter();
   const db = useDb();
   const [loadingDemo, setLoadingDemo] = useState(false);
@@ -54,6 +57,12 @@ export default function Home() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
       >
         <Header title="BruhMe" titleNode={<Wordmark height={38} />} subtitle={new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })} />
+        {spaces.length > 0 ? (
+          <Press onPress={() => router.push('/spaces')} accessibilityLabel={`Space: ${spaceName}. Tap to switch`} style={{ alignSelf: 'flex-start', marginHorizontal: layout.gutter, marginTop: -4, marginBottom: space.sm, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.surfaceAlt, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 6 }}>
+            <Text v="small" style={{ fontFamily: 'Geist_600SemiBold' }}>{spaceName}</Text>
+            <Icon name="chevron" size={14} color={colors.textMuted} />
+          </Press>
+        ) : null}
         {q.error ? <ErrorState error={q.error} onRetry={q.refetch} /> : null}
         {q.loading && !d ? <SkeletonList n={4} /> : null}
         {d && (

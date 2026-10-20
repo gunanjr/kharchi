@@ -8,6 +8,7 @@ import {
 } from './defaults';
 import { isValidMinor } from '@/domain/money';
 import { isValidDate } from '@/lib/date';
+import { activeSpace, spaceFilter } from '@/features/spaces/current';
 
 const ALIVE = 'deleted_at IS NULL';
 
@@ -86,6 +87,8 @@ export type NewTx = {
   fingerprint?: string | null;
   group_expense_id?: string | null;
   recurring_id?: string | null;
+  /** Spaces: '' or null = Personal; omitted = the active space */
+  space_id?: string | null;
 };
 
 export async function addTransaction(db: Db, t: NewTx): Promise<string> {
@@ -109,6 +112,7 @@ export async function addTransaction(db: Db, t: NewTx): Promise<string> {
     fingerprint: t.fingerprint ?? null,
     group_expense_id: t.group_expense_id ?? null,
     recurring_id: t.recurring_id ?? null,
+    space_id: t.space_id !== undefined ? t.space_id || null : activeSpace() || null,
   });
 }
 
@@ -116,6 +120,7 @@ export async function updateTransaction(db: Db, id: string, patch: Partial<NewTx
   const p: Record<string, any> = { ...patch };
   if (patch.tags) p.tags = patch.tags.length ? JSON.stringify(patch.tags) : null;
   if (patch.excluded !== undefined) p.excluded = patch.excluded ? 1 : 0;
+  if (patch.space_id !== undefined) p.space_id = patch.space_id || null;
   if (patch.amount !== undefined && !isValidMinor(patch.amount)) throw new Error('bad amount');
   if (patch.occurred_at !== undefined && !isValidDate(patch.occurred_at)) throw new Error('That date is not valid');
   await updateRow(db, 'transactions', id, p);
@@ -126,6 +131,8 @@ export const undeleteTransaction = (db: Db, id: string) => restoreRow(db, 'trans
 export const getTransaction = (db: Db, id: string) => db.get<Transaction>(`SELECT * FROM transactions WHERE id=?`, [id]);
 
 export interface TxFilter {
+  /** true = every space (exports, balances); default = the active space only */
+  allSpaces?: boolean;
   from?: number;
   to?: number;
   type?: TxType;
@@ -159,6 +166,7 @@ export function listTransactions(db: Db, f: TxFilter = {}): Promise<Transaction[
     p.push(q, q, q);
   }
   const lim = f.limit ? ` LIMIT ${Math.floor(f.limit)} OFFSET ${Math.floor(f.offset ?? 0)}` : '';
+  if (!f.allSpaces) { const sf = spaceFilter(); w.push(sf.sql.replace(/^ AND /, '')); p.push(...sf.params); }
   return db.all<Transaction>(`SELECT * FROM transactions WHERE ${w.join(' AND ')} ORDER BY occurred_at DESC, created_at DESC${lim}`, p);
 }
 
@@ -171,8 +179,8 @@ export async function totalsBetween(db: Db, from: number, to: number): Promise<P
   const r = await db.get<{ i: number; e: number }>(
     `SELECT COALESCE(SUM(CASE WHEN type='income' THEN amount END),0) i,
             COALESCE(SUM(CASE WHEN type='expense' THEN amount END),0) e
-     FROM transactions WHERE ${ALIVE} AND excluded=0 AND occurred_at BETWEEN ? AND ?`,
-    [from, to],
+     FROM transactions WHERE ${ALIVE} AND excluded=0 AND occurred_at BETWEEN ? AND ?${spaceFilter().sql}`,
+    [from, to, ...spaceFilter().params],
   );
   const income = r?.i ?? 0;
   const expense = r?.e ?? 0;
@@ -182,8 +190,8 @@ export async function totalsBetween(db: Db, from: number, to: number): Promise<P
 export const spendByCategory = (db: Db, from: number, to: number) =>
   db.all<{ category_id: string | null; total: number; n: number }>(
     `SELECT category_id, SUM(amount) total, COUNT(*) n FROM transactions
-     WHERE ${ALIVE} AND excluded=0 AND type='expense' AND occurred_at BETWEEN ? AND ? GROUP BY category_id ORDER BY total DESC`,
-    [from, to],
+     WHERE ${ALIVE} AND excluded=0 AND type='expense' AND occurred_at BETWEEN ? AND ?${spaceFilter().sql} GROUP BY category_id ORDER BY total DESC`,
+    [from, to, ...spaceFilter().params],
   );
 
 /* ---------- budgets ---------- */

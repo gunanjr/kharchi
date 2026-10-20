@@ -1,4 +1,5 @@
 import type { Db } from '@/db/types';
+import { spaceFilter } from '@/features/spaces/current';
 import { DAY, daysInMonth, endOfMonth, startOfDay, startOfMonth } from '@/lib/date';
 import { accountBalance, listAccounts, listBudgets, totalsBetween } from './repo';
 import type { Account } from '@/domain/types';
@@ -20,8 +21,8 @@ export async function loadPulse(db: Db, now = Date.now()): Promise<Pulse> {
   const today = startOfDay(now);
   const from = today - 6 * DAY;
   const rows = await db.all<{ d: number; t: number }>(
-    `SELECT occurred_at o, amount a FROM transactions WHERE deleted_at IS NULL AND excluded=0 AND type='expense' AND occurred_at >= ?`,
-    [from],
+    `SELECT occurred_at o, amount a FROM transactions WHERE deleted_at IS NULL AND excluded=0 AND type='expense' AND occurred_at >= ?${spaceFilter().sql}`,
+    [from, ...spaceFilter().params],
   ).then((r: any[]) => r.map((x) => ({ d: startOfDay(x.o), t: x.a as number })));
   const week = Array.from({ length: 7 }, (_, i) => {
     const day = from + i * DAY;

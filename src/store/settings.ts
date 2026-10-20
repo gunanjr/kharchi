@@ -25,6 +25,8 @@ export type Settings = {
   savedLines: string[]; // Bump Pro: the user's own settle-up lines
   bumpTheme: 'midnight' | 'sunset' | 'mint' | 'mono';
   bumpSticker: string;
+  spaces: import('@/features/spaces/spaces').Space[]; // Pro: separate books
+  activeSpace: string; // '' = Personal
   hideAmounts: boolean; // masks every amount (for public places); the eye on Home
 };
 
@@ -52,6 +54,8 @@ export const defaultSettings: Settings = {
   savedLines: [],
   bumpTheme: 'midnight',
   bumpSticker: '',
+  spaces: [],
+  activeSpace: '',
 };
 
 type Store = Settings & {

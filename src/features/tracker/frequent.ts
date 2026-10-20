@@ -1,6 +1,7 @@
 import type { Db } from '@/db/types';
 import { DAY } from '@/lib/date';
 import { merchantKey } from '@/features/parser/merchants';
+import { spaceFilter } from '@/features/spaces/current';
 
 export interface Frequent { merchant: string; categoryId: string | null; amount: number; count: number }
 
@@ -9,8 +10,8 @@ const median = (xs: number[]) => { const s = [...xs].sort((a, b) => a - b); cons
 /** The few things this person pays for again and again: same merchant at least twice in 90 days, with its usual amount. */
 export async function loadFrequent(db: Db, now = Date.now(), limit = 5): Promise<Frequent[]> {
   const rows = await db.all<{ merchant: string; category_id: string | null; amount: number }>(
-    `SELECT merchant, category_id, amount FROM transactions WHERE deleted_at IS NULL AND excluded=0 AND type='expense' AND merchant IS NOT NULL AND merchant <> '' AND occurred_at BETWEEN ? AND ?`,
-    [now - 90 * DAY, now],
+    `SELECT merchant, category_id, amount FROM transactions WHERE deleted_at IS NULL AND excluded=0 AND type='expense' AND merchant IS NOT NULL AND merchant <> '' AND occurred_at BETWEEN ? AND ?${spaceFilter().sql}`,
+    [now - 90 * DAY, now, ...spaceFilter().params],
   );
   type G = { names: Map<string, number>; cats: Map<string | null, number>; amounts: number[] };
   const groups = new Map<string, G>();

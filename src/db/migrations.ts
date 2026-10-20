@@ -105,4 +105,8 @@ ALTER TABLE groups_ ADD COLUMN trip_start INTEGER;
 ALTER TABLE groups_ ADD COLUMN trip_end INTEGER;
 ALTER TABLE groups_ ADD COLUMN daily_budget INTEGER;
 `,
+  /* 9: Spaces (separate books); empty = Personal */ `
+ALTER TABLE transactions ADD COLUMN space_id TEXT;
+CREATE INDEX IF NOT EXISTS idx_tx_space ON transactions(space_id);
+`,
 ];
