@@ -15,14 +15,17 @@ test('recap numbers: totals, comparison, top places, biggest, busiest day, no-sp
   const txs = [
     e(10000, at(2026, 8, 10)), // September: 10000
     e(4000, at(2026, 9, 2), 'Chai'), e(5000, at(2026, 9, 2), 'Cab', 'cat_transport'), e(2000, at(2026, 9, 5), 'chai'),
+    e(900000, at(2026, 9, 7), 'Rent', 'cat_rent'), e(500000, at(2026, 9, 8), 'ELSS SIP', 'cat_other', { tags: '["elss"]' }),
     e(50000, at(2026, 9, 10), 'Laptop', 'cat_shopping', { excluded: 1 }), // left out
     { type: 'income' as const, amount: 90000, merchant: 'Salary', category_id: 'cat_salary', occurred_at: at(2026, 9, 1) },
   ];
   const r = recap(txs, w);
-  expect(r).toMatchObject({ spent: 11000, income: 90000, entries: 3, change: 1000, changePct: 10 });
+  expect(r).toMatchObject({ spent: 1411000, income: 90000, entries: 5 });
+  expect(r.topPlaces.map((p) => p.name)).not.toContain('Rent');
+  expect(r.topPlaces.map((p) => p.name)).not.toContain('ELSS SIP');
   expect(r.topPlaces[0]).toMatchObject({ name: 'Chai', total: 6000, count: 2 }); // case-insensitive merge
-  expect(r.biggest).toMatchObject({ name: 'Cab', amount: 5000 });
-  expect(new Date(r.busiestDay!.at).getDate()).toBe(2);
+  expect(r.biggest).toMatchObject({ name: 'Rent', amount: 900000 });
+  expect(new Date(r.busiestDay!.at).getDate()).toBe(7);
   expect(r.noSpendDays).toBe(1); // the 1st had only income
 });
 

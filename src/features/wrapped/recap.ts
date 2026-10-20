@@ -4,7 +4,10 @@ import type { Transaction } from '@/domain/types';
  * Recaps and Wrapped: the same small engine over different time windows (a week, a month, a year), plus milestones.
  * Pure and tested. Counts only expenses that count in totals; never judges, only reports.
  */
-type Tx = Pick<Transaction, 'type' | 'amount' | 'merchant' | 'category_id' | 'occurred_at'> & { excluded?: number | null };
+type Tx = Pick<Transaction, 'type' | 'amount' | 'merchant' | 'category_id' | 'occurred_at'> & { excluded?: number | null; tags?: string | null };
+/** Rent, bills, subscriptions and investments are real spending but never a "favourite place". */
+const NOT_A_PLACE = new Set(['cat_rent', 'cat_bills', 'cat_subscriptions']);
+const NOT_A_PLACE_TAGS = /"(investing|insurance|elss|ppf|epf|lic|nps|emi|life-insurance|health-insurance|donation)"/i;
 const DAY = 86_400_000;
 const sod = (t: number) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
 
@@ -58,7 +61,7 @@ export function recap(txs: Tx[], w: Window): Recap {
   let biggest: Recap['biggest'] = null;
   for (const t of exp) {
     const name = (t.merchant ?? '').trim();
-    if (name) { const k = name.toLowerCase(); const p = places.get(k) ?? { name, total: 0, count: 0 }; p.total += t.amount; p.count++; places.set(k, p); }
+    if (name && !NOT_A_PLACE.has(t.category_id ?? '') && !NOT_A_PLACE_TAGS.test(t.tags ?? '')) { const k = name.toLowerCase(); const p = places.get(k) ?? { name, total: 0, count: 0 }; p.total += t.amount; p.count++; places.set(k, p); }
     cats.set(t.category_id, (cats.get(t.category_id) ?? 0) + t.amount);
     const day = sod(t.occurred_at);
     days.set(day, (days.get(day) ?? 0) + t.amount);
@@ -74,7 +77,8 @@ export function recap(txs: Tx[], w: Window): Recap {
     window: w, spent, income, entries: exp.length,
     change: prev > 0 ? spent - prev : null,
     changePct: prev > 0 ? Math.round(((spent - prev) / prev) * 100) : null,
-    topPlaces: [...places.values()].sort((a, b) => b.total - a.total || a.name.localeCompare(b.name)).slice(0, 3),
+    // the place you went to most, not the single biggest bill
+    topPlaces: [...places.values()].sort((a, b) => b.count - a.count || b.total - a.total || a.name.localeCompare(b.name)).slice(0, 3),
     topCategory: topCat ? { id: topCat[0], total: topCat[1] } : null,
     biggest, busiestDay: busy ? { at: busy[0], total: busy[1] } : null,
     priciestWeekday: maxWd > 0 ? wd.indexOf(maxWd) : null,
@@ -87,7 +91,7 @@ export function recap(txs: Tx[], w: Window): Recap {
 export interface Milestone { key: string; title: string; detail: string; emoji: string; earnedAt: number }
 
 /** Longest run of consecutive calendar days with at least one entry, and the day it was reached. */
-export function longestStreak(txs: Tx[]): { days: number; at: number } {
+export function longestStreak(txs: Pick<Tx, 'occurred_at'>[]): { days: number; at: number } {
   const days = [...new Set(txs.map((t) => sod(t.occurred_at)))].sort((a, b) => a - b);
   let best = { days: 0, at: 0 };
   let run = 0;
