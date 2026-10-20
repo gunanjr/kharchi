@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Modal, ScrollView, View } from 'react-native';
 import { SubScreen, Card, Text, Row, Button, Money, Press, Field, Chip } from '@/components/ui';
 import { Icon, type IconName } from '@/components/Icon';
@@ -89,11 +89,11 @@ export default function Dues() {
   const set = useSettings((s) => s.set);
   const [editing, setEditing] = useState<DueItem | null | 'new'>(null);
   const now = Date.now();
-  const views = useMemo(() => viewAll(items, now), [items, now]);
-  const sum = useMemo(() => monthSummary(items, now), [items, now]);
+  const views = viewAll(items, now);
+  const sum = monthSummary(items, now);
   const d = new Date(now);
   const year = d.getFullYear(), month = d.getMonth();
-  const cal = useMemo(() => calendarMonth(items, year, month), [items, year, month]);
+  const cal = calendarMonth(items, year, month);
 
   const save = (list: DueItem[]) => set(db, 'dueItems', list);
 

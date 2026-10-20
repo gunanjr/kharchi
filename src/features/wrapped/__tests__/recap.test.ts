@@ -1,4 +1,5 @@
 import { recap, lastWeek, monthWindow, longestStreak, milestones } from '../recap';
+import { nextMonday10 } from '../useWeeklyRecap';
 const D = 86_400_000;
 const at = (y: number, m: number, d: number, h = 12) => new Date(y, m, d, h).getTime();
 const e = (amount: number, t: number, merchant = 'Chai', category_id: string | null = 'cat_food', extra = {}) => ({ type: 'expense' as const, amount, merchant, category_id, occurred_at: t, ...extra });
@@ -53,7 +54,6 @@ test('no-spend weekend and spent-less month', () => {
   expect(sparse).not.toContain('no-spend-weekend');
 });
 
-import { nextMonday10 } from '../useWeeklyRecap';
 test('next Monday 10 am', () => {
   expect(new Date(nextMonday10(at(2026, 9, 21, 9)))).toEqual(new Date(2026, 9, 26, 10)); // Wed -> next Mon
   expect(new Date(nextMonday10(new Date(2026, 9, 26, 9).getTime()))).toEqual(new Date(2026, 9, 26, 10)); // Mon 9am -> same day

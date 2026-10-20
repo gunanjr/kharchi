@@ -11,6 +11,7 @@ import { HealthCard } from '@/features/insights/ui/HealthCard';
 import { MonthBars, PaceTrack, RankedRow, StackedBar, StatBox, WeekdayBars } from '@/features/insights/ui/parts';
 import { MerchantTile } from '@/features/brands/MerchantTile';
 import { showPro } from '@/features/pro/flags';
+import { useIsPro } from '@/features/pro/store';
 import { loadInsights } from '@/features/insights/load';
 import { buildRangeInsights } from '@/features/insights/range';
 import { savingsTips } from '@/features/insights/analytics';
@@ -29,6 +30,7 @@ export default function Insights() {
   const { colors } = useTheme();
   const { byId } = useCategories();
   const [range, setRange] = useState<Range>('1M');
+  const isPro = useIsPro();
   const [monthSel, setMonthSel] = useState<number | null>(null);
   const q = useQuery((db) => loadInsights(db), []);
   const d = q.data;
@@ -44,14 +46,14 @@ export default function Insights() {
 
   return (
     <Screen>
-      <Header title="Insights" right={<Button title="Questions" kind="secondary" size="sm" icon="chat" onPress={() => router.push('/assistant')} />} />
+      <Header title="Insights" right={<Row style={{ gap: space.sm }}>{showPro() ? <Button title="Deep dive" kind="secondary" size="sm" icon="chart" onPress={() => router.push('/deep-dive')} /> : null}<Button title="Ask" kind="secondary" size="sm" icon="chat" onPress={() => router.push('/assistant')} /></Row>} />
       {q.error ? <ErrorState error={q.error} onRetry={q.refetch} /> : null}
       {q.loading && !d ? <SkeletonList n={4} /> : null}
       {d && d.all.length === 0 ? (
         <EmptyState art="chart" title="Nothing to chart yet" body="Log a few spends and this page turns into a story about your money. Or load sample data from More, Developer." action="Add expense" onAction={() => router.push('/add')} />
       ) : d && r ? (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingTop: space.sm, gap: space.xl, paddingBottom: 168 }}>
-          <Segmented options={(['1M', '3M', '6M', '1Y'] as Range[]).map((k) => ({ key: k, label: SHORT[k] }))} value={range} onChange={(k) => { setRange(k); setMonthSel(null); }} />
+          <Segmented options={(['1M', '3M', '6M', '1Y'] as Range[]).map((k) => ({ key: k, label: (k === '6M' || k === '1Y') && showPro() && !isPro ? `${SHORT[k]} 🔒` : SHORT[k] }))} value={range} onChange={(k) => { if ((k === '6M' || k === '1Y') && showPro() && !isPro) { router.push('/pro'); return; } setRange(k); setMonthSel(null); }} />
 
           {/* 1. The headline */}
           <Enter i={0}>

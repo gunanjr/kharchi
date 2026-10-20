@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { ScrollView, Switch, View } from 'react-native';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
@@ -82,15 +82,15 @@ export default function Wrapped() {
   const q = useQuery(async (x) => ({ txs: await listTransactions(x, { from: now - 3 * 366 * 86_400_000, to: now + 1 }), cats: await listCategories(x), sets: await listSettlements(x, null).then(async (a) => a) }), []);
   const catName = (id: string | null) => q.data?.cats.find((c) => c.id === id)?.name ?? 'Uncategorised';
 
-  const view = useMemo(() => {
+  const view = (() => {
     if (!q.data) return null;
     const txs = q.data.txs;
     if (tab === 'week') return { r: recap(txs, lastWeek(now)), title: 'Your week' };
     if (tab === 'month') { const m = new Date(d.getFullYear(), d.getMonth() - monthOff, 1); const w = monthWindow(m.getFullYear(), m.getMonth()); return { r: recap(txs, w), title: `Your ${w.label.split(' ')[0]}` }; }
     if (tab === 'year') { const w = yearWindow(d.getFullYear() - yearOff); return { r: recap(txs, w), title: `Your ${w.label}` }; }
     return null;
-  }, [q.data, tab, monthOff, yearOff, now, d]);
-  const earned = useMemo(() => (q.data ? milestones(q.data.txs, { settlements: q.data.sets.map((s) => s.occurred_at) }, now) : []), [q.data, now]);
+  })();
+  const earned = q.data ? milestones(q.data.txs, { settlements: q.data.sets.map((s) => s.occurred_at) }, now) : [];
 
   async function share() {
     try {
