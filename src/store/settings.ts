@@ -22,6 +22,9 @@ export type Settings = {
   radarState: Record<string, { cancelledAt?: number; remind?: boolean }>; // subscription radar choices
   dueItems: import('@/features/dues/dues').DueItem[]; // bills with due dates (Pro)
   recapScheduledFor: number; // the Monday a recap notification is already set for
+  savedLines: string[]; // Bump Pro: the user's own settle-up lines
+  bumpTheme: 'midnight' | 'sunset' | 'mint' | 'mono';
+  bumpSticker: string;
   hideAmounts: boolean; // masks every amount (for public places); the eye on Home
 };
 
@@ -46,6 +49,9 @@ export const defaultSettings: Settings = {
   radarState: {},
   dueItems: [],
   recapScheduledFor: 0,
+  savedLines: [],
+  bumpTheme: 'midnight',
+  bumpSticker: '',
 };
 
 type Store = Settings & {

@@ -136,3 +136,29 @@ export function nudgeMessage(input: NudgeInput, tone: Tone = 'playful', variant 
   const link = upiLink({ upiId: input.upiId, payeeName: input.payeeName, amount: input.amount, note: what });
   return link ? `${text}\n\nTap to pay: ${link}\nUPI ID: ${input.upiId!.trim()}` : text;
 }
+
+/** Tones every user gets; the rest are part of Pro. */
+export const FREE_TONES: Tone[] = ['polite', 'playful', 'minimal', 'firm'];
+
+/**
+ * Fill the user's own line (Pro). Supported placeholders: {name}, {amount}, {for}, {days}. Unknown braces are left as
+ * typed. The UPI link is added the same way as for built-in lines.
+ */
+export function fillLine(template: string, input: NudgeInput): string {
+  const amt = formatMoney(Math.abs(Math.round(input.amount)), input.currency ?? 'INR', { trimZeros: true });
+  const items = (input.items ?? []).map((x) => x.trim()).filter(Boolean).slice(0, 2);
+  const what = items.length ? items.join(' + ') : input.reason?.trim() || '';
+  const nm = first(input.name);
+  let text = template
+    .replace(/\{name\}/gi, nm || 'hey')
+    .replace(/\{amount\}/gi, amt)
+    .replace(/\{for\}/gi, what || 'that')
+    .replace(/\{days\}/gi, input.daysOwed && input.daysOwed >= 1 ? String(Math.round(input.daysOwed)) : 'a few')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 480);
+  if (!/₹|\d/.test(text)) text = `${text} (${amt})`; // a request must always say how much (added after trimming, so it is never cut off)
+  text = text.charAt(0).toUpperCase() + text.slice(1);
+  const link = upiLink({ upiId: input.upiId, payeeName: input.payeeName, amount: input.amount, note: what || null });
+  return link ? `${text}\n\nTap to pay: ${link}\nUPI ID: ${input.upiId!.trim()}` : text;
+}

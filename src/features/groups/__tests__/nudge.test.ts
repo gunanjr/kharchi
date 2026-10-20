@@ -1,4 +1,4 @@
-import { nudgeMessage, suggestTone, upiLink, isUpiId, TONES, linesIn } from '../nudge';
+import { nudgeMessage, suggestTone, upiLink, isUpiId, TONES, linesIn, fillLine, FREE_TONES } from '../nudge';
 
 const base = { amount: 50000, name: 'Asha Rao', items: ['Dinner', 'Cab', 'Hotel'], daysOwed: 12 };
 
@@ -54,4 +54,14 @@ test('lines read cleanly with no name and no reason', () => {
     expect(m).toContain('₹250');
     expect(m).not.toMatch(/undefined|null|  |\s,|\s\.|^[a-z]/);
   }
+});
+
+test('own lines fill placeholders, always state the amount, and stay safe', () => {
+  const input = { amount: 60000, name: 'Meera Rao', items: ['Dinner'], daysOwed: 9 };
+  expect(fillLine('{name}, {amount} for {for}. {days} days now 😤', input)).toBe('Meera, ₹600 for Dinner. 9 days now 😤');
+  expect(fillLine('pay me back pls', input)).toBe('Pay me back pls (₹600)');
+  expect(fillLine('{NAME} owes {Amount}', { amount: 100 })).toBe('Hey owes ₹1');
+  expect(fillLine('x'.repeat(900) + ' ₹', input).length).toBeLessThanOrEqual(500);
+  expect(fillLine('{name} {amount}', { ...input, upiId: 'me@ybl' })).toContain('upi://pay?pa=me%40ybl');
+  expect(FREE_TONES).toEqual(['polite', 'playful', 'minimal', 'firm']);
 });
