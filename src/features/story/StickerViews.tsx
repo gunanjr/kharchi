@@ -12,19 +12,20 @@ import type { Cell } from './stickers';
  * One big number, one short line, one drawing, a small mark. Never an amount.
  */
 const SHADOW = { textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 8 } as const;
+const sh = (ink: string) => (ink === '#FFFFFF' ? SHADOW : {});
 const W = 260;
 
 function Big({ children, ink }: { children: React.ReactNode; ink: string }) {
-  return <Text style={{ fontFamily: fonts.brandBlack, fontSize: 88, lineHeight: 94, letterSpacing: -3, color: ink, ...SHADOW }} numberOfLines={1} adjustsFontSizeToFit>{children}</Text>;
+  return <Text style={{ fontFamily: fonts.brandBlack, fontSize: 88, lineHeight: 94, letterSpacing: -3, color: ink, ...sh(ink) }} numberOfLines={1} adjustsFontSizeToFit>{children}</Text>;
 }
 function Line({ children, ink }: { children: React.ReactNode; ink: string }) {
-  return <Text style={{ fontFamily: fonts.bold, fontSize: 17, color: ink, ...SHADOW }}>{children}</Text>;
+  return <Text style={{ fontFamily: fonts.bold, fontSize: 17, color: ink, ...sh(ink) }}>{children}</Text>;
 }
 function Mark({ ink }: { ink: string }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 14 }}>
       <BrandMark size={18} />
-      <Text style={{ fontFamily: fonts.brandBlack, fontSize: 13, color: ink, ...SHADOW }}>BruhMe</Text>
+      <Text style={{ fontFamily: fonts.brandBlack, fontSize: 13, color: ink, ...sh(ink) }}>BruhMe</Text>
     </View>
   );
 }
@@ -86,23 +87,23 @@ export function NoSpendSticker({ count, cells, firstWeekday, month, ink = '#FFFF
 }
 
 export function AuraSticker({ score, rank, title, ink = '#FFFFFF' }: { score: number; rank: string; title: string; ink?: string }) {
-  const s = 120, sw = 10, r = (s - sw) / 2, c = 2 * Math.PI * r;
+  const s = 150, sw = 12, r = (s - sw) / 2, c = 2 * Math.PI * r;
+  const off = ink === '#FFFFFF' ? 'rgba(255,255,255,0.3)' : 'rgba(20,24,31,0.2)';
+  const fit = Math.min(30, Math.floor((W - 34) / (title.length * 0.62))); // sized from the text so it never cuts, on every platform
   return (
     <View style={{ width: W }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-        <View style={{ width: s, height: s, alignItems: 'center', justifyContent: 'center' }}>
-          <Svg width={s} height={s} style={{ position: 'absolute' }}>
-            <Circle cx={s / 2} cy={s / 2} r={r} stroke={ink} strokeOpacity={0.3} strokeWidth={sw} fill="none" />
-            <Circle cx={s / 2} cy={s / 2} r={r} stroke={ink} strokeWidth={sw} fill="none" strokeLinecap="round" strokeDasharray={`${(c * Math.max(2, score)) / 100} ${c}`} transform={`rotate(-90 ${s / 2} ${s / 2})`} />
-          </Svg>
-          <Text style={{ fontFamily: fonts.brandBlack, fontSize: 40, color: ink, ...SHADOW }}>{score}</Text>
-        </View>
-        <View style={{ flex: 1, gap: 6 }}>
-          <RankMark rank={rank} size={22} color={ink} off="rgba(255,255,255,0.3)" />
-          <Text style={{ fontFamily: fonts.brandBlack, fontSize: 26, lineHeight: 30, color: ink, ...SHADOW }}>{title}</Text>
-          <Line ink={ink}>aura this month</Line>
-        </View>
+      <View style={{ width: s, height: s, alignItems: 'center', justifyContent: 'center' }}>
+        <Svg width={s} height={s} style={{ position: 'absolute', top: 0, left: 0 }}>
+          <Circle cx={s / 2} cy={s / 2} r={r} stroke={off} strokeWidth={sw} fill="none" />
+          <Circle cx={s / 2} cy={s / 2} r={r} stroke={ink} strokeWidth={sw} fill="none" strokeLinecap="round" strokeDasharray={`${(c * Math.max(2, score)) / 100} ${c}`} transform={`rotate(-90 ${s / 2} ${s / 2})`} />
+        </Svg>
+        <Text style={{ fontFamily: fonts.brandBlack, fontSize: 52, lineHeight: 62, color: ink, ...sh(ink) }} numberOfLines={1}>{score}</Text>
       </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 14 }}>
+        <RankMark rank={rank} size={22} color={ink} off={off} />
+        <Text style={{ flex: 1, fontFamily: fonts.brandBlack, fontSize: fit, lineHeight: fit * 1.2, color: ink, ...sh(ink) }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.5}>{title}</Text>
+      </View>
+      <Line ink={ink}>aura this month</Line>
       <Mark ink={ink} />
     </View>
   );
