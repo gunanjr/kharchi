@@ -136,7 +136,7 @@ Scripts: `start`, `android:dev`, `android:store`, `build:store-aab`, `build:stor
 - *Trip mode* (`trip.ts`, migration 8): optional length and daily budget on a group. Shows day N of M, spent, per day, left today, pace against budget, and a **who pays next** suggestion: the person furthest behind on paying (ties go to whoever paid fewer bills, then a stable order; nobody is named when the group is within 50 of even). Arithmetic only; nothing blocks spending.
 
 **Insights (rebuilt 20 Oct).** A range switch (1M, 3M, 6M, 1Y) drives a headline card (spent, change against the period before, income, kept, no-spend days), **Where it went** (stacked bar plus ranked categories), **Month by month** (slim bars for the last 6 or 12 months on a dotted average line; tap a month for spent, a change pill against the month before, and Income, Kept and vs-average boxes; See all entries), **This month** (spent so far, on-pace total, a pace track with last month marked, and Per day, Days left, vs last month) (spent, heading for, day N of M, last month), **Which days cost you** (tap a bar for that day), **Top places**, **Repeating charges**, **Worth a look**, **Health check** and **Ideas to save**. Everything tappable does something: a category or place opens that list of entries (`/entries`, its own stack screen so Back returns to Insights), a flagged entry opens it, repeating charges open Manage, and a health tile expands to explain itself with one real action (Open budgets, See repeating charges, or Start a savings goal where that is the honest next step). One footnote at the end: estimates from your own entries. Money health is a four-part score and not advice.
-**Assistant.** Tap-only: grouped questions built from the user's own categories and months, each tested to answer, on an empty app too; no free-text box. **Monthly review** card with month browsing and share-as-image.
+**Assistant.** Tap-only: grouped questions built from the user's own categories and months, each tested to answer, on an empty app too; no free-text box. The month in pictures lives in **Wrapped** (the separate Monthly review screen was removed on 20 Oct).
 
 **Merchant icons (added 20 Oct).** About **600** merchants and services are built in with aliases (`features/brands`), India first (food, cafés, quick commerce, fashion, electronics, travel, fuel, streaming, gaming, education, payments, banks, insurance, telecom, utilities, health) and then popular global names. Typing "swigg" in the add screen offers a Swiggy chip with its icon; a saved entry whose merchant matches shows that icon in every list. **318 use the merchant's own site icon**, fetched once at build time by `scripts/fetch-brand-icons.mjs` from the official domain (apple-touch-icon, declared icon or web-app manifest icon), **only from sources of at least 128 px** so nothing is stretched, normalised to 144 px PNG (1.4 MB in total) and **checked by eye on contact sheets**; 30 that were wrong, soft, a "lite" variant or another brand's icon were rejected (listed in `scripts/brand-icons.json`). 20 use a Simple Icons glyph (CC0). The remaining ~270, whose sites would not give a sharp icon, use a brand-colour single-letter monogram. Brand names that are everyday words (Apple, Lime, Target, Max and others) only match when the whole merchant text is the name, so "Lime juice" never shows a scooter logo. The app makes no network call for any of this. Refresh: `node scripts/fetch-brand-icons.mjs` (incremental; `--all` refetches), review the sheets, then `python3 scripts/gen-brand-data.py <unpacked simple-icons>`. On an entry the user can tap the icon to **take a photo or pick one** as that merchant's own icon. Brand names and logos belong to their owners; see section 20. Not used: Flaticon (terms forbid scraping; per-icon attribution) and favicon.run (179 mostly global sites, no licence).
 
@@ -335,11 +335,11 @@ The database is **not encrypted** (it lives in app-private storage other apps ca
 
 ---
 
-## 18. Release checklist (state as of 20 Oct 2026)
+## 18. Release checklist (state as of 21 Oct 2026)
 
 **Scope:** core use works for one person without an account (done) · no Crew (done) · no Social (done) · no speculative backend or auth scaffolding (done) · no payment custody or bank linking (done) · local split clearly separate from payment (done).
 **Privacy and data:** core functions offline (to verify in airplane mode) · no unapproved network calls or telemetry (app code clean; verify SDKs on a build) · no analytics, ads or tracking SDK (clean) · no SMS or listener permission in the store build (clean; Full edition pending) · final manifest verified (open) · storage, export, backup, restore and deletion tested (logic tested; device test open) · no sensitive production logs (clean in code) · every relevant dependency reviewed (direct ones done; ML Kit and transitive open) · privacy policy accurate (needs the name, publisher and wording update) · Data safety matches the build (open).
-**Quality:** tests pass (done) · typecheck and lint (done) · production build (bundle built; native build open) · native modules compile and device-tested (open) · migrations and backup tested (done in tests) · calculations have known-value tests (done) · parser and OCR output reviewable before saving (done) · no known critical crash or data-loss issue (none known).
+**Quality:** 441 tests pass (done, 21 Oct) · typecheck and lint with zero warnings (done) · purchase signatures verified on the phone (done) · production build (bundle built; native build open) · native modules compile and device-tested (open) · migrations and backup tested (done in tests) · calculations have known-value tests (done) · parser and OCR output reviewable before saving (done) · no known critical crash or data-loss issue (none known).
 **Store and business:** name and package confirmed (open, yours) · publisher details accurate (open, yours) · policy URL public (open, yours) · forms complete (open, yours) · testing requirement met (open, yours) · licences and notices addressed (open) · listing claims accurate (needs a pass) · no subscription, ads or affiliate flow (done).
 **Final approval:** founder reviews the release candidate and approves the actual build (open).
 
@@ -402,9 +402,9 @@ Everything below was asked for or proposed and **deliberately not built**, becau
 
 ---
 
-## 22. BruhMe Pro: monetisation plan (proposed, not built)
+## 22. BruhMe Pro: monetisation plan (built under amendment A1)
 
-> **Status:** plan only; nothing is in the code. Section 1 prohibits billing, prices and paywalls in V1. To build this, the founder adds a written amendment to section 1, for example: *"V1 may sell optional extras through Google Play Billing with no BruhMe account and no BruhMe server. Pro may write an encrypted backup file to a cloud folder the user picks. A user's own records, export, backup, restore and deletion are never locked."*
+> **Status (21 Oct):** built. Amendment A1 (section 1) allows Google Play Billing and Vault; every feature below exists in code (see 24.5a for the build log and 24.0 for the current Pro tab). The original plan text is kept below for the reasoning behind prices and the anti-bypass rules.
 
 ### 22.1 Accounts, reinstalling and changing phones (no BruhMe login)
 - **No sign-up, no password, no BruhMe server.** A purchase belongs to the user's Google Play account. Reinstall, then **Restore purchases** (also checked quietly on launch), and Pro returns on any phone with the same store account.
@@ -666,7 +666,7 @@ A previous session ran out of context in the middle of a large redesign. This is
 - `expo-image-picker` is configured with all permissions blocked; installed builds take photos through the Kotlin module (no CAMERA permission), Expo Go through the picker.
 
 ### 24.4 The user: preferences and standing rules
-- Wants a **premium, Gen Z, "bruh me / bro, pay me back"** feel that is still **professional**: no gimmicks, no filler, no "AI-looking" visuals, no over-texting, no fake urgency. Copy must be accurate (no absolute privacy claims) and neutral ("any UPI app", never naming specific payment apps).
+- Wants a **premium, playful but professional** feel for **everyone, all ages** (never positioned as "for friends" or "Gen Z only"): no gimmicks, no filler, no "AI-looking" visuals, no over-texting, no fake urgency. Copy must be accurate (no absolute privacy claims) and neutral ("any UPI app", never naming specific payment apps). Visual rules are binding (24.0): no gradients, glows or stock emojis as visuals, no repeated taglines on cards, Strava-style brag sharing without amounts, figures never wrap.
 - **Never show other companies' brands** in onboarding, store graphics or marketing.
 - Wants the app to feel fast, uncluttered and self-explanatory; complains quickly about broken-looking layouts, unexplained charts, dead taps, wrong Back behaviour and anything that wraps or clips. Every tappable thing must do something sensible.
 - Gives feedback mid-task in bursts; handle each point, show screenshots-verified results, and report plainly what changed and what was not verified.
@@ -733,13 +733,13 @@ A previous session ran out of context in the middle of a large redesign. This is
 1. ~~Code not pushed~~ Pushed to `main` on 20 Oct (founder approved).
 2. **No signed build yet:** someone logged in to Expo runs `npx eas-cli login`, `npx eas-cli init`, then `npm run build:store-aab` (this machine is not logged in to Expo).
 3. **Play account type:** a personal account created after Nov 2023 must run a closed test (12 testers, 14 days) before production; tonight's realistic target is then internal or closed testing.
-4. **Pro purchases:** `expo-iap` and the three Play products are not connected; products can only be created after the first upload. ~~Launch free first~~ **Superseded (founder, 20 Oct night): publish with every Pro feature and billing working.** Pro stays hidden in store builds (`PRO_LAUNCHED = false`) only until then; flip it when billing and the three products are live.
+4. **Pro purchases:** `expo-iap` is connected and every purchase is signature-checked on the phone (21 Oct); the three Play products and the `PLAY_LICENSE_KEY` can only be set up around the first upload. ~~Launch free first~~ **Superseded (founder, 20 Oct night): publish with every Pro feature and billing working.** Pro stays hidden in store builds (`PRO_LAUNCHED = false`) only until then; flip it when billing and the three products are live.
 5. **Privacy page hosting:** GitHub Pages serves `docs/` only after it is pushed; the policy URL must work before submitting.
 6. **Not tested on a real phone:** everything since 19 Oct (section 17).
 
 ### 24.6 What to do next
-1. **Amendment A1 is approved: build the whole of section 22** (free and Pro) before the first release, in this order: entitlement and Play Billing (`expo-iap`, anti-bypass 22.2a) and the Pro sheet; Vault (recovery-code model); Subscription radar; due dates with local reminders; weekly recap, Monthly and Yearly Wrapped, milestones; Pro Insights; Bump Pro (themes, stickers, saved lines); Spaces; persona, badges, streaks, Bruh score, roast or toast (fairness rules 22.2b); reimbursements; warranty vault; tax-time totals; private mode; widgets and app icons; friend codes (22.2c). Each with tests. Package id must be confirmed before any Play upload.
-2. If the user keeps polishing UI: verify every change with preview screenshots; keep the rules in 24.4.
-3. When approved: commit in logical chunks (constitution clean-up, brand, features, docs) as fermormain; push only if told.
-4. When Pro is approved, follow the anti-bypass design in section 22.2a exactly.
-5. Before release: device test everything in section 17, run `npm run audit:manifest` on a built APK, update the privacy page and store listing, licence notices.
+1. **Read 24.0 first**: it has the live state, the release-truth audit and the numbered to-do list. Section 22 is built.
+2. **Feature freeze** (decisions log, 21 Oct): no new features until the build is tested on a phone and with closed testers; fix bugs and polish only.
+3. Verify every UI change with preview screenshots and keep the rules in 24.0 and 24.4.
+4. Commit in logical chunks as fermormain; push only when the founder says so.
+5. Before release: the steps in 24.0 (phone testing, Play products and `PLAY_LICENSE_KEY`, `npm run audit:manifest` on the built APK, Data safety, licences).
