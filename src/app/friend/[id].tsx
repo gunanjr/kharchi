@@ -43,7 +43,22 @@ export default function Friend() {
       </Card>
       <Card style={{ gap: space.md }}>
         <Field label="UPI ID" value={upi ?? p.upi_id ?? ''} onChangeText={setUpi} autoCapitalize="none" placeholder="name@okaxis" />
-        <Button title="Save UPI ID" kind="secondary" onPress={async () => { const v = (upi ?? '').trim(); if (v && !isValidVpa(v)) return toast('That doesn’t look like a UPI ID'); await updatePerson(db, id, { upi_id: v || null }); bumpData(); toast('Saved'); }} />
+        {(() => {
+          // Nothing to save until something real is typed; clearing a saved ID is a separate, explicit action.
+          const typed = (upi ?? p.upi_id ?? '').trim();
+          const saved = (p.upi_id ?? '').trim();
+          if (!typed && saved) return <Button title="Remove UPI ID" kind="ghost" onPress={async () => { await updatePerson(db, id, { upi_id: null }); setUpi(null); bumpData(); toast('UPI ID removed'); }} />;
+          return (
+            <Button title="Save UPI ID" kind="secondary" disabled={!typed || typed === saved} onPress={async () => {
+              if (!typed) return;
+              if (!isValidVpa(typed)) return toast('That doesn’t look like a UPI ID. It looks like name@bank.');
+              await updatePerson(db, id, { upi_id: typed });
+              setUpi(null);
+              bumpData();
+              toast('UPI ID saved');
+            }} />
+          );
+        })()}
       </Card>
       <Modal visible={settle} transparent animationType="none" onRequestClose={() => setSettle(false)}>
         <Sheet onClose={() => setSettle(false)}>

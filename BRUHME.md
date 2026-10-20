@@ -1,8 +1,10 @@
 # BruhMe: the one document
 
-> Repo, package id and Kotlin module are still named `kharchi` until the founder approves new identifiers (section 3). Everything a person sees says **BruhMe** (capital B, capital M), as in the wordmark.
+> Package id is **`com.bruhme.app`**. The repo, slug, scheme and Kotlin module are still named `kharchi` (section 23). Everything a person sees says **BruhMe** (capital B, capital M), as in the wordmark.
 
-Last updated 20 Oct 2026 (second pass: groups, insights, settle-up, trip mode, merchant icons, speed). This is the single source of truth: the binding product rules, what the app is, how to run and ship it, what was decided and why, what is verified, and what is still open. If code and this file disagree, the code wins: fix this file in the same change.
+> **Latest founder decisions (20 Oct, night):** the Play account is **personal** and stays personal, so the closed test (12 testers, 14 days) comes first. Because of that, **publish with every Pro feature built and billing working**, not a free-first launch: build all of section 22, connect Google Play billing, then set `PRO_LAUNCHED = true` in `src/features/pro/flags.ts` and list every built feature on the Pro screen. Use the 14-day closed test to test Pro purchases with real testers.
+
+Last updated 20 Oct 2026 (night). This is the single source of truth: the binding product rules, what the app is, how to run and ship it, what was decided and why, what is verified, and what is still open. If code and this file disagree, the code wins: fix this file in the same change.
 
 Sections: 1 Product constitution (binding) · 2 Compliance audit · 3 Brand · 4 What the app is · 5 Run it · 6 Features · 7 Design · 8 Architecture · 9 Data flow, permissions, dependencies · 10 Play and privacy declarations · 11 Monetisation · 12 Robustness, feedback, testing · 13 Bill scanning · 14 Decisions · 15 Publish steps · 16 Incidents and merges · 17 Known limitations · 18 Release checklist · 19 Future versions (locked) · 20 Open items · 21 Paused and parked ideas · 22 BruhMe Pro: monetisation plan (proposed) · 23 Where "kharchi" still appears · **24 Handoff: read this first if you are a new agent**.
 
@@ -612,6 +614,7 @@ Renaming these is a one-time change best done together with the new package id, 
 - [ ] **Billing adapter:** `src/features/pro/billing.ts` detects the native billing module; add `expo-iap`, connect purchase, restore and acknowledgement to `resolveEntitlement`, and store the cache in the secure keystore. Needs the package id and the products created in Play Console.
 - [x] **Subscription radar** `src/features/radar/radar.ts` (tested: weekly, monthly, quarterly, yearly; price rises; stopped charges; left-out entries ignored; cancelled charges drop out and are flagged if they charge again) and screen `src/app/radar.tsx` (yearly and monthly totals, renewal date, *Remind me the day before* local notification, *I cancelled it*, tap for payments). Linked from More and Insights (*Open radar*). Helper `src/lib/notify.ts` (`notifyAt`, `morningBefore`) for every local reminder.
 - [x] **ProGate** `src/features/pro/ProGate.tsx`: wraps any Pro screen; free users see what it does and *See Pro*.
+- [x] **Fix (20 Oct night):** on a friend's page, *Save UPI ID* no longer saves an empty value; it stays disabled until a real, changed ID is typed, and clearing a saved ID is a separate *Remove UPI ID* button.
 - [ ] **Next, in order:** due dates with reminders (card, rent, EMI, bills; month calendar) → weekly recap (free) and Monthly/Yearly Wrapped and milestones (share cards, reuse `WrappedCard` style) → Pro Insights (custom range, month vs month, spending calendar, budget autopilot) → Bump Pro (gate the extra 4 tones and add saved lines and card themes) → Spaces → persona, badges, streaks, Bruh score, roast or toast (rules 22.2b) → reimbursements PDF → warranty vault → tax-time totals → private mode → extra widgets and app icons → friend codes (22.2c) → billing (`expo-iap`) → flip `PRO_LAUNCHED` and update the Pro screen perks to list every built feature.
 - [ ] The remaining features in the order of 24.6.
 
@@ -623,7 +626,7 @@ Renaming these is a one-time change best done together with the new package id, 
 1. ~~Code not pushed~~ Pushed to `main` on 20 Oct (founder approved).
 2. **No signed build yet:** someone logged in to Expo runs `npx eas-cli login`, `npx eas-cli init`, then `npm run build:store-aab` (this machine is not logged in to Expo).
 3. **Play account type:** a personal account created after Nov 2023 must run a closed test (12 testers, 14 days) before production; tonight's realistic target is then internal or closed testing.
-4. **Pro purchases:** `expo-iap` and the three Play products are not connected; products can only be created after the first upload. **Decided (founder, 20 Oct): launch free first; Pro hidden in store builds** (`src/features/pro/flags.ts`, `PRO_LAUNCHED = false`); flip it when billing and products are live.
+4. **Pro purchases:** `expo-iap` and the three Play products are not connected; products can only be created after the first upload. ~~Launch free first~~ **Superseded (founder, 20 Oct night): publish with every Pro feature and billing working.** Pro stays hidden in store builds (`PRO_LAUNCHED = false`) only until then; flip it when billing and the three products are live.
 5. **Privacy page hosting:** GitHub Pages serves `docs/` only after it is pushed; the policy URL must work before submitting.
 6. **Not tested on a real phone:** everything since 19 Oct (section 17).
 
