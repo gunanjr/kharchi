@@ -46,7 +46,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'android.permission.ACCESS_COARSE_LOCATION',
       'com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE',
       // Store builds have no network code at all, so the permission is removed: data cannot leave the phone.
-      ...(storeBuild ? ['android.permission.INTERNET', 'android.permission.ACCESS_NETWORK_STATE'] : []),
+      // Amendment A1 (20 Oct): store builds keep INTERNET so Google Play Billing works; BruhMe still sends no entries anywhere.
+      ...(storeBuild ? ['android.permission.ACCESS_NETWORK_STATE'] : []),
     ],
   },
   plugins: [
@@ -58,6 +59,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     // Camera and gallery for photos. All its permissions are blocked: installed builds take photos through the phone's own
     // camera app (Kotlin module, no CAMERA permission) and pick through the system photo picker; this module's camera path is
     // used only inside Expo Go, which has its own permission.
+    // Google Play Billing for BruhMe Pro (amendment A1). Adds the Play billing library and its BILLING permission.
+    'expo-iap',
     ['expo-image-picker', { cameraPermission: false, microphonePermission: false, photosPermission: false }],
     ['expo-splash-screen', { backgroundColor: '#FFFFFF', image: './assets/splash-icon.png', imageWidth: 180 }],
     ['expo-build-properties', { android: { minSdkVersion: 26, compileSdkVersion: 36, targetSdkVersion: 36 } }],

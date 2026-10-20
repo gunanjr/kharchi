@@ -37,11 +37,12 @@ export default function Activity() {
     const n = new Map<string, number>();
     for (const t of q.data ?? []) for (const g of readTags(t.tags)) n.set(g, (n.get(g) ?? 0) + 1);
     return [...n.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([g]) => g);
-  }, [q.data, unlockedPrivate]);
+  }, [q.data]);
 
+  const rows = q.data;
   const sections = useMemo(() => {
-    const map = new Map<number, { title: string; data: NonNullable<typeof q.data>; total: number }>();
-    for (const tx of splitPrivate(q.data ?? [], unlockedPrivate).visible) {
+    const map = new Map<number, { title: string; data: NonNullable<typeof rows>; total: number }>();
+    for (const tx of splitPrivate(rows ?? [], unlockedPrivate).visible) {
       const k = startOfDay(tx.occurred_at);
       const s = map.get(k) ?? { title: formatDay(tx.occurred_at), data: [], total: 0 };
       s.data.push(tx);
@@ -49,7 +50,7 @@ export default function Activity() {
       map.set(k, s);
     }
     return [...map.entries()].sort((a, b) => b[0] - a[0]).map(([, v]) => v);
-  }, [q.data]);
+  }, [rows, unlockedPrivate]);
 
   return (
     <Screen>

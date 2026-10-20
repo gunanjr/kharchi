@@ -4,5 +4,5 @@
  * tested; development builds still show Pro so the team can keep working on it. Flip to true when Google Play billing
  * and the three products are live.
  */
-export const PRO_LAUNCHED = false;
+export const PRO_LAUNCHED = true; // founder, 20 Oct night: publish with every Pro feature and billing
 export const showPro = () => PRO_LAUNCHED || __DEV__;

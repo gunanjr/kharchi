@@ -9,7 +9,7 @@ import { Icon, type IconName } from '@/components/Icon';
 import { ToastHost, toast } from '@/components/Toast';
 import { BrandMark } from '@/components/Wordmark';
 import { PRODUCTS, type ProductId } from '@/features/pro/entitlement';
-import { purchasePro, restorePurchases } from '@/features/pro/billing';
+import { manageSubscription, purchasePro, restorePurchases } from '@/features/pro/billing';
 import { useIsPro } from '@/features/pro/store';
 import { appConfig } from '@/config/app';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -23,9 +23,17 @@ const PLANS: { id: ProductId; name: string; price: string; per: string; note?: s
 
 // Only features that exist in this build are listed: never sell something that is not there yet (Play policy).
 const PERKS: [IconName, string, string][] = [
-  ['lock', 'Vault', 'Automatic encrypted backups to your own Google Drive or folder'],
-  ['shield', 'Recovery code', 'Restore everything on a new phone, no password to remember'],
-  ['repeat', 'Always up to date', 'Saved whenever something changes, last 7 versions kept'],
+  ['lock', 'Vault', 'Automatic encrypted backups to your own Drive or folder, with a recovery code'],
+  ['repeat', 'Subscription radar', 'Every repeating charge, renewal reminders and price rises'],
+  ['calendar', 'Due dates', 'Card, rent, EMI and bill reminders so you never pay late'],
+  ['chart', 'Deep dive and 1-year Insights', 'Spending calendar, compare months, budgets from your history'],
+  ['ribbon', 'Wrapped and badges', 'Monthly and yearly story cards and milestones to share'],
+  ['send', 'Bump Pro', 'All 8 tones, your own lines, card themes and stickers'],
+  ['wallet', 'Spaces', 'Side hustle, home, trips and events kept apart'],
+  ['person', 'Your money profile', 'Persona, streaks, Bruh score and Roast or toast'],
+  ['receipt', 'Reimbursements', 'Work spends as a PDF claim with receipts'],
+  ['shield', 'Warranties and tax totals', 'Warranty reminders and yearly totals for your CA'],
+  ['eyeOff', 'Private mode', 'Hide chosen entries behind your fingerprint'],
 ];
 
 /** The Pro screen. Prices, renewal and cancellation are stated plainly before any purchase; no timers, no tricks. */
@@ -55,9 +63,10 @@ export default function Pro() {
 
   async function buy() {
     setBusy(true);
-    const r = await purchasePro(plan);
+    const r = await purchasePro(plan, { friendCode: offer || undefined });
     setBusy(false);
-    if (r === 'unavailable') toast('Purchases work in the BruhMe app from Google Play, not in this test build.');
+    if (r === 'purchased') toast('Welcome to BruhMe Pro 🎉');
+    else if (r === 'unavailable') toast('Purchases work in the BruhMe app from Google Play, not in this test build.');
     else if (r === 'pending') toast('Payment pending. Pro turns on when Google Play confirms it.');
     else if (r === 'error') toast('Google Play could not complete the purchase. You were not charged.');
   }
@@ -135,6 +144,7 @@ export default function Pro() {
 
       <Row style={{ justifyContent: 'center', gap: space.lg }}>
         <Button title="Restore purchases" kind="ghost" size="sm" onPress={restore} />
+        {pro ? <Button title="Manage subscription" kind="ghost" size="sm" onPress={manageSubscription} /> : null}
         <Button title="Privacy" kind="ghost" size="sm" onPress={() => Linking.openURL(appConfig.privacyPolicyUrl).catch(() => {})} />
       </Row>
       <ToastHost />

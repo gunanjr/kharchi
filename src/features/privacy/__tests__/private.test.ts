@@ -1,3 +1,4 @@
+/* eslint-disable import/first -- the lock module must be mocked before it is imported */
 jest.mock('expo-local-authentication', () => ({ hasHardwareAsync: async () => false, isEnrolledAsync: async () => false, authenticateAsync: async () => ({ success: true }) }));
 import { isPrivate, splitPrivate } from '../private';
 const t = (id: string, tags: string[] | null) => ({ id, tags: tags ? JSON.stringify(tags) : null });
