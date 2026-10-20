@@ -10,6 +10,7 @@ import { useQuery } from '@/db/provider';
 import { HealthCard } from '@/features/insights/ui/HealthCard';
 import { MonthBars, PaceTrack, RankedRow, StackedBar, StatBox, WeekdayBars } from '@/features/insights/ui/parts';
 import { MerchantTile } from '@/features/brands/MerchantTile';
+import { showPro } from '@/features/pro/flags';
 import { loadInsights } from '@/features/insights/load';
 import { buildRangeInsights } from '@/features/insights/range';
 import { savingsTips } from '@/features/insights/analytics';
@@ -210,7 +211,7 @@ export default function Insights() {
           {d.subs.length > 0 ? (
             <Enter i={6}>
               <View style={{ gap: space.sm }}>
-                <SectionHeader title="Repeating charges" />
+                <SectionHeader title="Repeating charges" action={showPro() ? 'Open radar' : undefined} onAction={showPro() ? () => router.push('/radar') : undefined} />
                 <Card style={{ gap: space.xs }}>
                   <Text v="small" color={colors.textMuted}>{`Spotted in your history: ${d.subs.length}, about ${cmp(d.subs.reduce((a, s) => a + s.yearly, 0))} a year`}</Text>
                   {d.subs.map((s) => (

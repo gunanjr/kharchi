@@ -19,6 +19,7 @@ export type Settings = {
   vaultUri: string; // the folder the user picked for Vault backups ('' = Vault off)
   vaultLastAt: number;
   vaultLastHash: string;
+  radarState: Record<string, { cancelledAt?: number; remind?: boolean }>; // subscription radar choices
   hideAmounts: boolean; // masks every amount (for public places); the eye on Home
 };
 
@@ -40,6 +41,7 @@ export const defaultSettings: Settings = {
   vaultUri: '',
   vaultLastAt: 0,
   vaultLastHash: '',
+  radarState: {},
 };
 
 type Store = Settings & {
