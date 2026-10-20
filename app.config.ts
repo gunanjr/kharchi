@@ -4,14 +4,13 @@ import appConfig from './src/config/app.json';
 /**
  * APP_VARIANT=lite (DEFAULT, the privacy-first Play Store edition): no SMS permission, no SMS receiver,
  *   no notification listener, no sensors. Bank messages are pasted or shared into the app and confirmed by the user.
- * APP_VARIANT=full: adds RECEIVE_SMS + the receiver (sideload APK, or a Play submission with the SMS declaration).
  * STORE_BUILD=1: additionally removes INTERNET and other unneeded permissions, so the app physically cannot
  *   send data off the phone. Used by the production / preview EAS profiles.
  */
-const variant = process.env.APP_VARIANT === 'full' ? 'full' : 'lite';
+// One edition only (founder decision, 20 Oct): no SMS reading, no notification listener, ever.
+const variant = 'lite' as const;
 const storeBuild = process.env.STORE_BUILD === '1';
-/** EXPERIMENTAL=1 adds the notification listener + double-tap detector (dev/sideload builds only). */
-const experimental = variant === 'full' && process.env.EXPERIMENTAL === '1';
+const experimental = false;
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -22,11 +21,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
+  web: { favicon: './assets/favicon.png' },
   ios: { supportsTablet: false, bundleIdentifier: appConfig.iosBundleId },
   android: {
     package: appConfig.androidPackage,
     adaptiveIcon: {
-      backgroundColor: '#F3F1EC',
+      backgroundColor: '#FFFFFF',
       foregroundImage: './assets/android-icon-foreground.png',
       backgroundImage: './assets/android-icon-background.png',
       monochromeImage: './assets/android-icon-monochrome.png',
@@ -55,7 +55,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-font',
     'expo-localization',
     'expo-asset',
-    ['expo-splash-screen', { backgroundColor: '#F3F1EC', image: './assets/splash-icon.png', imageWidth: 180 }],
+    // Camera and gallery for photos. All its permissions are blocked: installed builds take photos through the phone's own
+    // camera app (Kotlin module, no CAMERA permission) and pick through the system photo picker; this module's camera path is
+    // used only inside Expo Go, which has its own permission.
+    ['expo-image-picker', { cameraPermission: false, microphonePermission: false, photosPermission: false }],
+    ['expo-splash-screen', { backgroundColor: '#FFFFFF', image: './assets/splash-icon.png', imageWidth: 180 }],
     ['expo-build-properties', { android: { minSdkVersion: 26, compileSdkVersion: 36, targetSdkVersion: 36 } }],
     ['./plugins/withKharchiNative', { variant, experimental }],
   ],

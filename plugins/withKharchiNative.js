@@ -34,7 +34,7 @@ function upsertComponent(list, node) {
 }
 
 module.exports = function withKharchiNative(config, props = {}) {
-  const variant = props.variant === 'lite' ? 'lite' : 'full';
+  const variant = props.variant === 'full' ? 'full' : 'lite'; // only 'lite' is ever passed now (no SMS edition)
   // Experimental = notification listener. Off for store builds (Play policy risk), on for dev/sideload.
   const experimental = variant === 'full' && props.experimental === true;
   const scheme = config.scheme || 'kharchi';
