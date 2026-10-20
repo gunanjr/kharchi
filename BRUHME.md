@@ -373,6 +373,8 @@ Crew and Social engineering stay locked until **all** of these hold: 1,000 month
 
 ## 21. Paused and parked ideas
 
+- **Connector for Meta Muse (21 Oct, declined):** a live connector would send users' financial data to a third-party cloud agent and needs an always-on endpoint; section 1 prohibits both (no backend or API server, no personal data to servers, no cloud AI on personal data), and Muse is US and Canada only. The founder chose not to pursue it, including a generic "export for AI assistants" file. Users can still export CSV or a backup through the share sheet themselves.
+
 - **Friend duels and leaderboards (20 Oct, late):** the founder wants social competition to keep Pro users. Both need data to move between users (invitations, friend graphs), which section 1 prohibits; leaderboards also need a server. Needs written amendment A2. Built instead: solo challenges, seasons and shareable story images.
 
 Everything below was asked for or proposed and **deliberately not built**, because it breaks the constitution or would add permissions, a server, payments or legal review. Each row says what it would feel like, what stops it, and what it would take, so you can decide which to unpause. "Amendment" means a written change to section 1 by the founder.
@@ -563,9 +565,9 @@ Renaming these is a one-time change best done together with the new package id, 
 ### 24.0 LIVE HANDOFF (20 Oct 2026, late night): read before touching anything
 A previous session ran out of context in the middle of a large redesign. This is exactly where it stopped.
 
-**Branch state:** `main`, several local commits **not pushed** (latest: "Profile and Spaces rebuilt, free aura week, quieter Home"). The founder must say "push" before any `git push`. Commit as `fermormain <fermormain@gmail.com>` via `GIT_AUTHOR_*`/`GIT_COMMITTER_*` env vars, with the Co-Authored-By line.
+**Branch state (21 Oct):** `main`, everything committed and **pushed** to `gunanjr/kharchi` at the founder's request. The founder must still say "push" before any future `git push`. Commit as `fermormain <fermormain@gmail.com>` via `GIT_AUTHOR_*`/`GIT_COMMITTER_*` env vars, with the Co-Authored-By line.
 
-**Run and check:** Node 22 (`export PATH=~/.nvm/versions/node/v22.23.3/bin:$PATH`); `npx tsc --noEmit`, `npx eslint src --quiet`, `npx jest` (419 tests pass). Browser preview: `KHARCHI_PREVIEW=1 npx expo start --web --port 8101` (after any npm install run `npm i sql.js --no-save --legacy-peer-deps`); screenshots with `playwright-cli` from `~/Desktop/Fermor/kharchi-screens` (`playwright-cli goto http://localhost:8101/<route>` then `playwright-cli screenshot --filename=...`). The dev Pro switch is on in `__DEV__`.
+**Run and check:** Node 22 (`export PATH=~/.nvm/versions/node/v22.23.3/bin:$PATH`); `npx tsc --noEmit`, `npx eslint src --quiet`, `npx jest` (437 tests pass; `npx eslint src` has zero warnings). Browser preview: `KHARCHI_PREVIEW=1 npx expo start --web --port 8101` (after any npm install run `npm i sql.js --no-save --legacy-peer-deps`); screenshots with `playwright-cli` from `~/Desktop/Fermor/kharchi-screens` (`playwright-cli goto http://localhost:8101/<route>` then `playwright-cli screenshot --filename=...`). The dev Pro switch is on in `__DEV__`.
 
 **The founder's standing design rules (binding, learned the hard way this session):**
 - Nothing that looks AI-generated: **no gradients, glows, lighting, sparkles, waves, dots, confetti; no stock emojis as visuals**; no decorative elements that carry no meaning. Flat colour, strong type, real data. They rated the profile 5/100 and the Pro UI "very bad": aim much higher, think like Strava, Hinge, Bumble, Snapchat, but never copy brands.
@@ -623,6 +625,14 @@ A previous session ran out of context in the middle of a large redesign. This is
 - **Aura seasons:** `seasonsFor`, `seasonDaysLeft` in `aura.ts` (tested): each month is a season with a kept final rank; shelf in MCE History; countdown on the Pro tab aura card.
 - **Fresh roasts:** `src/features/persona/roastLines.ts` (pack 2026-H2: 10 topics × 4 tones × 6 lines = 240, no emojis; new topics weekday, small treats, no-spend days, streak, biggest one-off) and `fresh.ts` (tested): one line per day, stable all day, never repeats until the pool for the user's topics is used up (`roastSeen` in settings), then the oldest comes back first; "Another one" walks the same order. **Every 6-monthly app update should append a new pack** (append only; ids are `topic.tone.index`).
 - **Duels with friends via link: NOT built.** It conflicts with constitution section 1 (no invitations, friend graphs or social). It needs a written amendment A2 from the founder. In-bounds alternative available now: share a challenge or story image through the share sheet. Recorded in section 21.
+
+**What is still to do (as of 21 Oct, after the full UI audit):**
+1. **Real Android phone testing (top priority):** Pro purchase, restore and cancel through Play; story maker photo picker, drag, pinch, rotate and haptics; app lock; Vault folder picker and restore; local notifications (due dates, renewals, weekly recap); share sheets.
+2. **Play Console:** create `bruhme_pro_monthly` (₹129), `bruhme_pro_yearly` (₹999, offers tagged `trial` 7 days and `friend` 30% off year one) and `bruhme_pro_lifetime` (₹2,999); licence testers; closed test with 12 testers for 14 days (personal account).
+3. **Release plumbing:** EAS production build and upload; GitHub Pages on for `docs/` so the privacy policy URL works; store listing and screenshots from the demo.
+4. **Not built:** home-screen widgets and app icon variants (need a device build); full RSA signature check of Play purchases (optional hardening).
+5. **Founder decisions open:** amendment A2 for friend duels (not granted, so not built).
+6. **Known and accepted:** emojis inside onboarding chat bubbles and bump message text; a web-only developer warning about a button inside a tappable card.
 
 **Other open requests:** Goals master-level redesign (screen `src/app/goals.tsx`); Budgets UI; stronger Bump Pro (card designer, auto follow-ups); native widgets and app icon variants need a device build. Team tasks in 24.5b (EAS build, Play products, testers).
 
