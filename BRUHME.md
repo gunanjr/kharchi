@@ -86,7 +86,7 @@ Earlier name shortlists (rejected or superseded): Kept, Evenly, Pocketful, Sumly
 
 One Android/iOS app (React Native, Expo SDK 57, TypeScript): a **personal expense tracker**, a **local bill-split calculator** for the person recording it, and **on-device insights**, with all data in a local SQLite database. No backend, no account, no analytics, no ads. Money is integer paise, never floats.
 
-The store build is the **Privacy-First edition**: no SMS permission, no internet permission, no account. Bank messages are pasted or shared in and the user confirms them.
+The store build is the **Privacy-First edition**: no SMS permission, no account, no server. INTERNET is present only for Google Play Billing and the user-chosen Vault folder (amendment A1); no personal data is sent to us. Bank messages are pasted or shared in and the user confirms them.
 
 ---
 
@@ -104,11 +104,11 @@ Then, in **Expo Go**, tap **Scan QR code** and scan the terminal's code. Do not 
 - **Databases from before 20 Oct**: migrations were renumbered when the team's bill scanning was merged, which made some dev phones fail with "duplicate column name: excluded". The migration runner now skips already-applied statements and a repair migration (7) recreates any missing table. Tested.
 - Native features need a development build (`npm run android:dev`): bill scanning, widgets, shortcuts, reminders, share-into-app. In Expo Go they are feature-detected and degrade gracefully.
 - Tests need **Node 22** (`PATH=~/.nvm/versions/node/v22.23.3/bin:$PATH npx jest`). `npm run check` = typecheck + lint + tests. Never edit `android/` or `ios/`.
-- Browser preview (a testing aid): `KHARCHI_PREVIEW=1 npx expo start --web --port 8101` (needs `npm i sql.js --no-save`); shims in `preview/` and `metro.config.js`.
+- Browser preview (a testing aid): `BRUHME_PREVIEW=1 npx expo start --web --port 8101` (needs `npm i sql.js --no-save`); shims in `preview/` and `metro.config.js`.
 
 | Edition | Flags | Contents |
 |---|---|---|
-| **Privacy-First (the only supported release)** | `APP_VARIANT=lite STORE_BUILD=1` (EAS `production`) | No SMS, no listener, no INTERNET. Permissions: notifications (optional), biometrics (optional), vibrate, boot (re-arm reminders). Target SDK 36 |
+| **Privacy-First (the only supported release)** | `APP_VARIANT=lite STORE_BUILD=1` (EAS `production`) | No SMS, no listener. INTERNET only for Play Billing and Vault (amendment A1). Permissions: notifications (optional), biometrics (optional), vibrate, boot (re-arm reminders). Target SDK 36 |
 | Full and Dev | `APP_VARIANT=full` (`production-full`, `development`) | Contains SMS and notification-listener code. **Conflicts with the constitution; pending your decision (section 2)** |
 
 Scripts: `start`, `android:dev`, `android:store`, `build:store-aab`, `build:store-test-apk`, `build:dev-apk`, `audit:manifest`, `check`.
@@ -187,7 +187,7 @@ src/features/       parser, pending, native, tracker (frames, pulse, frequent, t
                     goals, insights (health, review), ai (local engine, catalog), voice, capture, feedback, bills, dev (seeders)
 src/lib/            date, trend (ported), curve, haptics
 src/theme/          tokens, ThemeProvider, motion
-modules/kharchi-native/   Kotlin Expo module: widgets, bill camera and OCR, reminders (+ SMS code for the Full edition)
+modules/kharchi-native/   Kotlin Expo module: widgets, bill camera and OCR, reminders (dormant SMS code from the removed Full edition is not shipped in store builds)
 plugins/withKharchiNative.js   wires the native module and strips forbidden components
 docs/               index.html and privacy-policy.html (the public policy page)
 store/              Play listing copy and graphics
@@ -546,15 +546,13 @@ Launch on Google Play, run Instagram ads to the Play listing, convert installs t
 
 ## 23. Where "kharchi" still appears, and why
 
-Everything a person sees says BruhMe. "kharchi" remains only in identifiers that are permanent or shared, until the founder approves new ones (section 3):
-- `src/config/app.json`: `slug` and `scheme` (`kharchi`) and the privacy-policy URL `https://gunanjr.github.io/kharchi/` (the GitHub repo name). The package id is now **`com.bruhme.app`**.
-- The repository name `gunanjr/kharchi` and this folder name; `package.json` `name`.
-- The Kotlin module `modules/kharchi-native`, its Expo module name `KharchiNative`, the config plugin `plugins/withKharchiNative.js`, Android resource names (`kharchi_widget`), and the headless task name.
-- The SQLite file `kharchi.db` and the backup marker `app: 'kharchi'` (renaming them would lose existing data and old backups).
-- The preview switch `KHARCHI_PREVIEW=1` (developer-only).
+Everything a person sees says BruhMe, and every document in the repo is BruhMe: `BRUHME.md` (this file, the single source of truth), `README.md` (landing page), `CLAUDE.md` and `AGENTS.md` (agent rules). There is no `KHARCHI.md` any more. Done on 21 Oct: `package.json` name is `bruhme`, the preview switch is `BRUHME_PREVIEW=1`, the package id is **`com.bruhme.app`**.
 
-Renaming these is a one-time change best done together with the new package id, before the first Play upload.
+"kharchi" now remains only in internal identifiers that users never see, kept on purpose:
+- **Never rename (would lose data):** the SQLite file `kharchi.db` and the backup marker `app: 'kharchi'`. Renaming them would make existing installs start empty and old backups unreadable.
+- **Need the founder's written approval and a real-device check:** `src/config/app.json` `slug` and `scheme` (`kharchi`; the scheme is used by deep links and widgets), the privacy-policy URL `https://gunanjr.github.io/kharchi/` (follows the GitHub repo name), the repository `gunanjr/kharchi` and this folder name, the Kotlin module `modules/kharchi-native` (Expo module `KharchiNative`, plugin `plugins/withKharchiNative.js`, Android resources such as `kharchi_widget`, the headless task name).
 
+If these are renamed, do it in one change before the first Play upload, run `npx expo prebuild --clean`, and test widgets, deep links and the bill camera on a phone.
 
 ---
 
@@ -567,7 +565,7 @@ A previous session ran out of context in the middle of a large redesign. This is
 
 **Branch state (21 Oct):** `main`, everything committed and **pushed** to `gunanjr/kharchi` at the founder's request. The founder must still say "push" before any future `git push`. Commit as `fermormain <fermormain@gmail.com>` via `GIT_AUTHOR_*`/`GIT_COMMITTER_*` env vars, with the Co-Authored-By line.
 
-**Run and check:** Node 22 (`export PATH=~/.nvm/versions/node/v22.23.3/bin:$PATH`); `npx tsc --noEmit`, `npx eslint src --quiet`, `npx jest` (437 tests pass; `npx eslint src` has zero warnings). Browser preview: `KHARCHI_PREVIEW=1 npx expo start --web --port 8101` (after any npm install run `npm i sql.js --no-save --legacy-peer-deps`); screenshots with `playwright-cli` from `~/Desktop/Fermor/kharchi-screens` (`playwright-cli goto http://localhost:8101/<route>` then `playwright-cli screenshot --filename=...`). The dev Pro switch is on in `__DEV__`.
+**Run and check:** Node 22 (`export PATH=~/.nvm/versions/node/v22.23.3/bin:$PATH`); `npx tsc --noEmit`, `npx eslint src --quiet`, `npx jest` (437 tests pass; `npx eslint src` has zero warnings). Browser preview: `BRUHME_PREVIEW=1 npx expo start --web --port 8101` (after any npm install run `npm i sql.js --no-save --legacy-peer-deps`); screenshots with `playwright-cli` from `~/Desktop/Fermor/kharchi-screens` (`playwright-cli goto http://localhost:8101/<route>` then `playwright-cli screenshot --filename=...`). The dev Pro switch is on in `__DEV__`.
 
 **The founder's standing design rules (binding, learned the hard way this session):**
 - Nothing that looks AI-generated: **no gradients, glows, lighting, sparkles, waves, dots, confetti; no stock emojis as visuals**; no decorative elements that carry no meaning. Flat colour, strong type, real data. They rated the profile 5/100 and the Pro UI "very bad": aim much higher, think like Strava, Hinge, Bumble, Snapchat, but never copy brands.
@@ -639,14 +637,14 @@ A previous session ran out of context in the middle of a large redesign. This is
 ### 24.1 Where things stand
 - **Repo:** `gunanjr/kharchi`, local clone `~/Desktop/Fermor/kharchi` (inside the user's `Fermor` folder; the Fermor repo itself is a different product, do not touch it). Expo SDK 57, React Native 0.86, TypeScript, Expo Router (`src/app`), local SQLite, no backend.
 - **App name shown to users:** **BruhMe** (capital B, capital M, as in the wordmark). Identifiers still `kharchi` (section 23).
-- **Git:** last commit `4c22f33`. **Everything after it is uncommitted** (about 125 changed, added or deleted files: the constitution clean-up, BruhMe brand, Groups and Insights rebuild, Bump, trip mode, Wrapped, merchant icons, Add sheet, onboarding, backup hardening, docs rename to `BRUHME.md`). The user must approve every commit and every push. Commit as `fermormain <fermormain@gmail.com>` (set `GIT_AUTHOR_*` and `GIT_COMMITTER_*` env vars), never the global identity.
-- **Last full check (20 Oct):** `npx tsc --noEmit` clean; `npx expo lint` 0 errors; **403 Jest tests pass** (Node 22); `npx expo export --platform android` builds. Nothing device-tested (section 17).
+- **Git (21 Oct):** everything is committed and pushed to `gunanjr/kharchi` `main`. See 24.0 for the live state.
+- **Last full check (21 Oct):** `npx tsc --noEmit` clean; `npx eslint src` zero warnings; **437 Jest tests pass** (Node 22). Nothing device-tested yet (24.0, what is still to do).
 - **The user is roughly 90% happy with the app** and iterates screen by screen with screenshots from their Android phone in Expo Go.
 
 ### 24.2 How to run, test and look at screens
 - Phone: `npx expo start` (opens Expo Go; `.env` has `EXPO_NO_REDIRECT_PAGE=true`). If the old icon shows, clear Expo Go's cache and run `npx expo start -c`.
 - Tests: `PATH=~/.nvm/versions/node/v22.23.3/bin:$PATH npx jest` (Node 22 is required for `node:sqlite`). DB tests need `jest.mock('expo-crypto', () => ({ randomUUID: () => require('crypto').randomUUID() }))`.
-- Browser preview for screenshots: `KHARCHI_PREVIEW=1 npx expo start --web --port 8101 --clear` (needs `npm i sql.js --no-save --legacy-peer-deps`, which every `npm install` removes again: reinstall it if the preview shows a blank page or a 500). The preview DB is in memory and re-seeds the full demo on every load; `?onboarding=1&empty=1` shows onboarding; `?theme=dark` for dark.
+- Browser preview for screenshots: `BRUHME_PREVIEW=1 npx expo start --web --port 8101 --clear` (needs `npm i sql.js --no-save --legacy-peer-deps`, which every `npm install` removes again: reinstall it if the preview shows a blank page or a 500). The preview DB is in memory and re-seeds the full demo on every load; `?onboarding=1&empty=1` shows onboarding; `?theme=dark` for dark.
 - Screenshots: `playwright-cli` (`resize 390 844`, `goto`, `snapshot` to find `[ref=…]`, `click`, `fill`, `screenshot --filename=…`); helper scripts in `~/Desktop/Fermor/kharchi-screens` (`shoot2.sh`). Always look at your screenshots before saying something is done.
 - Teammates see the same demo: development builds load the deterministic demo after onboarding; existing installs use Settings (gear on Home), Developer, **Reset to the latest demo**.
 

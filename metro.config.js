@@ -1,11 +1,11 @@
-// Normal builds use Expo's default Metro config. KHARCHI_PREVIEW=1 (browser preview only, see preview/README.md)
+// Normal builds use Expo's default Metro config. BRUHME_PREVIEW=1 (browser preview only, see preview/README.md)
 // swaps two native-only modules for browser stand-ins so the UI can be viewed and screenshotted on a laptop.
 const { getDefaultConfig } = require('expo/metro-config');
 const path = require('path');
 
 const config = getDefaultConfig(__dirname);
 
-if (process.env.KHARCHI_PREVIEW === '1') {
+if (process.env.BRUHME_PREVIEW === '1') {
   const SHIMS = new Map([
     [path.join(__dirname, 'src/db/expoDb'), path.join(__dirname, 'preview/expoDb.web.ts')],
     [path.join(__dirname, 'src/features/native/headless'), path.join(__dirname, 'preview/headless.web.ts')],

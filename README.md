@@ -1,75 +1,43 @@
 # BruhMe
 
-> **Everything about the app (run, features, design, privacy and Play policy, publishing, pricing, decisions, status, open items) is in [`BRUHME.md`](BRUHME.md).** This README is only the short landing page.
+> **[`BRUHME.md`](BRUHME.md) is the single source of truth** for this app: the binding product constitution (section 1), features, design rules, privacy and Play policy, Pro and pricing, decisions, status and the live handoff (section 24). This README is only the landing page. If the two ever disagree, `BRUHME.md` wins.
 
-Personal expense tracker **+** a full Splitwise-style group splitter, in one React Native (Expo SDK 57, TypeScript) app. **No backend, no accounts, no API keys.** Everything lives in a local SQLite database; sync is designed in but switched off.
+BruhMe is a personal expense tracker and bill splitter for Android, built with React Native (Expo SDK 57, TypeScript, Expo Router). **No account, no backend, no ads, no analytics.** Records live in a local SQLite database on the phone.
 
-Headline features: paste/share a bank message and confirm what it was for (the optional Full edition can read bank SMS automatically), 3-second Quick Add and **Scan bill** (home-screen widgets and shortcuts), unlimited groups with six split types and minimum-transfer debt simplification, insights + an offline AI assistant. The Play Store edition is **privacy-first: no account, no ads, no analytics, no internet permission.**
+- **Free:** expenses and income, paste or share a bank message to log it, quick add, groups and friends with six split types and debt simplification, settle-up pay cards with a UPI link (any UPI app), Insights, goals, budgets, weekly and monthly Wrapped, a tap-only on-device assistant, CSV and backup.
+- **BruhMe Pro** (Google Play Billing, amendment A1): the Pro tab (season theme, challenges, report card, month-end estimate, story maker, Main Character Energy), Vault encrypted backups to a folder the user picks, subscription radar, due dates, spaces, reimbursements, warranties, tax totals, profile and roasts.
 
-Rename the product in one place: `src/config/app.json` (then `npx expo prebuild --clean`).
-
-**Publishing to Google Play:** follow section 13 of `BRUHME.md`.
-
-## Run it: two modes
-
-### Mode A: Expo Go (instant, on your phone)
+## Run it
 ```bash
 npm install
-npx expo start        # scan the QR with Expo Go
+npx expo start                 # open in Expo Go on an Android phone
 ```
-Works: tracker, groups/splits, charts, assistant, parser, UI, backup/CSV. Native-only features are feature-detected and degrade gracefully (the app never crashes without them): use **Settings → Developer → Simulate incoming bank SMS** (70 sample messages, same pipeline as the real receiver), or **Settings → Bank & UPI messages → Paste a copied SMS**. Developer → Demo data fills 3 months of spending and two groups.
+Native features (bill camera, widgets, billing) need a development build: `npm run android:dev` (USB, Android Studio) or `npm run build:dev-apk` (EAS cloud), then `npx expo start --dev-client`.
 
-### Mode B: Development build (all native features, Android)
-Custom native code cannot run in Expo Go. Pick one:
+**Checks** (Node 22 is required for the database tests):
 ```bash
-# USB debugging; needs Android Studio (SDK) + a JDK; ANDROID_HOME set
-npm run android:dev            # = npx expo run:android
-
-# or in the cloud, no Android Studio
-npx eas-cli login && npx eas-cli init
-npm run build:dev-apk          # = eas build --platform android --profile development
-npx expo start --dev-client
-```
-`eas.json` has `development`, `preview` (APK), `production` (AAB) plus `*-lite` variants.
-
-### Build editions
-| Edition | How | Contents |
-|---|---|---|
-| **Privacy-First (default, Play Store)** | `APP_VARIANT=lite STORE_BUILD=1` (EAS profile `production`) | No SMS, no listener, no sensors, **no INTERNET permission**, target SDK 36. Paste/share bank messages, manual, quick add, CSV |
-| Full (sideload / appeal) | `APP_VARIANT=full` (`production-full`) | + `RECEIVE_SMS` receiver with notification replies. Needs Google's SMS declaration for Play |
-| Dev / power testing | `APP_VARIANT=full EXPERIMENTAL=1` (`development`, `preview-full`) | + notification listener |
-
-Verify a build: `npm run audit:manifest` (fails if a forbidden permission/component is present). See section 6 of `BRUHME.md`.
-
-`android/` is generated (git-ignored). Native code lives in `modules/kharchi-native` (Kotlin, Expo Modules API) and is wired by `plugins/withKharchiNative.js`, so `npx expo prebuild` always reproduces it. Never hand-edit `android/`.
-
-## Scripts
-`npm start` · `npm run android:dev` (full + experimental, USB) · `npm run android:store` (store edition, release) · `npm run build:store-aab` · `npm run build:store-test-apk` · `npm run build:dev-apk` · `npm run audit:manifest` · `npm run check` (tsc + lint + tests)
-
-## Architecture
-```
-src/app/            Expo Router screens (tabs, modals, settings, group, friend, ...)
-src/db/             Db interface, expo-sqlite adapter, migrations, backup/wipe (+ node:sqlite adapter for tests)
-src/domain/         money (integer minor units!), types
-src/features/
-  parser/           pure-TS SMS/notification parser, dedupe, merchant learning, 70 synthetic samples
-  pending/          ingest pipeline (parse -> filter -> dedupe -> pending) + confirm/skip/not-mine
-  native/           feature-detected bridge to the Kotlin module, queue drain, headless task, share-in
-  tracker/          transactions, accounts, categories, budgets, recurring, CSV
-  groups/           split engine, balances, debt simplification (exact), settle-up, activity, recurring shared
-  insights/ ai/     analytics + offline rules assistant (AiProvider interface, remote stub)
-modules/kharchi-native/  Kotlin: SmsReceiver, notification actions, listener, widgets, bill camera + on-device OCR, reminders
-docs/               index.html and privacy-policy.html (public policy page)
-store/              Play listing copy (en/hi)
+export PATH=~/.nvm/versions/node/v22.23.3/bin:$PATH
+npm run check                  # tsc + lint + jest
 ```
 
-## Privacy
-The store edition has no INTERNET permission (data cannot leave the phone), no SMS permission, no analytics SDKs, and `allowBackup=false`. Parsing is on-device and the pasted text is not kept; the DB keeps parsed fields + a hash. In the optional Full edition, the Kotlin receiver drops non-financial messages instantly and financial ones sit in an app-private queue only until parsed. "Delete all my data" is in Settings → Export & backup.
+**Browser preview** (screenshots and quick UI checks only):
+```bash
+npm i sql.js --no-save --legacy-peer-deps    # again after every npm install
+BRUHME_PREVIEW=1 npx expo start --web --port 8101
+```
 
-## Widgets, quick add and bill scanning
-- **Quick add widget** and long-press shortcut: a panel drops from the top (amount, what for, Save).
-- **Scan bill widget** and shortcut: snap a bill now, split it item by item later. Reads the bill on the phone with ML Kit (offline). Design and research: section 11 of `BRUHME.md`.
-- There is no Quick Settings tile and no back-tap/double-tap feature (removed by request; Android has no public back-tap API).
+## Release
+Store build: `npm run build:store-aab` (EAS `production`), verified by `npm run audit:manifest`. The Play Console steps, products and the closed-test plan are in `BRUHME.md` (sections 15, 24.5a, 24.5b).
 
-## Testing
-`npm test`: 140 tests incl. 70 parser samples, split/simplify property tests (balances sum to zero, transfers settle everyone, never more than greedy), repositories against real SQLite, assistant, insights, seeds.
+## Layout
+```
+src/app/             screens (Expo Router): (tabs) Home, Activity, Groups, Insights, Pro; (pro) screens opened from Pro; settings/
+src/features/        feature logic, mostly pure and tested (tracker, groups, insights, pro, mce, challenges, story, persona, vault, ...)
+src/components/      shared UI (ui.tsx, charts, Poster, Medal, ...)
+src/db/              SQLite adapter, append-only migrations, backup and restore
+src/theme/           tokens and theme providers (including the Pro palette)
+modules/kharchi-native/  Kotlin module (bill camera and OCR, widgets, reminders), wired by plugins/withKharchiNative.js
+docs/                public privacy policy pages
+store/               Play listing copy
+```
+`android/` is generated (git-ignored); never edit it by hand. Some internal identifiers still say "kharchi" on purpose; `BRUHME.md` section 23 lists them and why.
