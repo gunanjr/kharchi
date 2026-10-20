@@ -109,6 +109,19 @@ export default function ProTab() {
           ) : null}
         </Press>
 
+        {/* story maker: the share moment */}
+        <Press onPress={() => router.push('/story')} accessibilityLabel="Make a story" style={{ borderRadius: 28, padding: space.lg, backgroundColor: '#FFFFFF', flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+          <View style={{ width: 64, height: 96, borderRadius: 14, backgroundColor: '#14181F', padding: 8, justifyContent: 'flex-end' }}>
+            <Text style={{ fontFamily: fonts.brandBlack, fontSize: 20, lineHeight: 22, color: '#FFFFFF' }}>−14%</Text>
+            <View style={{ height: 2, borderRadius: 1, backgroundColor: '#FFFFFF', marginTop: 4, width: '80%' }} />
+          </View>
+          <View style={{ flex: 1, gap: 4 }}>
+            <Text style={{ fontFamily: fonts.brandBlack, fontSize: 22, lineHeight: 26, color: '#14181F' }}>Make a story</Text>
+            <Text style={{ fontFamily: fonts.medium, fontSize: 13.5, color: 'rgba(20,24,31,0.65)' }}>Your photo with your streak, spent-less line or no-spend days. Never an amount.</Text>
+          </View>
+          <Icon name="chevron" size={18} color="#14181F" />
+        </Press>
+
         {/* at a glance */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -layout.gutter }} contentContainerStyle={{ paddingHorizontal: layout.gutter, gap: space.sm }}>
           <Glance label="Going out this week" value={money(outThisWeek)} sub={outCount ? `${outCount} bills and renewals` : 'Nothing due'} locked={!pro} onPress={() => router.push('/dues')} />

@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { FlatList, ScrollView, Switch, View, useWindowDimensions, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import Svg, { Circle } from 'react-native-svg';
@@ -45,26 +45,29 @@ function slidesFor(r: Recap, title: string, label: string, catName: (id: string 
   const out: { key: string; node: React.ReactNode }[] = [];
   out.push({ key: 'intro', node: (
     <Poster palette="grape" label={label} width={w} height={h}>
-      <Big color={PALETTES.grape.ink} size={50}>{title},{'\n'}wrapped</Big>
+      <Soft p="grape">{title.replace(/^Your /, '')}</Soft>
+      <Big color={PALETTES.grape.ink} size={54}>{r.changePct !== null && r.changePct <= -5 ? 'Spent less.\nLived well.' : wins.streak >= 7 ? 'Showed up\nevery day.' : 'Kept it\nin check.'}</Big>
       <View style={{ height: 14 }} />
-      <Soft p="grape">{r.entries} spends logged</Soft>
+      <Soft p="grape">{[wins.streak >= 3 ? `${wins.streak}-day streak` : null, r.noSpendDays >= 2 ? `${r.noSpendDays} no-spend days` : null].filter(Boolean).join(' · ') || 'Every spend accounted for'}</Soft>
     </Poster>
   ) });
   out.push({ key: 'total', node: (
     <Poster palette="tangerine" label={label} width={w} height={h}>
-      <Soft p="tangerine">You spent</Soft>
-      <Num color={PALETTES.tangerine.ink} size={58}>{money(r.spent)}</Num>
-      <View style={{ gap: 10, marginTop: 16 }}>
-        {r.changePct !== null ? <Pill p="tangerine" text={r.changePct <= 0 ? `↓ ${Math.abs(r.changePct)}% vs before` : `↑ ${r.changePct}% vs before`} /> : null}
-        <Pill p="tangerine" text={`about ${money(Math.round(r.spent / days))} a day`} />
-      </View>
+      {r.changePct !== null && r.changePct < 0 ? (<>
+        <Num color={PALETTES.tangerine.ink} size={96}>−{Math.abs(r.changePct)}%</Num>
+        <Soft p="tangerine">spent than the month before</Soft>
+      </>) : (<>
+        <Soft p="tangerine">Spent</Soft>
+        <Num color={PALETTES.tangerine.ink} size={58}>{money(r.spent)}</Num>
+        <Soft p="tangerine">{hide ? 'and knew where every rupee went' : `about ${money(Math.round(r.spent / days))} a day`}</Soft>
+      </>)}
     </Poster>
   ) });
   if (r.topPlaces[0]) out.push({ key: 'place', node: (
     <Poster palette="lime" label={label} width={w} height={h}>
-      <Soft p="lime">Your most visited place</Soft>
+      <Soft p="lime">A regular at</Soft>
       <Big color={PALETTES.lime.ink} size={52}>{r.topPlaces[0].name}</Big>
-      <Row style={{ gap: 8, flexWrap: 'wrap', marginTop: 14 }}><Pill p="lime" text={`${r.topPlaces[0].count} ${r.topPlaces[0].count === 1 ? 'visit' : 'visits'}`} /><Pill p="lime" text={money(r.topPlaces[0].total)} /></Row>
+      <Row style={{ gap: 8, flexWrap: 'wrap', marginTop: 14 }}><Pill p="lime" text={`${r.topPlaces[0].count} ${r.topPlaces[0].count === 1 ? 'visit' : 'visits'}`} />{hide ? null : <Pill p="lime" text={money(r.topPlaces[0].total)} />}</Row>
       {r.topPlaces[1] ? <Text style={{ fontFamily: fonts.semibold, fontSize: 15, color: PALETTES.lime.soft, marginTop: 18 }}>Runners-up: {r.topPlaces.slice(1).map((x) => x.name).join(', ')}</Text> : null}
     </Poster>
   ) });
@@ -105,7 +108,7 @@ function slidesFor(r: Recap, title: string, label: string, catName: (id: string 
   out.push({ key: 'outro', node: (
     <Poster palette="midnight" label={label} width={w} height={h}>
       <Big color="#FFFFFF" size={48}>That’s a wrap.</Big>
-      <Text style={{ fontFamily: fonts.semibold, fontSize: 17, color: PALETTES.midnight.soft, marginTop: 12 }}>{r.entries} spends · {money(r.spent)}</Text>
+      <Text style={{ fontFamily: fonts.semibold, fontSize: 17, color: PALETTES.midnight.soft, marginTop: 12 }}>{wins.badges ? `${wins.badges} badge levels and counting.` : 'On to the next one.'}</Text>
     </Poster>
   ) });
   return out;
@@ -114,11 +117,12 @@ function slidesFor(r: Recap, title: string, label: string, catName: (id: string 
 /** Weekly and monthly Wrapped (free), yearly Wrapped (Pro), and badges with levels and progress. */
 export default function Wrapped() {
   const db = useDb();
+  const router = useRouter();
   const { colors } = useTheme();
   const params = useLocalSearchParams<{ tab?: string; off?: string }>();
   const { width } = useWindowDimensions();
   const [tab, setTab] = useState<Tab>((params.tab as Tab) || 'month');
-  const [hide, setHide] = useState(false);
+  const [hide, setHide] = useState(true); // amounts stay off share slides unless the user turns them on
   const [monthOff, setMonthOff] = useState(params.off ? Number(params.off) : 1);
   const [yearOff, setYearOff] = useState(0);
   const [page, setPage] = useState(0);
@@ -182,7 +186,7 @@ export default function Wrapped() {
   ) : null;
 
   return (
-    <SubScreen title="Wrapped">
+    <SubScreen title="Wrapped" right={<Button title="Story" size="sm" kind="accent" icon="image" onPress={() => router.push('/story')} />}>
       <Segmented options={[{ key: 'week', label: 'Week' }, { key: 'month', label: 'Month' }, { key: 'year', label: 'Year' }, { key: 'badges', label: 'Badges' }]} value={tab} onChange={(k) => { setTab(k as Tab); setPage(0); }} />
       {!q.data ? <SkeletonList n={3} /> : null}
       {tab === 'month' && q.data ? (
