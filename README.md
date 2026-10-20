@@ -1,6 +1,6 @@
-# Kharchi (working name)
+# BruhMe
 
-> **Everything about the app (run, features, design, privacy and Play policy, publishing, pricing, decisions, status, open items) is in [`KHARCHI.md`](KHARCHI.md).** This README is only the short landing page.
+> **Everything about the app (run, features, design, privacy and Play policy, publishing, pricing, decisions, status, open items) is in [`BRUHME.md`](BRUHME.md).** This README is only the short landing page.
 
 Personal expense tracker **+** a full Splitwise-style group splitter, in one React Native (Expo SDK 57, TypeScript) app. **No backend, no accounts, no API keys.** Everything lives in a local SQLite database; sync is designed in but switched off.
 
@@ -8,7 +8,7 @@ Headline features: paste/share a bank message and confirm what it was for (the o
 
 Rename the product in one place: `src/config/app.json` (then `npx expo prebuild --clean`).
 
-**Publishing to Google Play:** follow section 13 of `KHARCHI.md`.
+**Publishing to Google Play:** follow section 13 of `BRUHME.md`.
 
 ## Run it: two modes
 
@@ -39,7 +39,7 @@ npx expo start --dev-client
 | Full (sideload / appeal) | `APP_VARIANT=full` (`production-full`) | + `RECEIVE_SMS` receiver with notification replies. Needs Google's SMS declaration for Play |
 | Dev / power testing | `APP_VARIANT=full EXPERIMENTAL=1` (`development`, `preview-full`) | + notification listener |
 
-Verify a build: `npm run audit:manifest` (fails if a forbidden permission/component is present). See section 6 of `KHARCHI.md`.
+Verify a build: `npm run audit:manifest` (fails if a forbidden permission/component is present). See section 6 of `BRUHME.md`.
 
 `android/` is generated (git-ignored). Native code lives in `modules/kharchi-native` (Kotlin, Expo Modules API) and is wired by `plugins/withKharchiNative.js`, so `npx expo prebuild` always reproduces it. Never hand-edit `android/`.
 
@@ -58,9 +58,8 @@ src/features/
   tracker/          transactions, accounts, categories, budgets, recurring, CSV
   groups/           split engine, balances, debt simplification (exact), settle-up, activity, recurring shared
   insights/ ai/     analytics + offline rules assistant (AiProvider interface, remote stub)
-  sync/ aggregator/ SyncEngine/RemoteRepository (no-op) and AccountAggregator (mock) interfaces
 modules/kharchi-native/  Kotlin: SmsReceiver, notification actions, listener, widgets, bill camera + on-device OCR, reminders
-docs/               index.html and privacy-policy.html (public policy page), supabase-draft.sql
+docs/               index.html and privacy-policy.html (public policy page)
 store/              Play listing copy (en/hi)
 ```
 
@@ -69,7 +68,7 @@ The store edition has no INTERNET permission (data cannot leave the phone), no S
 
 ## Widgets, quick add and bill scanning
 - **Quick add widget** and long-press shortcut: a panel drops from the top (amount, what for, Save).
-- **Scan bill widget** and shortcut: snap a bill now, split it item by item later. Reads the bill on the phone with ML Kit (offline). Design and research: section 11 of `KHARCHI.md`.
+- **Scan bill widget** and shortcut: snap a bill now, split it item by item later. Reads the bill on the phone with ML Kit (offline). Design and research: section 11 of `BRUHME.md`.
 - There is no Quick Settings tile and no back-tap/double-tap feature (removed by request; Android has no public back-tap API).
 
 ## Testing

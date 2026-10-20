@@ -352,10 +352,10 @@ Crew and Social engineering stay locked until **all** of these hold: 1,000 month
 **Decided on 20 Oct:** amendment A1 approved; Android only; build everything before release; Vault uses a recovery code (no passphrase, no unencrypted Vault); SMS edition removed; English only; optional local notifications approved; the founder's team already has a verified Google Play Console developer account.
 
 **Still open (founder):**
-1. **Package id** (the permanent technical name Google uses for the app; users never see it). Proposed: `com.bruhme.app` (no company name needed). Needs a yes before the first upload.
-2. **Who receives the money:** Play pays whoever owns the Play Console account's payments profile (person or company and their bank). The support email (currently bollugunwanth@gmail.com) only receives user emails; it gives no revenue or control. Confirm the payments profile and which email to show as support and in the privacy policy.
+1. ~~Package id~~ **Decided 20 Oct: `com.bruhme.app`** (set in `src/config/app.json`; permanent after the first Play upload).
+2. ~~Support email~~ **Decided 20 Oct: bollugunwanth@gmail.com for support and the privacy policy.** Revenue goes to whoever owns the Play Console payments profile (the email gives no revenue or control).
 3. **Play account type:** if it is a personal account created after Nov 2023, Google requires a closed test with at least 12 testers for 14 days before production; an organisation account does not.
-4. **Logo rights:** a one-line confirmation that the team created the hand mark and wordmark (or has the designer's or tool's rights). Trademark registration is optional, not needed to publish.
+4. ~~Logo rights~~ **Confirmed 20 Oct by the founder:** the hand mark and wordmark are the team's own and final; no changes.
 5. **Merchant logos inside the app:** keep (common in finance apps, small risk) or switch to letter tiles (zero risk, one line). Never in onboarding, store screenshots or marketing either way.
 6. **Prices, referral offer and free/Pro split:** as in section 22 unless changed.
 7. **Git:** permission to commit, and whether to push to `main`.
@@ -541,7 +541,7 @@ Launch on Google Play, run Instagram ads to the Play listing, convert installs t
 ## 23. Where "kharchi" still appears, and why
 
 Everything a person sees says BruhMe. "kharchi" remains only in identifiers that are permanent or shared, until the founder approves new ones (section 3):
-- `src/config/app.json`: `slug`, `scheme`, `androidPackage` and `iosBundleId` (`app.kharchi.tracker`), and the privacy-policy URL `https://gunanjr.github.io/kharchi/` (the GitHub repo name).
+- `src/config/app.json`: `slug` and `scheme` (`kharchi`) and the privacy-policy URL `https://gunanjr.github.io/kharchi/` (the GitHub repo name). The package id is now **`com.bruhme.app`**.
 - The repository name `gunanjr/kharchi` and this folder name; `package.json` `name`.
 - The Kotlin module `modules/kharchi-native`, its Expo module name `KharchiNative`, the config plugin `plugins/withKharchiNative.js`, Android resource names (`kharchi_widget`), and the headless task name.
 - The SQLite file `kharchi.db` and the backup marker `app: 'kharchi'` (renaming them would lose existing data and old backups).
@@ -571,7 +571,7 @@ Renaming these is a one-time change best done together with the new package id, 
 - Teammates see the same demo: development builds load the deterministic demo after onboarding; existing installs use More, Developer, **Reset to the latest demo**.
 
 ### 24.3 Gotchas learned the hard way
-- A Python script writing `src/features/dev/seed.ts` reported success but the file did not change; use the editor tools (Write or Edit) for that file and verify with `grep` afterwards.
+- A Python script that reused the variable `p` inside a loop wrote `seed.ts` content into a stray file named `upi`; it has been deleted. Avoid shadowing variables in helper scripts and verify edits with `grep`.
 - On macOS `sed -i` needs `sed -i ''`; zsh rejects `grep --include=*.ts` unquoted.
 - SVG gradient ids must be unique per screen (shared ids made every onboarding panel orange on web).
 - Bundled images need static `require` paths: `src/features/brands/data.ts` is generated, never hand-edited.
@@ -612,6 +612,16 @@ Renaming these is a one-time change best done together with the new package id, 
 - [ ] **Billing adapter:** `src/features/pro/billing.ts` detects the native billing module; add `expo-iap`, connect purchase, restore and acknowledgement to `resolveEntitlement`, and store the cache in the secure keystore. Needs the package id and the products created in Play Console.
 - [ ] Blur-lock wrapper and gates in each remaining Pro feature.
 - [ ] The remaining features in the order of 24.6.
+
+### 24.5b Launch readiness (20 Oct, evening)
+**Ready in the code:** all free features; Vault; Pro screen (lists only built features); package id `com.bruhme.app`; privacy policy rewritten for this build (`docs/index.html`, `docs/privacy-policy.html`); store listing rewritten (`store/listing-en.md`); `expo-doctor` 21/21; 354 tests pass; Android bundle builds.
+**Blocking a public launch tonight:**
+1. ~~Code not pushed~~ Pushed to `main` on 20 Oct (founder approved).
+2. **No signed build yet:** someone logged in to Expo runs `npx eas-cli login`, `npx eas-cli init`, then `npm run build:store-aab` (this machine is not logged in to Expo).
+3. **Play account type:** a personal account created after Nov 2023 must run a closed test (12 testers, 14 days) before production; tonight's realistic target is then internal or closed testing.
+4. **Pro purchases:** `expo-iap` and the three Play products are not connected; products can only be created after the first upload. **Decided (founder, 20 Oct): launch free first; Pro hidden in store builds** (`src/features/pro/flags.ts`, `PRO_LAUNCHED = false`); flip it when billing and products are live.
+5. **Privacy page hosting:** GitHub Pages serves `docs/` only after it is pushed; the policy URL must work before submitting.
+6. **Not tested on a real phone:** everything since 19 Oct (section 17).
 
 ### 24.6 What to do next
 1. **Amendment A1 is approved: build the whole of section 22** (free and Pro) before the first release, in this order: entitlement and Play Billing (`expo-iap`, anti-bypass 22.2a) and the Pro sheet; Vault (recovery-code model); Subscription radar; due dates with local reminders; weekly recap, Monthly and Yearly Wrapped, milestones; Pro Insights; Bump Pro (themes, stickers, saved lines); Spaces; persona, badges, streaks, Bruh score, roast or toast (fairness rules 22.2b); reimbursements; warranty vault; tax-time totals; private mode; widgets and app icons; friend codes (22.2c). Each with tests. Package id must be confirmed before any Play upload.

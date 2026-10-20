@@ -1,3 +1,5 @@
+**Before any task, read section 1 of `BRUHME.md` (the binding product constitution) and section 24 (handoff: current state, the user's rules, what to do next).** It lists what this app may and may not contain (no Crew, no Social, no accounts, no backend, no analytics, no billing, no SMS reading) and the report format required after every task. If a request conflicts with it, stop and explain; do not scaffold.
+
 This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
 
 ## Expo has changed — do not trust your training data
