@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Image, ScrollView, View, useWindowDimensions } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import ViewShot from 'react-native-view-shot';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
@@ -39,7 +39,8 @@ export default function Story() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [bg, setBg] = useState(BACKDROPS[0]);
   const [ink, setInk] = useState('#FFFFFF'); // dark ink for light photos
-  const [pick, setPick] = useState<StickerKey | null>(null);
+  const params = useLocalSearchParams<{ s?: string }>();
+  const [pick, setPick] = useState<StickerKey | null>((params.s as StickerKey) || null);
   // free placement: drag, pinch and twist the sticker anywhere on the photo
   const tx = useSharedValue(0), ty = useSharedValue(0), sc = useSharedValue(1), rot = useSharedValue(0);
   const sx = useSharedValue(0), sy = useSharedValue(0), ss = useSharedValue(1), sr = useSharedValue(0);
