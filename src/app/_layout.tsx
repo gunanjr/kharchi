@@ -19,6 +19,7 @@ import { ErrorBoundary } from '@/components/Feedback';
 import { BiometricGate } from '@/features/security/BiometricGate';
 import { useAppBootstrap } from '@/features/bootstrap';
 import { useVaultAuto } from '@/features/vault/useVaultAuto';
+import { useWeeklyRecap } from '@/features/wrapped/useWeeklyRecap';
 import '@/features/native/headless';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -43,6 +44,7 @@ function Shell() {
   const segments = useSegments();
   useAppBootstrap();
   useVaultAuto();
+  useWeeklyRecap();
 
   useEffect(() => {
     const inOnboarding = segments[0] === 'onboarding';

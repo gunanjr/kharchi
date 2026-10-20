@@ -21,6 +21,7 @@ export type Settings = {
   vaultLastHash: string;
   radarState: Record<string, { cancelledAt?: number; remind?: boolean }>; // subscription radar choices
   dueItems: import('@/features/dues/dues').DueItem[]; // bills with due dates (Pro)
+  recapScheduledFor: number; // the Monday a recap notification is already set for
   hideAmounts: boolean; // masks every amount (for public places); the eye on Home
 };
 
@@ -44,6 +45,7 @@ export const defaultSettings: Settings = {
   vaultLastHash: '',
   radarState: {},
   dueItems: [],
+  recapScheduledFor: 0,
 };
 
 type Store = Settings & {
