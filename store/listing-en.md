@@ -25,8 +25,14 @@ BruhMe is the money app for everyday life. Track what you spend, split shared co
 • No account. No BruhMe server. No ads or tracking.
 • App lock with fingerprint or face. Export, restore or delete everything any time.
 
-**BruhMe Pro (optional, through Google Play):** Vault, automatic encrypted backups to your own Google Drive or folder, with a recovery code for a new phone, plus more features as they arrive.
+**BruhMe Pro (optional, through Google Play)**
+• A monthly report card and a month-end estimate.
+• Challenges and monthly seasons that make good habits stick.
+• Story stickers for your own photos: streaks, spent-less lines, no-spend days. Never an amount.
+• Subscription radar, due-date reminders, Spaces for trips and side hustles, work reimbursement PDFs, warranties and tax-time totals.
+• Vault: automatic encrypted backups to a folder you pick, with a recovery code for a new phone.
+Yearly includes a 7-day free trial. Cancel any time in Google Play.
 
-**Category:** Finance · **Contains ads:** No · **In-app purchases:** Yes (BruhMe Pro), if Pro is enabled for this release · **Target audience:** 18+
+**Category:** Finance · **Contains ads:** No · **In-app purchases:** Yes (BruhMe Pro) · **Target audience:** 18+
 
-**Screenshots:** capture from the app with sample data (More, Developer, Reset to the latest demo). Use Home, Add, Insights, a group, the pay card, onboarding. Do not show other companies' logos: before capturing, keep merchant names generic or use screens without them.
+**Screenshots:** capture from a development build with sample data (Settings, Developer, Reset to the latest demo; the Developer page exists only in development builds). Use Home, Add, Insights, a group, the pay card, onboarding. Do not show other companies' logos: before capturing, keep merchant names generic or use screens without them.

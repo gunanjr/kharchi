@@ -142,8 +142,9 @@ module.exports = function withKharchiNative(config, props = {}) {
         (p) => !['android.permission.RECEIVE_SMS', 'android.permission.READ_SMS'].includes(p.$['android:name']),
       );
     }
-    // ML Kit (offline OCR) bundles Google's log-upload plumbing. Without INTERNET it cannot send anything, but we also
-    // remove the components so nothing is even scheduled. (OCR itself does not depend on them.)
+    // ML Kit (offline OCR) bundles Google's log-upload plumbing. Store builds have INTERNET (Play Billing), so these
+    // components are removed and nothing is ever scheduled or sent. OCR itself does not depend on them.
+    // scripts/audit-manifest.mjs fails the build if any of them reappear.
     removeComponent(app.service, 'com.google.android.datatransport.runtime.backends.TransportBackendDiscovery');
     removeComponent(app.service, 'com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService');
     removeComponent(app.receiver, 'com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver');

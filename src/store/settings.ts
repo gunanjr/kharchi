@@ -8,6 +8,7 @@ export type Settings = {
   currency: string;
   onboarded: boolean;
   biometricLock: boolean;
+  secureScreen: boolean; // hide the app from screenshots and the recent-apps preview (Android FLAG_SECURE)
   smsDisclosureAccepted: boolean;
   notifListenerEnabled: boolean;
   senderAllowlist: string; // comma separated; empty = all financial senders
@@ -53,6 +54,7 @@ export const defaultSettings: Settings = {
   currency: 'INR',
   onboarded: false,
   biometricLock: false,
+  secureScreen: false,
   smsDisclosureAccepted: false,
   notifListenerEnabled: false,
   senderAllowlist: '',

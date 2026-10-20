@@ -1,7 +1,9 @@
 import { requireOptionalNativeModule } from 'expo-modules-core';
 import * as SecureStore from 'expo-secure-store';
 import * as IAP from 'expo-iap';
+import Constants from 'expo-constants';
 import { appConfig } from '@/config/app';
+import { parsePublicKey, verifySha1Rsa, type RsaKey } from './rsa';
 import { PRODUCTS, resolveEntitlement, type EntitlementCache, type PlayPurchase, type ProductId } from './entitlement';
 import { useProStore } from './store';
 
@@ -41,11 +43,22 @@ function toPlay(p: AnyPurchase): PlayPurchase {
 }
 
 /**
- * Purchases come straight from the Play billing service on the phone. Their signed JSON must match what we act on
- * (checked in entitlement.ts). Full RSA verification against the Play public key needs a native helper or a server and
- * is listed as a hardening step in BRUHME.md section 22.2a.
+ * Purchases come from the Play billing service on the phone. Each one is RSA-verified against the app's Play licence key
+ * (rsa.ts) and its signed JSON must match what we act on (entitlement.ts), so edited or replayed purchase data is refused.
  */
-const deps = { packageName: appConfig.androidPackage, verifySignature: (json: string, sig: string) => json.length > 0 && sig.length > 0 };
+let parsed: RsaKey | null | undefined;
+function licenceKey(): RsaKey | null {
+  if (parsed !== undefined) return parsed;
+  const b64 = (Constants.expoConfig?.extra as { playLicenseKey?: string } | undefined)?.playLicenseKey ?? '';
+  try { parsed = b64 ? parsePublicKey(b64) : null; } catch { parsed = null; }
+  return parsed;
+}
+// Every purchase must carry Google's RSA signature for our licence key. Store builds cannot be built without the key
+// (app.config.ts); only a development build without a key falls back to a presence check, so testers can try billing.
+const deps = {
+  packageName: appConfig.androidPackage,
+  verifySignature: (json: string, sig: string) => { const k = licenceKey(); return k ? verifySha1Rsa(json, sig, k) : __DEV__ && json.length > 0 && sig.length > 0; },
+};
 
 async function readCache(): Promise<EntitlementCache | null> {
   try { const t = await SecureStore.getItemAsync(CACHE_KEY); return t ? (JSON.parse(t) as EntitlementCache) : null; } catch { return null; }

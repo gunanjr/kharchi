@@ -19,6 +19,7 @@ import { ErrorBoundary } from '@/components/Feedback';
 import { BiometricGate } from '@/features/security/BiometricGate';
 import { useAppBootstrap } from '@/features/bootstrap';
 import { useVaultAuto } from '@/features/vault/useVaultAuto';
+import { useSecureScreen } from '@/features/privacy/useSecureScreen';
 import { useWeeklyRecap } from '@/features/wrapped/useWeeklyRecap';
 import { useBilling } from '@/features/pro/useBilling';
 import '@/features/native/headless';
@@ -45,6 +46,7 @@ function Shell() {
   const segments = useSegments();
   useAppBootstrap();
   useVaultAuto();
+  useSecureScreen();
   useWeeklyRecap();
   useBilling();
 

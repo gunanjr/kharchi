@@ -4,13 +4,17 @@ import appConfig from './src/config/app.json';
 /**
  * APP_VARIANT=lite (DEFAULT, the privacy-first Play Store edition): no SMS permission, no SMS receiver,
  *   no notification listener, no sensors. Bank messages are pasted or shared into the app and confirmed by the user.
- * STORE_BUILD=1: additionally removes INTERNET and other unneeded permissions, so the app physically cannot
- *   send data off the phone. Used by the production / preview EAS profiles.
+ * STORE_BUILD=1: the production / preview EAS profiles. Keeps INTERNET for Google Play Billing and Vault (amendment A1;
+ *   no entries are ever sent to us), removes other unneeded permissions, and requires PLAY_LICENSE_KEY.
  */
 // One edition only (founder decision, 20 Oct): no SMS reading, no notification listener, ever.
 const variant = 'lite' as const;
 const storeBuild = process.env.STORE_BUILD === '1';
 const experimental = false;
+// Play Console > Monetisation setup > Licensing: the base64 public key. Used on the phone to verify every Pro purchase.
+// A store build without it would let nothing verify, so it refuses to build. Set it as an EAS environment variable.
+const playLicenseKey = process.env.PLAY_LICENSE_KEY ?? '';
+if (storeBuild && !playLicenseKey) throw new Error('PLAY_LICENSE_KEY is required for store builds (Play Console > Monetisation setup > Licensing).');
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -45,7 +49,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'android.permission.ACCESS_FINE_LOCATION',
       'android.permission.ACCESS_COARSE_LOCATION',
       'com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE',
-      // Store builds have no network code at all, so the permission is removed: data cannot leave the phone.
+      // expo-screen-capture declares these; only its FLAG_SECURE screen blocking is used, which needs no permission
+      'android.permission.READ_MEDIA_IMAGES',
+      'android.permission.DETECT_SCREEN_CAPTURE',
       // Amendment A1 (20 Oct): store builds keep INTERNET so Google Play Billing works; BruhMe still sends no entries anywhere.
       ...(storeBuild ? ['android.permission.ACCESS_NETWORK_STATE'] : []),
     ],
@@ -67,5 +73,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ['./plugins/withKharchiNative', { variant, experimental }],
   ],
   experiments: { typedRoutes: true },
-  extra: { appVariant: variant, experimental, storeBuild, privacyPolicyUrl: appConfig.privacyPolicyUrl, supportEmail: appConfig.supportEmail, eas: { projectId: process.env.EAS_PROJECT_ID } },
+  extra: { appVariant: variant, experimental, storeBuild, playLicenseKey, privacyPolicyUrl: appConfig.privacyPolicyUrl, supportEmail: appConfig.supportEmail, eas: { projectId: process.env.EAS_PROJECT_ID } },
 });

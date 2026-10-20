@@ -27,7 +27,7 @@ BRUHME_PREVIEW=1 npx expo start --web --port 8101
 ```
 
 ## Release
-Store build: `npm run build:store-aab` (EAS `production`), verified by `npm run audit:manifest`. The Play Console steps, products and the closed-test plan are in `BRUHME.md` (sections 15, 24.5a, 24.5b).
+Store build: `npm run build:store-aab` (EAS `production`), verified by `npm run audit:manifest`. Store builds need the EAS environment variable **`PLAY_LICENSE_KEY`** (Play Console, Monetisation setup, Licensing): every Pro purchase is signature-checked on the phone, and the build refuses to start without it. The Play Console steps, products and the closed-test plan are in `BRUHME.md` (sections 15, 24.5a, 24.5b).
 
 ## Layout
 ```

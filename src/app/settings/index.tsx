@@ -80,6 +80,7 @@ export default function Settings() {
               ))}
             </Row>
             <ListRow title="App lock" sub="Ask for your fingerprint, face or screen lock when BruhMe opens" leading={<IconTile icon="lock" size={40} />} right={<Switch accessibilityLabel="App lock" value={s.biometricLock} onValueChange={toggleLock} trackColor={{ true: colors.ink, false: colors.track }} thumbColor="#fff" />} />
+            <ListRow title="Hide from screenshots" sub="Blocks screenshots and blanks BruhMe in the recent-apps screen. Images you share from the app still work." leading={<IconTile icon="eyeOff" size={40} />} right={<Switch accessibilityLabel="Hide from screenshots" value={s.secureScreen} onValueChange={(v) => s.set(db, 'secureScreen', v)} trackColor={{ true: colors.ink, false: colors.track }} thumbColor="#fff" />} />
             <ListRow title="Haptics" sub="Small buzzes when you tap, save or settle, so you feel it worked" leading={<IconTile icon="vibrate" size={40} />} right={<Switch accessibilityLabel="Haptics" value={s.hapticsEnabled} onValueChange={(v) => s.set(db, 'hapticsEnabled', v)} trackColor={{ true: colors.ink, false: colors.track }} thumbColor="#fff" />} />
           </Group>
         </Enter>
