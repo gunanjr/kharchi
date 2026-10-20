@@ -1,0 +1,4694 @@
+[
+ {
+  "name": "Swiggy",
+  "domain": "swiggy.com",
+  "aliases": "instamart,swiggy instamart,swiggy one",
+  "file": "swiggy.png",
+  "hex": "#FF8044",
+  "src": 192,
+  "from": "gstatic"
+ },
+ {
+  "name": "Zomato",
+  "domain": "zomato.com",
+  "aliases": "district,eternal",
+  "file": "zomato.png",
+  "hex": "#D0323F",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Domino’s",
+  "domain": "dominos.co.in",
+  "aliases": "dominos,domino",
+  "file": null,
+  "hex": "#A7BED2",
+  "src": 512,
+  "from": "site",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "Pizza Hut",
+  "domain": "pizzahut.co.in",
+  "aliases": "",
+  "file": "pizza-hut.png",
+  "hex": "#E8A2A8",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Burger King",
+  "domain": "burgerking.in",
+  "aliases": "",
+  "file": "burger-king.png",
+  "hex": "#FCCFC2",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "McDonald’s",
+  "domain": "mcdonaldsindia.com",
+  "aliases": "mcdonald,mcdonalds,mcd,mcdelivery",
+  "file": null
+ },
+ {
+  "name": "KFC",
+  "domain": "kfc.co.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Subway",
+  "domain": "subway.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#E9FAFF",
+  "src": 512,
+  "from": "site",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "Starbucks",
+  "domain": "starbucks.in",
+  "aliases": "",
+  "file": "starbucks.png",
+  "hex": "#C7DCD4",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Cafe Coffee Day",
+  "domain": "cafecoffeeday.com",
+  "aliases": "ccd",
+  "file": null
+ },
+ {
+  "name": "Haldiram’s",
+  "domain": "haldirams.com",
+  "aliases": "haldirams",
+  "file": "haldirams.png",
+  "hex": "#F7B9B9",
+  "src": 500,
+  "from": "site"
+ },
+ {
+  "name": "Barbeque Nation",
+  "domain": "barbequenation.com",
+  "aliases": "bbq nation",
+  "file": null
+ },
+ {
+  "name": "EatSure",
+  "domain": "eatsure.com",
+  "aliases": "",
+  "file": "eatsure.png",
+  "hex": "#43738D",
+  "src": 192,
+  "from": "gstatic"
+ },
+ {
+  "name": "Behrouz Biryani",
+  "domain": "behrouzbiryani.com",
+  "aliases": "behrouz",
+  "file": null
+ },
+ {
+  "name": "Faasos",
+  "domain": "faasos.io",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Chaayos",
+  "domain": "chaayos.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Third Wave Coffee",
+  "domain": "thirdwavecoffee.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Blue Tokai",
+  "domain": "bluetokaicoffee.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Magicpin",
+  "domain": "magicpin.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Dineout",
+  "domain": "dineout.co.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Blinkit",
+  "domain": "blinkit.com",
+  "aliases": "grofers",
+  "file": "blinkit.png",
+  "hex": "#E3BD44",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Zepto",
+  "domain": "zeptonow.com",
+  "aliases": "",
+  "file": "zepto.png",
+  "hex": "#4D076C",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "BigBasket",
+  "domain": "bigbasket.com",
+  "aliases": "big basket",
+  "file": null
+ },
+ {
+  "name": "DMart",
+  "domain": "dmart.in",
+  "aliases": "d mart,avenue supermarts",
+  "file": "dmart.png",
+  "hex": "#F9F9F8",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Reliance Smart",
+  "domain": "relianceretail.com",
+  "aliases": "reliance fresh,reliance retail",
+  "file": "reliance-smart.png",
+  "hex": "#B6CCE3",
+  "src": 312,
+  "from": "site"
+ },
+ {
+  "name": "JioMart",
+  "domain": "jiomart.com",
+  "aliases": "jio mart",
+  "file": null
+ },
+ {
+  "name": "Country Delight",
+  "domain": "countrydelight.in",
+  "aliases": "",
+  "file": "country-delight.png",
+  "hex": "#E6EFF2",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Licious",
+  "domain": "licious.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "FreshToHome",
+  "domain": "freshtohome.com",
+  "aliases": "",
+  "file": "freshtohome.png",
+  "hex": "#DCEDD9",
+  "src": 192,
+  "from": "gstatic"
+ },
+ {
+  "name": "More Retail",
+  "domain": "moreretail.in",
+  "aliases": "more supermarket",
+  "file": null
+ },
+ {
+  "name": "Spencer’s",
+  "domain": "spencers.in",
+  "aliases": "spencers",
+  "file": null,
+  "hex": "#FFCCCE",
+  "src": 512,
+  "from": "site",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "Nature’s Basket",
+  "domain": "naturesbasket.co.in",
+  "aliases": "natures basket",
+  "file": "natures-basket.png",
+  "hex": "#293F59",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Amazon",
+  "domain": "amazon.in",
+  "aliases": "amazon pay,amzn,amazon prime,amazon fresh",
+  "file": null
+ },
+ {
+  "name": "Flipkart",
+  "domain": "flipkart.com",
+  "aliases": "fk",
+  "file": null,
+  "hex": "#D5C929",
+  "src": 2048,
+  "from": "site",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "Myntra",
+  "domain": "myntra.com",
+  "aliases": "",
+  "file": "myntra.png",
+  "hex": "#F3E0E5",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Ajio",
+  "domain": "ajio.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Meesho",
+  "domain": "meesho.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Nykaa",
+  "domain": "nykaa.com",
+  "aliases": "",
+  "file": "nykaa.png",
+  "hex": "#FF88C1",
+  "src": 230,
+  "from": "site"
+ },
+ {
+  "name": "Tata CLiQ",
+  "domain": "tatacliq.com",
+  "aliases": "tata cliq",
+  "file": "tata-cliq.png",
+  "hex": "#D09CE2",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Snapdeal",
+  "domain": "snapdeal.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Lenskart",
+  "domain": "lenskart.com",
+  "aliases": "",
+  "file": "lenskart.png",
+  "hex": "#E4EFE0",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "FirstCry",
+  "domain": "firstcry.com",
+  "aliases": "first cry",
+  "file": null
+ },
+ {
+  "name": "Decathlon",
+  "domain": "decathlon.in",
+  "aliases": "",
+  "file": "decathlon.png",
+  "hex": "#3F4BBD",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "IKEA",
+  "domain": "ikea.com",
+  "aliases": "",
+  "file": "ikea.png",
+  "hex": "#DCE3D5",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Croma",
+  "domain": "croma.com",
+  "aliases": "",
+  "file": "croma.png",
+  "hex": "#64B7B2",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Reliance Digital",
+  "domain": "reliancedigital.in",
+  "aliases": "",
+  "file": null,
+  "hex": "#F8FDFE",
+  "src": 512,
+  "from": "site",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "Vijay Sales",
+  "domain": "vijaysales.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#F8D1D3",
+  "src": 180,
+  "from": "site",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "Pepperfry",
+  "domain": "pepperfry.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Urban Ladder",
+  "domain": "urbanladder.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "H&M",
+  "domain": "hm.com",
+  "aliases": "h and m",
+  "file": null
+ },
+ {
+  "name": "Zara",
+  "domain": "zara.com",
+  "aliases": "",
+  "file": "zara.png",
+  "hex": "#DBDADA",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Uniqlo",
+  "domain": "uniqlo.com",
+  "aliases": "",
+  "file": "uniqlo.png",
+  "hex": "#FF3D3D",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Pantaloons",
+  "domain": "pantaloons.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#F0FBFA",
+  "src": 512,
+  "from": "site",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "Westside",
+  "domain": "westside.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Lifestyle",
+  "domain": "lifestylestores.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#F7D3D1",
+  "src": 180,
+  "from": "site",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "Shoppers Stop",
+  "domain": "shoppersstop.com",
+  "aliases": "",
+  "file": "shoppers-stop.png",
+  "hex": "#252525",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Max Fashion",
+  "domain": "maxfashion.in",
+  "aliases": "",
+  "file": "max-fashion.png",
+  "hex": "#D6B595",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Nike",
+  "domain": "nike.com",
+  "aliases": "",
+  "file": "nike.png",
+  "hex": "#F9F9F9",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Adidas",
+  "domain": "adidas.co.in",
+  "aliases": "",
+  "file": "adidas.png",
+  "hex": "#E3E3E3",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Puma",
+  "domain": "in.puma.com",
+  "aliases": "",
+  "file": "puma.png",
+  "hex": "#262626",
+  "src": 152,
+  "from": "site"
+ },
+ {
+  "name": "Apple",
+  "domain": "apple.com",
+  "aliases": "app store,itunes,apple store",
+  "file": "apple.png",
+  "hex": "#D0D0D0",
+  "src": 152,
+  "from": "site"
+ },
+ {
+  "name": "Samsung",
+  "domain": "samsung.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#3A96FF",
+  "src": 192,
+  "from": "site",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "Xiaomi",
+  "domain": "mi.com",
+  "aliases": "mi store,redmi",
+  "file": "xiaomi.png",
+  "hex": "#FFC8A1",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "OnePlus",
+  "domain": "oneplus.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "boAt",
+  "domain": "boat-lifestyle.com",
+  "aliases": "boat",
+  "file": null
+ },
+ {
+  "name": "Tanishq",
+  "domain": "tanishq.co.in",
+  "aliases": "",
+  "file": "tanishq.png",
+  "hex": "#FAF5EC",
+  "src": 196,
+  "from": "gstatic"
+ },
+ {
+  "name": "Titan",
+  "domain": "titan.co.in",
+  "aliases": "",
+  "file": "titan.png",
+  "hex": "#AFAFAF",
+  "src": 196,
+  "from": "gstatic"
+ },
+ {
+  "name": "Wakefit",
+  "domain": "wakefit.co",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Bata",
+  "domain": "bata.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Tira",
+  "domain": "tirabeauty.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Purplle",
+  "domain": "purplle.com",
+  "aliases": "",
+  "file": "purplle.png",
+  "hex": "#AF35AD",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Mamaearth",
+  "domain": "mamaearth.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Sugar Cosmetics",
+  "domain": "sugarcosmetics.com",
+  "aliases": "sugar",
+  "file": null
+ },
+ {
+  "name": "Cars24",
+  "domain": "cars24.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Uber",
+  "domain": "uber.com",
+  "aliases": "",
+  "file": "uber.png",
+  "hex": "#212121",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Ola",
+  "domain": "olacabs.com",
+  "aliases": "ola cabs",
+  "file": null
+ },
+ {
+  "name": "Rapido",
+  "domain": "rapido.bike",
+  "aliases": "",
+  "file": "rapido.png",
+  "hex": "#F9ECA4",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Namma Yatri",
+  "domain": "nammayatri.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "BluSmart",
+  "domain": "blu-smart.com",
+  "aliases": "blu smart",
+  "file": null,
+  "hex": "#E7E7E7",
+  "src": 192,
+  "from": "gstatic",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "inDrive",
+  "domain": "indrive.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Meru Cabs",
+  "domain": "merucabs.com",
+  "aliases": "meru",
+  "file": null
+ },
+ {
+  "name": "IRCTC",
+  "domain": "irctc.co.in",
+  "aliases": "railway,irctc rail",
+  "file": null,
+  "hex": "#E8DCE0",
+  "src": 512,
+  "from": "site",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "MakeMyTrip",
+  "domain": "makemytrip.com",
+  "aliases": "mmt,make my trip",
+  "file": "makemytrip.png",
+  "hex": "#FDE9EA",
+  "src": 682,
+  "from": "site"
+ },
+ {
+  "name": "Goibibo",
+  "domain": "goibibo.com",
+  "aliases": "",
+  "file": "goibibo.png",
+  "hex": "#FACBB3",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Cleartrip",
+  "domain": "cleartrip.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "EaseMyTrip",
+  "domain": "easemytrip.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Yatra",
+  "domain": "yatra.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "redBus",
+  "domain": "redbus.in",
+  "aliases": "red bus",
+  "file": "redbus.png",
+  "hex": "#F6BCBE",
+  "src": 300,
+  "from": "site"
+ },
+ {
+  "name": "AbhiBus",
+  "domain": "abhibus.com",
+  "aliases": "",
+  "file": "abhibus.png",
+  "hex": "#F3C7CA",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "ixigo",
+  "domain": "ixigo.com",
+  "aliases": "",
+  "file": "ixigo.png",
+  "hex": "#323232",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "IndiGo",
+  "domain": "goindigo.in",
+  "aliases": "indigo airlines",
+  "file": "indigo.png",
+  "hex": "#0C2398",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Air India",
+  "domain": "airindia.com",
+  "aliases": "",
+  "file": "air-india.png",
+  "hex": "#CA233A",
+  "src": 128,
+  "from": "gstatic"
+ },
+ {
+  "name": "Akasa Air",
+  "domain": "akasaair.com",
+  "aliases": "akasa",
+  "file": null
+ },
+ {
+  "name": "SpiceJet",
+  "domain": "spicejet.com",
+  "aliases": "",
+  "file": "spicejet.png",
+  "hex": "#A60E11",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Airbnb",
+  "domain": "airbnb.co.in",
+  "aliases": "",
+  "file": "airbnb.png",
+  "hex": "#FF7276",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "OYO",
+  "domain": "oyorooms.com",
+  "aliases": "oyo rooms",
+  "file": "oyo.png",
+  "hex": "#F14B42",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Booking.com",
+  "domain": "booking.com",
+  "aliases": "",
+  "file": "booking-com.png",
+  "hex": "#42587F",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Agoda",
+  "domain": "agoda.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Indian Oil",
+  "domain": "iocl.com",
+  "aliases": "iocl,indianoil",
+  "file": null
+ },
+ {
+  "name": "HPCL",
+  "domain": "hindustanpetroleum.com",
+  "aliases": "hp petrol,hp pay,hindustan petroleum",
+  "file": null
+ },
+ {
+  "name": "Bharat Petroleum",
+  "domain": "bharatpetroleum.in",
+  "aliases": "bpcl",
+  "file": null
+ },
+ {
+  "name": "Shell",
+  "domain": "shell.in",
+  "aliases": "",
+  "file": "shell.png",
+  "hex": "#F9D1AC",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Delhi Metro",
+  "domain": "delhimetrorail.com",
+  "aliases": "dmrc",
+  "file": "delhi-metro.png",
+  "hex": "#36A3D9",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Zoomcar",
+  "domain": "zoomcar.com",
+  "aliases": "",
+  "file": "zoomcar.png",
+  "hex": "#61AE8A",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Yulu",
+  "domain": "yulu.bike",
+  "aliases": "",
+  "file": "yulu.png",
+  "hex": "#B7F5FD",
+  "src": 300,
+  "from": "site"
+ },
+ {
+  "name": "Netflix",
+  "domain": "netflix.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Prime Video",
+  "domain": "primevideo.com",
+  "aliases": "amazon prime video",
+  "file": "prime-video.png",
+  "hex": "#2489FF",
+  "src": 152,
+  "from": "site"
+ },
+ {
+  "name": "Disney+ Hotstar",
+  "domain": "hotstar.com",
+  "aliases": "hotstar,jiohotstar,jio hotstar,disney hotstar",
+  "file": null
+ },
+ {
+  "name": "JioCinema",
+  "domain": "jiocinema.com",
+  "aliases": "jio cinema",
+  "file": null
+ },
+ {
+  "name": "SonyLIV",
+  "domain": "sonyliv.com",
+  "aliases": "sony liv",
+  "file": "sonyliv.png",
+  "hex": "#4D2E4A",
+  "src": 192,
+  "from": "gstatic"
+ },
+ {
+  "name": "ZEE5",
+  "domain": "zee5.com",
+  "aliases": "zee 5",
+  "file": "zee5.png",
+  "hex": "#3C3C49",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "YouTube",
+  "domain": "youtube.com",
+  "aliases": "youtube premium",
+  "file": "youtube.png",
+  "hex": "#FFADBD",
+  "src": 144,
+  "from": "site"
+ },
+ {
+  "name": "Spotify",
+  "domain": "spotify.com",
+  "aliases": "",
+  "file": "spotify.png",
+  "hex": "#B7E7C8",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Apple Music",
+  "domain": "music.apple.com",
+  "aliases": "",
+  "file": "apple-music.png",
+  "hex": "#FB4B62",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Gaana",
+  "domain": "gaana.com",
+  "aliases": "",
+  "file": "gaana.png",
+  "hex": "#FDE8E8",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "JioSaavn",
+  "domain": "jiosaavn.com",
+  "aliases": "saavn",
+  "file": null
+ },
+ {
+  "name": "Wynk",
+  "domain": "wynk.in",
+  "aliases": "",
+  "file": "wynk.png",
+  "hex": "#EFBBC3",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "BookMyShow",
+  "domain": "bookmyshow.com",
+  "aliases": "bms,book my show",
+  "file": "bookmyshow.png",
+  "hex": "#FBE5E8",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "PVR",
+  "domain": "pvrcinemas.com",
+  "aliases": "pvr inox",
+  "file": "pvr.png",
+  "hex": "#392E01",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "INOX",
+  "domain": "inoxmovies.com",
+  "aliases": "",
+  "file": "inox.png",
+  "hex": "#262626",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "ChatGPT",
+  "domain": "chatgpt.com",
+  "aliases": "openai",
+  "file": "chatgpt.png",
+  "hex": "#E9E9E9",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Claude",
+  "domain": "claude.ai",
+  "aliases": "anthropic",
+  "file": "claude.png",
+  "hex": "#E18A6D",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Google One",
+  "domain": "one.google.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "iCloud",
+  "domain": "icloud.com",
+  "aliases": "",
+  "file": "icloud.png",
+  "hex": "#C7E7FC",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Microsoft",
+  "domain": "microsoft.com",
+  "aliases": "office 365,microsoft 365",
+  "file": "microsoft.png",
+  "hex": "#A5A356",
+  "src": 128,
+  "from": "gstatic"
+ },
+ {
+  "name": "Adobe",
+  "domain": "adobe.com",
+  "aliases": "",
+  "file": "adobe.png",
+  "hex": "#F9B3AF",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Canva",
+  "domain": "canva.com",
+  "aliases": "",
+  "file": "canva.png",
+  "hex": "#B7D3F3",
+  "src": 192,
+  "from": "gstatic"
+ },
+ {
+  "name": "Notion",
+  "domain": "notion.so",
+  "aliases": "",
+  "file": "notion.png",
+  "hex": "#B1B1B1",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "LinkedIn",
+  "domain": "linkedin.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Audible",
+  "domain": "audible.in",
+  "aliases": "",
+  "file": "audible.png",
+  "hex": "#494842",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Duolingo",
+  "domain": "duolingo.com",
+  "aliases": "",
+  "file": "duolingo.png",
+  "hex": "#CAECA7",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Coursera",
+  "domain": "coursera.org",
+  "aliases": "",
+  "file": "coursera.png",
+  "hex": "#B0CBF1",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Udemy",
+  "domain": "udemy.com",
+  "aliases": "",
+  "file": "udemy.png",
+  "hex": "#EBE8EE",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "BYJU’S",
+  "domain": "byjus.com",
+  "aliases": "byjus",
+  "file": null
+ },
+ {
+  "name": "Unacademy",
+  "domain": "unacademy.com",
+  "aliases": "",
+  "file": "unacademy.png",
+  "hex": "#676F75",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "PhysicsWallah",
+  "domain": "pw.live",
+  "aliases": "pw,physics wallah",
+  "file": "physicswallah.png",
+  "hex": "#ABABAB",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Dropbox",
+  "domain": "dropbox.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Zoom",
+  "domain": "zoom.us",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Steam",
+  "domain": "steampowered.com",
+  "aliases": "",
+  "file": "steam.png",
+  "hex": "#B7C2CF",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "PlayStation",
+  "domain": "playstation.com",
+  "aliases": "psn",
+  "file": "playstation.png",
+  "hex": "#D1D0D0",
+  "src": 400,
+  "from": "site"
+ },
+ {
+  "name": "Xbox",
+  "domain": "xbox.com",
+  "aliases": "",
+  "file": "xbox.png",
+  "hex": "#E3F1D4",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Google Play",
+  "domain": "play.google.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Dream11",
+  "domain": "dream11.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Google Pay",
+  "domain": "pay.google.com",
+  "aliases": "gpay,g pay,google pay",
+  "file": null
+ },
+ {
+  "name": "PhonePe",
+  "domain": "phonepe.com",
+  "aliases": "phone pe",
+  "file": "phonepe.png",
+  "hex": "#CEBCE2",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Paytm",
+  "domain": "paytm.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "BHIM",
+  "domain": "bhimupi.org.in",
+  "aliases": "bhim upi",
+  "file": null
+ },
+ {
+  "name": "CRED",
+  "domain": "cred.club",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Razorpay",
+  "domain": "razorpay.com",
+  "aliases": "",
+  "file": "razorpay.png",
+  "hex": "#D4E1F1",
+  "src": 163,
+  "from": "site"
+ },
+ {
+  "name": "MobiKwik",
+  "domain": "mobikwik.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Freecharge",
+  "domain": "freecharge.in",
+  "aliases": "",
+  "file": "freecharge.png",
+  "hex": "#FAC6AF",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "HDFC Bank",
+  "domain": "hdfcbank.com",
+  "aliases": "hdfc",
+  "file": null
+ },
+ {
+  "name": "ICICI Bank",
+  "domain": "icicibank.com",
+  "aliases": "icici",
+  "file": null
+ },
+ {
+  "name": "SBI",
+  "domain": "sbi.co.in",
+  "aliases": "state bank,sbi bank,state bank of india",
+  "file": null
+ },
+ {
+  "name": "Axis Bank",
+  "domain": "axisbank.com",
+  "aliases": "axis",
+  "file": null
+ },
+ {
+  "name": "Kotak",
+  "domain": "kotak.com",
+  "aliases": "kotak mahindra",
+  "file": null
+ },
+ {
+  "name": "Yes Bank",
+  "domain": "yesbank.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "IDFC FIRST Bank",
+  "domain": "idfcfirstbank.com",
+  "aliases": "idfc",
+  "file": null
+ },
+ {
+  "name": "IndusInd Bank",
+  "domain": "indusind.com",
+  "aliases": "indusind",
+  "file": "indusind-bank.png",
+  "hex": "#B87272",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Punjab National Bank",
+  "domain": "pnbindia.in",
+  "aliases": "pnb",
+  "file": "punjab-national-bank.png",
+  "hex": "#B24046",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Bank of Baroda",
+  "domain": "bankofbaroda.in",
+  "aliases": "bob",
+  "file": null
+ },
+ {
+  "name": "Canara Bank",
+  "domain": "canarabank.com",
+  "aliases": "canara",
+  "file": "canara-bank.png",
+  "hex": "#F2F8F5",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Union Bank",
+  "domain": "unionbankofindia.co.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Federal Bank",
+  "domain": "federalbank.co.in",
+  "aliases": "",
+  "file": "federal-bank.png",
+  "hex": "#C0D3F0",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "RBL Bank",
+  "domain": "rblbank.com",
+  "aliases": "rbl",
+  "file": null
+ },
+ {
+  "name": "AU Small Finance Bank",
+  "domain": "aubank.in",
+  "aliases": "au bank",
+  "file": "au-small-finance-bank.png",
+  "hex": "#F1C7B5",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Jupiter",
+  "domain": "jupiter.money",
+  "aliases": "",
+  "file": "jupiter.png",
+  "hex": "#FD8D7F",
+  "src": 256,
+  "from": "site"
+ },
+ {
+  "name": "Fi Money",
+  "domain": "fi.money",
+  "aliases": "",
+  "file": "fi-money.png",
+  "hex": "#2DC5AB",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Slice",
+  "domain": "sliceit.com",
+  "aliases": "",
+  "file": "slice.png",
+  "hex": "#DB40DE",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "OneCard",
+  "domain": "getonecard.app",
+  "aliases": "one card",
+  "file": null
+ },
+ {
+  "name": "Zerodha",
+  "domain": "zerodha.com",
+  "aliases": "kite",
+  "file": null
+ },
+ {
+  "name": "Groww",
+  "domain": "groww.in",
+  "aliases": "",
+  "file": "groww.png",
+  "hex": "#A9DCF3",
+  "src": 270,
+  "from": "site"
+ },
+ {
+  "name": "Upstox",
+  "domain": "upstox.com",
+  "aliases": "",
+  "file": "upstox.png",
+  "hex": "#6C4098",
+  "src": 196,
+  "from": "site"
+ },
+ {
+  "name": "Angel One",
+  "domain": "angelone.in",
+  "aliases": "angel broking",
+  "file": null
+ },
+ {
+  "name": "INDmoney",
+  "domain": "indmoney.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "LIC",
+  "domain": "licindia.in",
+  "aliases": "lic premium",
+  "file": null
+ },
+ {
+  "name": "HDFC Life",
+  "domain": "hdfclife.com",
+  "aliases": "",
+  "file": "hdfc-life.png",
+  "hex": "#E89C9E",
+  "src": 2000,
+  "from": "site"
+ },
+ {
+  "name": "ICICI Prudential",
+  "domain": "iciciprulife.com",
+  "aliases": "icici pru",
+  "file": null
+ },
+ {
+  "name": "SBI Life",
+  "domain": "sbilife.co.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Star Health",
+  "domain": "starhealth.in",
+  "aliases": "",
+  "file": "star-health.png",
+  "hex": "#EEEFF5",
+  "src": 300,
+  "from": "site"
+ },
+ {
+  "name": "Acko",
+  "domain": "acko.com",
+  "aliases": "",
+  "file": "acko.png",
+  "hex": "#976FE6",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Digit Insurance",
+  "domain": "godigit.com",
+  "aliases": "digit",
+  "file": null,
+  "hex": "#211A09",
+  "src": 180,
+  "from": "site",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "PolicyBazaar",
+  "domain": "policybazaar.com",
+  "aliases": "policy bazaar",
+  "file": "policybazaar.png",
+  "hex": "#3C2E28",
+  "src": 144,
+  "from": "site"
+ },
+ {
+  "name": "Bajaj Finserv",
+  "domain": "bajajfinserv.in",
+  "aliases": "bajaj finance",
+  "file": null
+ },
+ {
+  "name": "Navi",
+  "domain": "navi.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "KreditBee",
+  "domain": "kreditbee.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Kuvera",
+  "domain": "kuvera.in",
+  "aliases": "",
+  "file": "kuvera.png",
+  "hex": "#D5D5D5",
+  "src": 1080,
+  "from": "site"
+ },
+ {
+  "name": "smallcase",
+  "domain": "smallcase.com",
+  "aliases": "",
+  "file": "smallcase.png",
+  "hex": "#D4E5FA",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "ClearTax",
+  "domain": "cleartax.in",
+  "aliases": "cleartax",
+  "file": null
+ },
+ {
+  "name": "Zoho",
+  "domain": "zoho.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Airtel",
+  "domain": "airtel.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Jio",
+  "domain": "jio.com",
+  "aliases": "reliance jio",
+  "file": null
+ },
+ {
+  "name": "Vi",
+  "domain": "myvi.in",
+  "aliases": "vodafone idea,vodafone,idea",
+  "file": "vi.png",
+  "hex": "#FDE0DF",
+  "src": 128,
+  "from": "site"
+ },
+ {
+  "name": "BSNL",
+  "domain": "bsnl.co.in",
+  "aliases": "",
+  "file": "bsnl.png",
+  "hex": "#ECAD88",
+  "src": 142,
+  "from": "site"
+ },
+ {
+  "name": "Tata Play",
+  "domain": "tataplay.com",
+  "aliases": "tata sky",
+  "file": null
+ },
+ {
+  "name": "Dish TV",
+  "domain": "dishtv.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "ACT Fibernet",
+  "domain": "actcorp.in",
+  "aliases": "act fiber",
+  "file": null
+ },
+ {
+  "name": "Hathway",
+  "domain": "hathway.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Tata Power",
+  "domain": "tatapower.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#EFF4F9",
+  "src": 256,
+  "from": "gstatic",
+  "rejected": "checked by eye: wrong, low quality or lite-variant icon"
+ },
+ {
+  "name": "Adani Electricity",
+  "domain": "adanielectricity.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Mahanagar Gas",
+  "domain": "mahanagargas.com",
+  "aliases": "mgl",
+  "file": null
+ },
+ {
+  "name": "Urban Company",
+  "domain": "urbancompany.com",
+  "aliases": "urbanclap,urban clap",
+  "file": "urban-company.png",
+  "hex": "#3D3D3D",
+  "src": 400,
+  "from": "site"
+ },
+ {
+  "name": "NoBroker",
+  "domain": "nobroker.in",
+  "aliases": "",
+  "file": "nobroker.png",
+  "hex": "#776C6D",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "MagicBricks",
+  "domain": "magicbricks.com",
+  "aliases": "",
+  "file": "magicbricks.png",
+  "hex": "#DE4147",
+  "src": 192,
+  "from": "gstatic"
+ },
+ {
+  "name": "99acres",
+  "domain": "99acres.com",
+  "aliases": "",
+  "file": "99acres.png",
+  "hex": "#3A8BE7",
+  "src": 192,
+  "from": "gstatic"
+ },
+ {
+  "name": "Housing.com",
+  "domain": "housing.com",
+  "aliases": "",
+  "file": "housing-com.png",
+  "hex": "#DCBAF7",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Tata 1mg",
+  "domain": "1mg.com",
+  "aliases": "1mg,tata1mg",
+  "file": "tata-1mg.png",
+  "hex": "#EA6558",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "PharmEasy",
+  "domain": "pharmeasy.in",
+  "aliases": "pharm easy",
+  "file": null
+ },
+ {
+  "name": "Apollo Pharmacy",
+  "domain": "apollopharmacy.in",
+  "aliases": "apollo",
+  "file": null
+ },
+ {
+  "name": "Practo",
+  "domain": "practo.com",
+  "aliases": "",
+  "file": "practo.png",
+  "hex": "#41518A",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Netmeds",
+  "domain": "netmeds.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "cult.fit",
+  "domain": "cult.fit",
+  "aliases": "cultfit,cult fit",
+  "file": "cult-fit.png",
+  "hex": "#494C53",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "HealthifyMe",
+  "domain": "healthifyme.com",
+  "aliases": "",
+  "file": "healthifyme.png",
+  "hex": "#C7D9D6",
+  "src": 256,
+  "from": "site"
+ },
+ {
+  "name": "MedPlus",
+  "domain": "medplusmart.com",
+  "aliases": "",
+  "file": "medplus.png",
+  "hex": "#C35651",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Dunzo",
+  "domain": "dunzo.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Porter",
+  "domain": "porter.in",
+  "aliases": "",
+  "file": "porter.png",
+  "hex": "#9EB7F1",
+  "src": 250,
+  "from": "site"
+ },
+ {
+  "name": "Delhivery",
+  "domain": "delhivery.com",
+  "aliases": "",
+  "file": "delhivery.png",
+  "hex": "#791E1D",
+  "src": 128,
+  "from": "site"
+ },
+ {
+  "name": "India Post",
+  "domain": "indiapost.gov.in",
+  "aliases": "",
+  "file": "india-post.png",
+  "hex": "#F6DCD4",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "DTDC",
+  "domain": "dtdc.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Blue Dart",
+  "domain": "bluedart.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Google",
+  "domain": "google.com",
+  "aliases": "",
+  "file": "google.png",
+  "hex": "#F3F3F1",
+  "src": 144,
+  "from": "gstatic"
+ },
+ {
+  "name": "Facebook",
+  "domain": "facebook.com",
+  "aliases": "meta",
+  "file": "facebook.png",
+  "hex": "#3A85FF",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Instagram",
+  "domain": "instagram.com",
+  "aliases": "",
+  "file": "instagram.png",
+  "hex": "#F26D9A",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Snapchat",
+  "domain": "snapchat.com",
+  "aliases": "",
+  "file": "snapchat.png",
+  "hex": "#E6E547",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "X",
+  "domain": "x.com",
+  "aliases": "twitter",
+  "file": "x.png",
+  "hex": "#1F1F1F",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "WhatsApp",
+  "domain": "whatsapp.com",
+  "aliases": "",
+  "file": "whatsapp.png",
+  "hex": "#668F7B",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Telegram",
+  "domain": "telegram.org",
+  "aliases": "",
+  "file": "telegram.png",
+  "hex": "#93D2F2",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Tinder",
+  "domain": "tinder.com",
+  "aliases": "",
+  "file": "tinder.png",
+  "hex": "#FFD5DB",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Bumble",
+  "domain": "bumble.com",
+  "aliases": "",
+  "file": "bumble.png",
+  "hex": "#C3A94E",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Wow! Momo",
+  "domain": "wowmomo.com",
+  "aliases": "wow momo",
+  "file": "wow-momo.png",
+  "hex": "#DFB520",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Biryani By Kilo",
+  "domain": "biryanibykilo.com",
+  "aliases": "bbk",
+  "file": "biryani-by-kilo.png",
+  "hex": "#9D173F",
+  "src": 200,
+  "from": "site"
+ },
+ {
+  "name": "Box8",
+  "domain": "box8.in",
+  "aliases": "",
+  "file": "box8.png",
+  "hex": "#E4232E",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Rebel Foods",
+  "domain": "rebelfoods.com",
+  "aliases": "",
+  "file": "rebel-foods.png",
+  "hex": "#D0D0D0",
+  "src": 534,
+  "from": "site"
+ },
+ {
+  "name": "Taco Bell",
+  "domain": "tacobell.co.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Dunkin’",
+  "domain": "dunkinindia.com",
+  "aliases": "dunkin,dunkin donuts",
+  "file": null
+ },
+ {
+  "name": "Baskin Robbins",
+  "domain": "baskinrobbinsindia.com",
+  "aliases": "baskin",
+  "file": "baskin-robbins.png",
+  "hex": "#F4EAEE",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Theobroma",
+  "domain": "theobroma.in",
+  "aliases": "",
+  "file": "theobroma.png",
+  "hex": "#F9C2BF",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Paradise Biryani",
+  "domain": "paradisefoodcourt.in",
+  "aliases": "paradise",
+  "file": null
+ },
+ {
+  "name": "Social",
+  "domain": "socialoffline.in",
+  "aliases": "social offline",
+  "file": null,
+  "hex": "#6E4931",
+  "src": 180,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Hard Rock Cafe",
+  "domain": "hardrockcafe.com",
+  "aliases": "",
+  "file": "hard-rock-cafe.png",
+  "hex": "#1D1D1D",
+  "src": 152,
+  "from": "gstatic"
+ },
+ {
+  "name": "Costa Coffee",
+  "domain": "costacoffee.in",
+  "aliases": "costa",
+  "file": "costa-coffee.png",
+  "hex": "#8D4F62",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Tim Hortons",
+  "domain": "timhortonsindia.com",
+  "aliases": "tim hortons",
+  "file": null
+ },
+ {
+  "name": "Krispy Kreme",
+  "domain": "krispykreme.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Wendy’s",
+  "domain": "wendys.com",
+  "aliases": "wendys",
+  "file": "wendys.png",
+  "hex": "#DEBFC7",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Natural Ice Cream",
+  "domain": "naturals.in",
+  "aliases": "naturals",
+  "file": null,
+  "hex": "#9869AE",
+  "src": 180,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Keventers",
+  "domain": "keventers.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#AAB5C5",
+  "src": 192,
+  "from": "gstatic",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Chai Point",
+  "domain": "chaipoint.com",
+  "aliases": "",
+  "file": "chai-point.png",
+  "hex": "#ECEDF7",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Amul",
+  "domain": "amul.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Nandini",
+  "domain": "kmfnandini.coop",
+  "aliases": "",
+  "file": "nandini.png",
+  "hex": "#D7DFD9",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Mother Dairy",
+  "domain": "motherdairy.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Spar",
+  "domain": "sparindia.com",
+  "aliases": "spar hypermarket",
+  "file": null
+ },
+ {
+  "name": "Star Bazaar",
+  "domain": "starbazaar.in",
+  "aliases": "star bazaar",
+  "file": null
+ },
+ {
+  "name": "Ratnadeep",
+  "domain": "ratnadeep.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Vishal Mega Mart",
+  "domain": "vishalmegamart.com",
+  "aliases": "vishal",
+  "file": "vishal-mega-mart.png",
+  "hex": "#B389C5",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Metro Cash & Carry",
+  "domain": "metro.co.in",
+  "aliases": "metro wholesale",
+  "file": "metro-cash-carry.png",
+  "hex": "#4F665D",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Lulu Hypermarket",
+  "domain": "luluhypermarket.in",
+  "aliases": "lulu",
+  "file": null
+ },
+ {
+  "name": "Otipy",
+  "domain": "otipy.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Milkbasket",
+  "domain": "milkbasket.com",
+  "aliases": "",
+  "file": "milkbasket.png",
+  "hex": "#BCD6F8",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Akshayakalpa",
+  "domain": "akshayakalpa.org",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Shopsy",
+  "domain": "shopsy.in",
+  "aliases": "",
+  "file": "shopsy.png",
+  "hex": "#E7E4FC",
+  "src": 192,
+  "from": "gstatic"
+ },
+ {
+  "name": "Nykaa Fashion",
+  "domain": "nykaafashion.com",
+  "aliases": "",
+  "file": "nykaa-fashion.png",
+  "hex": "#97446C",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Bewakoof",
+  "domain": "bewakoof.com",
+  "aliases": "",
+  "file": "bewakoof.png",
+  "hex": "#DBBD32",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "The Souled Store",
+  "domain": "thesouledstore.com",
+  "aliases": "souled store",
+  "file": null
+ },
+ {
+  "name": "Snitch",
+  "domain": "snitch.co.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Libas",
+  "domain": "libas.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "FabIndia",
+  "domain": "fabindia.com",
+  "aliases": "",
+  "file": "fabindia.png",
+  "hex": "#F4ECEC",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Biba",
+  "domain": "biba.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "W for Woman",
+  "domain": "wforwoman.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Manyavar",
+  "domain": "manyavar.com",
+  "aliases": "",
+  "file": "manyavar.png",
+  "hex": "#FBEDD7",
+  "src": 196,
+  "from": "site"
+ },
+ {
+  "name": "Raymond",
+  "domain": "raymond.in",
+  "aliases": "",
+  "file": "raymond.png",
+  "hex": "#FCD9DE",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Peter England",
+  "domain": "peterengland.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Allen Solly",
+  "domain": "allensolly.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Van Heusen",
+  "domain": "vanheusenindia.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Levi’s",
+  "domain": "levi.in",
+  "aliases": "levis",
+  "file": null
+ },
+ {
+  "name": "Marks & Spencer",
+  "domain": "marksandspencer.in",
+  "aliases": "m&s,marks and spencer",
+  "file": null
+ },
+ {
+  "name": "Forever 21",
+  "domain": "forever21.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Skechers",
+  "domain": "skechers.in",
+  "aliases": "",
+  "file": "skechers.png",
+  "hex": "#E8F4FF",
+  "src": 196,
+  "from": "site"
+ },
+ {
+  "name": "Crocs",
+  "domain": "crocs.in",
+  "aliases": "",
+  "file": "crocs.png",
+  "hex": "#9FC75B",
+  "src": 256,
+  "from": "site"
+ },
+ {
+  "name": "Campus Shoes",
+  "domain": "campusshoes.com",
+  "aliases": "campus",
+  "file": null
+ },
+ {
+  "name": "Woodland",
+  "domain": "woodlandworldwide.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Caratlane",
+  "domain": "caratlane.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Malabar Gold",
+  "domain": "malabargoldanddiamonds.com",
+  "aliases": "malabar",
+  "file": null,
+  "hex": "#E9FAFF",
+  "src": 512,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Kalyan Jewellers",
+  "domain": "kalyanjewellers.net",
+  "aliases": "kalyan",
+  "file": null
+ },
+ {
+  "name": "Giva",
+  "domain": "giva.co",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Bluestone",
+  "domain": "bluestone.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#354D62",
+  "src": 180,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Hamleys",
+  "domain": "hamleys.in",
+  "aliases": "",
+  "file": null,
+  "hex": "#A79984",
+  "src": 192,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Archies",
+  "domain": "archiesonline.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Ferns N Petals",
+  "domain": "fnp.com",
+  "aliases": "fnp",
+  "file": null
+ },
+ {
+  "name": "IGP",
+  "domain": "igp.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Pottery Barn",
+  "domain": "potterybarn.in",
+  "aliases": "",
+  "file": "pottery-barn.png",
+  "hex": "#3E4040",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Home Centre",
+  "domain": "homecentre.in",
+  "aliases": "",
+  "file": "home-centre.png",
+  "hex": "#EBEBEE",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Nilkamal",
+  "domain": "nilkamalfurniture.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Godrej Interio",
+  "domain": "godrejinterio.com",
+  "aliases": "",
+  "file": "godrej-interio.png",
+  "hex": "#FDF4F3",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Sleepycat",
+  "domain": "sleepycat.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Duroflex",
+  "domain": "duroflexworld.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Asian Paints",
+  "domain": "asianpaints.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Philips",
+  "domain": "philips.co.in",
+  "aliases": "",
+  "file": "philips.png",
+  "hex": "#CCDEF7",
+  "src": 152,
+  "from": "site"
+ },
+ {
+  "name": "LG",
+  "domain": "lg.com",
+  "aliases": "",
+  "file": "lg.png",
+  "hex": "#E0A8BA",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Sony",
+  "domain": "sony.co.in",
+  "aliases": "",
+  "file": "sony.png",
+  "hex": "#464646",
+  "src": 144,
+  "from": "site"
+ },
+ {
+  "name": "Dell",
+  "domain": "dell.com",
+  "aliases": "",
+  "file": "dell.png",
+  "hex": "#1E80D0",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "HP",
+  "domain": "hp.com",
+  "aliases": "hp store",
+  "file": null
+ },
+ {
+  "name": "Lenovo",
+  "domain": "lenovo.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "ASUS",
+  "domain": "asus.com",
+  "aliases": "",
+  "file": "asus.png",
+  "hex": "#D8EAFF",
+  "src": 256,
+  "from": "site"
+ },
+ {
+  "name": "Realme",
+  "domain": "realme.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Vivo",
+  "domain": "vivo.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "OPPO",
+  "domain": "oppo.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Nothing",
+  "domain": "nothing.tech",
+  "aliases": "",
+  "file": null,
+  "hex": "#EFA1A4",
+  "src": 512,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Noise",
+  "domain": "gonoise.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Fire-Boltt",
+  "domain": "fireboltt.com",
+  "aliases": "fireboltt",
+  "file": null
+ },
+ {
+  "name": "JBL",
+  "domain": "jbl.com",
+  "aliases": "",
+  "file": "jbl.png",
+  "hex": "#FFC6B5",
+  "src": 196,
+  "from": "gstatic"
+ },
+ {
+  "name": "Bose",
+  "domain": "boseindia.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Marshall",
+  "domain": "marshall.com",
+  "aliases": "",
+  "file": "marshall.png",
+  "hex": "#393939",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Canon",
+  "domain": "canon.co.in",
+  "aliases": "",
+  "file": "canon.png",
+  "hex": "#FEEDED",
+  "src": 128,
+  "from": "gstatic"
+ },
+ {
+  "name": "GoPro",
+  "domain": "gopro.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Dyson",
+  "domain": "dyson.in",
+  "aliases": "",
+  "file": null,
+  "hex": "#454545",
+  "src": 180,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Prestige",
+  "domain": "ttkprestige.com",
+  "aliases": "",
+  "file": "prestige.png",
+  "hex": "#CCE0F0",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Poorvika",
+  "domain": "poorvika.com",
+  "aliases": "",
+  "file": "poorvika.png",
+  "hex": "#F36C3A",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Sangeetha Mobiles",
+  "domain": "sangeethamobiles.com",
+  "aliases": "sangeetha",
+  "file": null
+ },
+ {
+  "name": "Forest Essentials",
+  "domain": "forestessentialsindia.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Plum",
+  "domain": "plumgoodness.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Minimalist",
+  "domain": "beminimalist.co",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "The Body Shop",
+  "domain": "thebodyshop.in",
+  "aliases": "body shop",
+  "file": "the-body-shop.png",
+  "hex": "#353535",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Bath & Body Works",
+  "domain": "bathandbodyworks.in",
+  "aliases": "bath and body works",
+  "file": null
+ },
+ {
+  "name": "Sephora",
+  "domain": "sephora.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Lakmé",
+  "domain": "lakmeindia.com",
+  "aliases": "lakme",
+  "file": null
+ },
+ {
+  "name": "Naturals Salon",
+  "domain": "naturals.in",
+  "aliases": "",
+  "file": null,
+  "hex": "#9869AE",
+  "src": 180,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Truefitt & Hill",
+  "domain": "truefittandhill.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Wellness Forever",
+  "domain": "wellnessforever.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#F1F4D5",
+  "src": 256,
+  "from": "gstatic",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Truemeds",
+  "domain": "truemeds.in",
+  "aliases": "",
+  "file": "truemeds.png",
+  "hex": "#E0EFF4",
+  "src": 497,
+  "from": "site"
+ },
+ {
+  "name": "Max Healthcare",
+  "domain": "maxhealthcare.in",
+  "aliases": "max hospital",
+  "file": "max-healthcare.png",
+  "hex": "#316C8D",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Fortis",
+  "domain": "fortishealthcare.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Manipal Hospitals",
+  "domain": "manipalhospitals.com",
+  "aliases": "manipal",
+  "file": "manipal-hospitals.png",
+  "hex": "#EBB9A7",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Narayana Health",
+  "domain": "narayanahealth.org",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Dr Lal PathLabs",
+  "domain": "lalpathlabs.com",
+  "aliases": "lal pathlabs",
+  "file": null
+ },
+ {
+  "name": "Thyrocare",
+  "domain": "thyrocare.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Healthians",
+  "domain": "healthians.com",
+  "aliases": "",
+  "file": "healthians.png",
+  "hex": "#ACE0E3",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Gold’s Gym",
+  "domain": "goldsgym.in",
+  "aliases": "golds gym",
+  "file": null
+ },
+ {
+  "name": "Anytime Fitness",
+  "domain": "anytimefitness.co.in",
+  "aliases": "",
+  "file": "anytime-fitness.png",
+  "hex": "#EDECEF",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "HRX",
+  "domain": "hrxbrand.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Ola Electric",
+  "domain": "olaelectric.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Ather",
+  "domain": "atherenergy.com",
+  "aliases": "ather energy",
+  "file": null
+ },
+ {
+  "name": "Royal Enfield",
+  "domain": "royalenfield.com",
+  "aliases": "",
+  "file": "royal-enfield.png",
+  "hex": "#DBB2A9",
+  "src": 128,
+  "from": "site"
+ },
+ {
+  "name": "Tata Motors",
+  "domain": "tatamotors.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Maruti Suzuki",
+  "domain": "marutisuzuki.com",
+  "aliases": "maruti",
+  "file": null
+ },
+ {
+  "name": "Hyundai",
+  "domain": "hyundai.com",
+  "aliases": "",
+  "file": "hyundai.png",
+  "hex": "#2F537C",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Mahindra",
+  "domain": "mahindra.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Honda",
+  "domain": "honda2wheelersindia.com",
+  "aliases": "honda",
+  "file": "honda.png",
+  "hex": "#FDE3E6",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "TVS",
+  "domain": "tvsmotor.com",
+  "aliases": "tvs motor",
+  "file": null
+ },
+ {
+  "name": "Bajaj Auto",
+  "domain": "bajajauto.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Hero MotoCorp",
+  "domain": "heromotocorp.com",
+  "aliases": "hero",
+  "file": null
+ },
+ {
+  "name": "Park+",
+  "domain": "parkplus.io",
+  "aliases": "park plus",
+  "file": "park.png",
+  "hex": "#B8D6FA",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Thomas Cook",
+  "domain": "thomascook.in",
+  "aliases": "",
+  "file": "thomas-cook.png",
+  "hex": "#1F639A",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "SOTC",
+  "domain": "sotc.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Treebo",
+  "domain": "treebo.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#EEE2CE",
+  "src": 180,
+  "from": "gstatic",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "FabHotels",
+  "domain": "fabhotels.com",
+  "aliases": "",
+  "file": "fabhotels.png",
+  "hex": "#F4E9AA",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Taj Hotels",
+  "domain": "tajhotels.com",
+  "aliases": "taj,ihcl",
+  "file": "taj-hotels.png",
+  "hex": "#E1D4B6",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Marriott",
+  "domain": "marriott.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Hilton",
+  "domain": "hilton.com",
+  "aliases": "",
+  "file": "hilton.png",
+  "hex": "#507093",
+  "src": 144,
+  "from": "gstatic"
+ },
+ {
+  "name": "Hyatt",
+  "domain": "hyatt.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "ITC Hotels",
+  "domain": "itchotels.com",
+  "aliases": "itc hotel",
+  "file": "itc-hotels.png",
+  "hex": "#FBF6EF",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Lemon Tree",
+  "domain": "lemontreehotels.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Zostel",
+  "domain": "zostel.com",
+  "aliases": "",
+  "file": "zostel.png",
+  "hex": "#FFE8E6",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Emirates",
+  "domain": "emirates.com",
+  "aliases": "",
+  "file": "emirates.png",
+  "hex": "#DB2E35",
+  "src": 152,
+  "from": "gstatic"
+ },
+ {
+  "name": "Qatar Airways",
+  "domain": "qatarairways.com",
+  "aliases": "qatar",
+  "file": null
+ },
+ {
+  "name": "Singapore Airlines",
+  "domain": "singaporeair.com",
+  "aliases": "",
+  "file": "singapore-airlines.png",
+  "hex": "#161B4A",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Lufthansa",
+  "domain": "lufthansa.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "British Airways",
+  "domain": "britishairways.com",
+  "aliases": "",
+  "file": "british-airways.png",
+  "hex": "#FCF6F7",
+  "src": 480,
+  "from": "site"
+ },
+ {
+  "name": "Etihad",
+  "domain": "etihad.com",
+  "aliases": "",
+  "file": "etihad.png",
+  "hex": "#F4EEE4",
+  "src": 216,
+  "from": "site"
+ },
+ {
+  "name": "Air India Express",
+  "domain": "airindiaexpress.com",
+  "aliases": "",
+  "file": "air-india-express.png",
+  "hex": "#FF8F60",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Expedia",
+  "domain": "expedia.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Skyscanner",
+  "domain": "skyscanner.co.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Klook",
+  "domain": "klook.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Thrillophilia",
+  "domain": "thrillophilia.com",
+  "aliases": "",
+  "file": "thrillophilia.png",
+  "hex": "#FCB14B",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Apple TV+",
+  "domain": "tv.apple.com",
+  "aliases": "apple tv",
+  "file": "apple-tv.png",
+  "hex": "#373737",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Amazon Music",
+  "domain": "music.amazon.in",
+  "aliases": "",
+  "file": "amazon-music.png",
+  "hex": "#32D4DB",
+  "src": 256,
+  "from": "site"
+ },
+ {
+  "name": "Hungama",
+  "domain": "hungama.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Aha",
+  "domain": "aha.video",
+  "aliases": "aha video",
+  "file": "aha.png",
+  "hex": "#FF8550",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Sun NXT",
+  "domain": "sunnxt.com",
+  "aliases": "sunnxt",
+  "file": null
+ },
+ {
+  "name": "ALTBalaji",
+  "domain": "altbalaji.com",
+  "aliases": "",
+  "file": "altbalaji.png",
+  "hex": "#626655",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "MX Player",
+  "domain": "mxplayer.in",
+  "aliases": "",
+  "file": "mx-player.png",
+  "hex": "#C2D7FA",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Crunchyroll",
+  "domain": "crunchyroll.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Twitch",
+  "domain": "twitch.tv",
+  "aliases": "",
+  "file": "twitch.png",
+  "hex": "#8469B8",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Discord",
+  "domain": "discord.com",
+  "aliases": "discord nitro",
+  "file": "discord.png",
+  "hex": "#CBCFFB",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Reddit",
+  "domain": "reddit.com",
+  "aliases": "",
+  "file": "reddit.png",
+  "hex": "#FAC9B8",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Pinterest",
+  "domain": "pinterest.com",
+  "aliases": "",
+  "file": "pinterest.png",
+  "hex": "#F1D0D1",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Quora",
+  "domain": "quora.com",
+  "aliases": "",
+  "file": "quora.png",
+  "hex": "#F4DBDA",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Substack",
+  "domain": "substack.com",
+  "aliases": "",
+  "file": "substack.png",
+  "hex": "#FF7E45",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Patreon",
+  "domain": "patreon.com",
+  "aliases": "",
+  "file": "patreon.png",
+  "hex": "#454545",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Kindle",
+  "domain": "kindle.amazon.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Pocket FM",
+  "domain": "pocketfm.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#FB2E6A",
+  "src": 512,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Kuku FM",
+  "domain": "kukufm.com",
+  "aliases": "",
+  "file": "kuku-fm.png",
+  "hex": "#C4BFC0",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Storytel",
+  "domain": "storytel.com",
+  "aliases": "",
+  "file": "storytel.png",
+  "hex": "#FFCBBB",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Headspace",
+  "domain": "headspace.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Calm",
+  "domain": "calm.com",
+  "aliases": "",
+  "file": "calm.png",
+  "hex": "#559BE9",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Strava",
+  "domain": "strava.com",
+  "aliases": "",
+  "file": "strava.png",
+  "hex": "#FF681E",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Fitbit",
+  "domain": "fitbit.com",
+  "aliases": "",
+  "file": "fitbit.png",
+  "hex": "#ECEBE7",
+  "src": 288,
+  "from": "site"
+ },
+ {
+  "name": "Garmin",
+  "domain": "garmin.com",
+  "aliases": "",
+  "file": "garmin.png",
+  "hex": "#AAA8A8",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Epic Games",
+  "domain": "epicgames.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Nintendo",
+  "domain": "nintendo.com",
+  "aliases": "",
+  "file": "nintendo.png",
+  "hex": "#E81020",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Riot Games",
+  "domain": "riotgames.com",
+  "aliases": "valorant",
+  "file": "riot-games.png",
+  "hex": "#2D2E2D",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "BGMI",
+  "domain": "battlegroundsmobileindia.com",
+  "aliases": "krafton",
+  "file": "bgmi.png",
+  "hex": "#CCCCCC",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "MPL",
+  "domain": "mpl.live",
+  "aliases": "mobile premier league",
+  "file": null
+ },
+ {
+  "name": "My11Circle",
+  "domain": "my11circle.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Rummy Circle",
+  "domain": "rummycircle.com",
+  "aliases": "rummycircle",
+  "file": null
+ },
+ {
+  "name": "Zupee",
+  "domain": "zupee.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Paytm Insider",
+  "domain": "insider.in",
+  "aliases": "insider",
+  "file": null,
+  "hex": "#7845C6",
+  "src": 180,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "District",
+  "domain": "district.in",
+  "aliases": "",
+  "file": "district.png",
+  "hex": "#7845C6",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Cinépolis",
+  "domain": "cinepolisindia.com",
+  "aliases": "cinepolis",
+  "file": "cin-polis.png",
+  "hex": "#D5D7DF",
+  "src": 567,
+  "from": "site"
+ },
+ {
+  "name": "Wonderla",
+  "domain": "wonderla.com",
+  "aliases": "",
+  "file": "wonderla.png",
+  "hex": "#F6F4EF",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Imagicaa",
+  "domain": "imagicaaworld.com",
+  "aliases": "imagica",
+  "file": null
+ },
+ {
+  "name": "Smaaash",
+  "domain": "smaaash.in",
+  "aliases": "",
+  "file": "smaaash.png",
+  "hex": "#DEAAAA",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Timezone",
+  "domain": "timezonegames.com",
+  "aliases": "",
+  "file": "timezone.png",
+  "hex": "#F0543B",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "GitHub",
+  "domain": "github.com",
+  "aliases": "",
+  "file": "github.png",
+  "hex": "#47494A",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Figma",
+  "domain": "figma.com",
+  "aliases": "",
+  "file": "figma.png",
+  "hex": "#221E22",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Slack",
+  "domain": "slack.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Atlassian",
+  "domain": "atlassian.com",
+  "aliases": "jira",
+  "file": "atlassian.png",
+  "hex": "#E1EEFF",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Trello",
+  "domain": "trello.com",
+  "aliases": "",
+  "file": "trello.png",
+  "hex": "#4A7ECC",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Asana",
+  "domain": "asana.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Grammarly",
+  "domain": "grammarly.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "1Password",
+  "domain": "1password.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "NordVPN",
+  "domain": "nordvpn.com",
+  "aliases": "",
+  "file": "nordvpn.png",
+  "hex": "#E0E5FF",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Proton",
+  "domain": "proton.me",
+  "aliases": "protonmail,proton vpn",
+  "file": "proton.png",
+  "hex": "#E8E4FD",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Perplexity",
+  "domain": "perplexity.ai",
+  "aliases": "",
+  "file": "perplexity.png",
+  "hex": "#383837",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Gemini",
+  "domain": "gemini.google.com",
+  "aliases": "google gemini",
+  "file": "gemini.png",
+  "hex": "#E9EFF3",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Midjourney",
+  "domain": "midjourney.com",
+  "aliases": "",
+  "file": "midjourney.png",
+  "hex": "#EEEDED",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Cursor",
+  "domain": "cursor.com",
+  "aliases": "",
+  "file": "cursor.png",
+  "hex": "#3B3933",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Vercel",
+  "domain": "vercel.com",
+  "aliases": "",
+  "file": "vercel.png",
+  "hex": "#1E1E1E",
+  "src": 256,
+  "from": "site"
+ },
+ {
+  "name": "AWS",
+  "domain": "aws.amazon.com",
+  "aliases": "amazon web services",
+  "file": "aws.png",
+  "hex": "#36414F",
+  "src": 144,
+  "from": "site"
+ },
+ {
+  "name": "Google Cloud",
+  "domain": "cloud.google.com",
+  "aliases": "gcp",
+  "file": "google-cloud.png",
+  "hex": "#DEE8E6",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "DigitalOcean",
+  "domain": "digitalocean.com",
+  "aliases": "",
+  "file": "digitalocean.png",
+  "hex": "#C5C5C5",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "GoDaddy",
+  "domain": "godaddy.com",
+  "aliases": "",
+  "file": "godaddy.png",
+  "hex": "#1B2D2E",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Hostinger",
+  "domain": "hostinger.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Namecheap",
+  "domain": "namecheap.com",
+  "aliases": "",
+  "file": "namecheap.png",
+  "hex": "#EA7837",
+  "src": 152,
+  "from": "gstatic"
+ },
+ {
+  "name": "Shopify",
+  "domain": "shopify.com",
+  "aliases": "",
+  "file": "shopify.png",
+  "hex": "#BDD59B",
+  "src": 144,
+  "from": "site"
+ },
+ {
+  "name": "Wix",
+  "domain": "wix.com",
+  "aliases": "",
+  "file": "wix.png",
+  "hex": "#E7E7E7",
+  "src": 192,
+  "from": "gstatic"
+ },
+ {
+  "name": "Squarespace",
+  "domain": "squarespace.com",
+  "aliases": "",
+  "file": "squarespace.png",
+  "hex": "#E2E2E2",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Mailchimp",
+  "domain": "mailchimp.com",
+  "aliases": "",
+  "file": "mailchimp.png",
+  "hex": "#E2C71A",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Freshworks",
+  "domain": "freshworks.com",
+  "aliases": "",
+  "file": "freshworks.png",
+  "hex": "#D5C9CA",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Tally",
+  "domain": "tallysolutions.com",
+  "aliases": "tallyprime",
+  "file": "tally.png",
+  "hex": "#EDE8E8",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Truecaller",
+  "domain": "truecaller.com",
+  "aliases": "",
+  "file": "truecaller.png",
+  "hex": "#118FFF",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Google Workspace",
+  "domain": "workspace.google.com",
+  "aliases": "g suite",
+  "file": null
+ },
+ {
+  "name": "Evernote",
+  "domain": "evernote.com",
+  "aliases": "",
+  "file": "evernote.png",
+  "hex": "#B5E5C1",
+  "src": 800,
+  "from": "site"
+ },
+ {
+  "name": "Todoist",
+  "domain": "todoist.com",
+  "aliases": "",
+  "file": "todoist.png",
+  "hex": "#EA685A",
+  "src": 256,
+  "from": "site"
+ },
+ {
+  "name": "Skillshare",
+  "domain": "skillshare.com",
+  "aliases": "",
+  "file": "skillshare.png",
+  "hex": "#AAAAAA",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "MasterClass",
+  "domain": "masterclass.com",
+  "aliases": "",
+  "file": "masterclass.png",
+  "hex": "#393938",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "upGrad",
+  "domain": "upgrad.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Simplilearn",
+  "domain": "simplilearn.com",
+  "aliases": "",
+  "file": "simplilearn.png",
+  "hex": "#EBECF1",
+  "src": 310,
+  "from": "site"
+ },
+ {
+  "name": "Vedantu",
+  "domain": "vedantu.com",
+  "aliases": "",
+  "file": "vedantu.png",
+  "hex": "#FFCABF",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Toppr",
+  "domain": "toppr.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Scaler",
+  "domain": "scaler.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Great Learning",
+  "domain": "mygreatlearning.com",
+  "aliases": "",
+  "file": "great-learning.png",
+  "hex": "#EEF3FB",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Testbook",
+  "domain": "testbook.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Adda247",
+  "domain": "adda247.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Khan Academy",
+  "domain": "khanacademy.org",
+  "aliases": "",
+  "file": "khan-academy.png",
+  "hex": "#BBEDE1",
+  "src": 144,
+  "from": "gstatic"
+ },
+ {
+  "name": "edX",
+  "domain": "edx.org",
+  "aliases": "",
+  "file": "edx.png",
+  "hex": "#D4DADB",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Amex",
+  "domain": "americanexpress.com",
+  "aliases": "american express",
+  "file": "amex.png",
+  "hex": "#3D90DA",
+  "src": 152,
+  "from": "site"
+ },
+ {
+  "name": "Visa",
+  "domain": "visa.co.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Mastercard",
+  "domain": "mastercard.co.in",
+  "aliases": "",
+  "file": "mastercard.png",
+  "hex": "#FCC9B7",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "RuPay",
+  "domain": "rupay.co.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "PayPal",
+  "domain": "paypal.com",
+  "aliases": "",
+  "file": "paypal.png",
+  "hex": "#DAE9F7",
+  "src": 258,
+  "from": "site"
+ },
+ {
+  "name": "Wise",
+  "domain": "wise.com",
+  "aliases": "transferwise",
+  "file": "wise.png",
+  "hex": "#76CF51",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Revolut",
+  "domain": "revolut.com",
+  "aliases": "",
+  "file": "revolut.png",
+  "hex": "#CFCFCF",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Western Union",
+  "domain": "westernunion.com",
+  "aliases": "",
+  "file": "western-union.png",
+  "hex": "#252104",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Airtel Payments Bank",
+  "domain": "airtel.in/bank",
+  "aliases": "",
+  "file": "airtel-payments-bank.png",
+  "hex": "#EB989B",
+  "src": 150,
+  "from": "gstatic"
+ },
+ {
+  "name": "Paytm Money",
+  "domain": "paytmmoney.com",
+  "aliases": "",
+  "file": "paytm-money.png",
+  "hex": "#C8DCE8",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "ET Money",
+  "domain": "etmoney.com",
+  "aliases": "",
+  "file": "et-money.png",
+  "hex": "#012D15",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Dhan",
+  "domain": "dhan.co",
+  "aliases": "",
+  "file": "dhan.png",
+  "hex": "#BADFD2",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "5paisa",
+  "domain": "5paisa.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Motilal Oswal",
+  "domain": "motilaloswal.com",
+  "aliases": "",
+  "file": "motilal-oswal.png",
+  "hex": "#F1EFEE",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "HDFC Securities",
+  "domain": "hdfcsec.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "ICICI Direct",
+  "domain": "icicidirect.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Sharekhan",
+  "domain": "sharekhan.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "CoinDCX",
+  "domain": "coindcx.com",
+  "aliases": "",
+  "file": "coindcx.png",
+  "hex": "#757271",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "WazirX",
+  "domain": "wazirx.com",
+  "aliases": "",
+  "file": "wazirx.png",
+  "hex": "#5C88F4",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Binance",
+  "domain": "binance.com",
+  "aliases": "",
+  "file": "binance.png",
+  "hex": "#FDF4D8",
+  "src": 200,
+  "from": "gstatic"
+ },
+ {
+  "name": "Scripbox",
+  "domain": "scripbox.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Jar",
+  "domain": "myjar.app",
+  "aliases": "jar app",
+  "file": "jar.png",
+  "hex": "#443771",
+  "src": 300,
+  "from": "site"
+ },
+ {
+  "name": "Fibe",
+  "domain": "fibe.in",
+  "aliases": "",
+  "file": "fibe.png",
+  "hex": "#E8E8E7",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "MoneyTap",
+  "domain": "moneytap.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#EFEFEF",
+  "src": 534,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Lazypay",
+  "domain": "lazypay.in",
+  "aliases": "",
+  "file": "lazypay.png",
+  "hex": "#FAEAEF",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Simpl",
+  "domain": "getsimpl.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#EA7837",
+  "src": 152,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Uni Cards",
+  "domain": "uni.club",
+  "aliases": "uni",
+  "file": null
+ },
+ {
+  "name": "Scapia",
+  "domain": "scapia.cards",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Kiwi",
+  "domain": "gokiwi.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Super.money",
+  "domain": "super.money",
+  "aliases": "supermoney",
+  "file": "super-money.png",
+  "hex": "#BFBCFF",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Tata Neu",
+  "domain": "tataneu.com",
+  "aliases": "neu",
+  "file": "tata-neu.png",
+  "hex": "#F8D7E2",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Max Life",
+  "domain": "maxlifeinsurance.com",
+  "aliases": "",
+  "file": "max-life.png",
+  "hex": "#F8F4F6",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Tata AIA",
+  "domain": "tataaia.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Bajaj Allianz",
+  "domain": "bajajallianz.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "HDFC Ergo",
+  "domain": "hdfcergo.com",
+  "aliases": "",
+  "file": "hdfc-ergo.png",
+  "hex": "#E04F56",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Niva Bupa",
+  "domain": "nivabupa.com",
+  "aliases": "",
+  "file": "niva-bupa.png",
+  "hex": "#B5E8FA",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Care Health",
+  "domain": "careinsurance.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Turtlemint",
+  "domain": "turtlemint.com",
+  "aliases": "",
+  "file": "turtlemint.png",
+  "hex": "#C9EBE0",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Coverfox",
+  "domain": "coverfox.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "IndiaFirst",
+  "domain": "indiafirstlife.com",
+  "aliases": "",
+  "file": "indiafirst.png",
+  "hex": "#EDE4E3",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Muthoot Finance",
+  "domain": "muthootfinance.com",
+  "aliases": "muthoot",
+  "file": null
+ },
+ {
+  "name": "Manappuram",
+  "domain": "manappuram.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Tata Capital",
+  "domain": "tatacapital.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "HDFC Credila",
+  "domain": "hdfccredila.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "SBI Card",
+  "domain": "sbicard.com",
+  "aliases": "",
+  "file": "sbi-card.png",
+  "hex": "#DCEFF9",
+  "src": 144,
+  "from": "gstatic"
+ },
+ {
+  "name": "Standard Chartered",
+  "domain": "sc.com",
+  "aliases": "standard chartered",
+  "file": "standard-chartered.png",
+  "hex": "#D3ECE9",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Citi",
+  "domain": "citi.com",
+  "aliases": "citibank",
+  "file": "citi.png",
+  "hex": "#EBEFF5",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "HSBC",
+  "domain": "hsbc.co.in",
+  "aliases": "",
+  "file": "hsbc.png",
+  "hex": "#FBD7D4",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "DBS",
+  "domain": "dbs.com",
+  "aliases": "dbs bank",
+  "file": null
+ },
+ {
+  "name": "Indian Bank",
+  "domain": "indianbank.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Bank of India",
+  "domain": "bankofindia.co.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Central Bank of India",
+  "domain": "centralbankofindia.co.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "IDBI Bank",
+  "domain": "idbibank.in",
+  "aliases": "idbi",
+  "file": null
+ },
+ {
+  "name": "Karnataka Bank",
+  "domain": "karnatakabank.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "South Indian Bank",
+  "domain": "southindianbank.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Equitas",
+  "domain": "equitasbank.com",
+  "aliases": "",
+  "file": "equitas.png",
+  "hex": "#EFF1F2",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Ujjivan",
+  "domain": "ujjivansfb.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Excitel",
+  "domain": "excitel.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Airtel Xstream",
+  "domain": "airtelxstream.in",
+  "aliases": "airtel xstream",
+  "file": "airtel-xstream.png",
+  "hex": "#752222",
+  "src": 192,
+  "from": "site"
+ },
+ {
+  "name": "Sun Direct",
+  "domain": "sundirect.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Torrent Power",
+  "domain": "torrentpower.com",
+  "aliases": "",
+  "file": "torrent-power.png",
+  "hex": "#CFD0DA",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "BSES",
+  "domain": "bsesdelhi.com",
+  "aliases": "bses rajdhani,bses yamuna",
+  "file": null
+ },
+ {
+  "name": "Tata Power DDL",
+  "domain": "tatapower-ddl.com",
+  "aliases": "tpddl",
+  "file": "tata-power-ddl.png",
+  "hex": "#F2F6FB",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "BESCOM",
+  "domain": "bescom.karnataka.gov.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "MSEDCL",
+  "domain": "mahadiscom.in",
+  "aliases": "mahavitaran",
+  "file": "msedcl.png",
+  "hex": "#FBE7E6",
+  "src": 300,
+  "from": "site"
+ },
+ {
+  "name": "Indraprastha Gas",
+  "domain": "iglonline.net",
+  "aliases": "igl",
+  "file": "indraprastha-gas.png",
+  "hex": "#FBF6E0",
+  "src": 200,
+  "from": "gstatic"
+ },
+ {
+  "name": "Indane",
+  "domain": "indane.co.in",
+  "aliases": "indane gas",
+  "file": null
+ },
+ {
+  "name": "HP Gas",
+  "domain": "myhpgas.in",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Bharatgas",
+  "domain": "ebharatgas.com",
+  "aliases": "bharat gas",
+  "file": null
+ },
+ {
+  "name": "MyGate",
+  "domain": "mygate.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Zolo",
+  "domain": "zolostays.com",
+  "aliases": "",
+  "file": "zolo.png",
+  "hex": "#AED9FB",
+  "src": 432,
+  "from": "site"
+ },
+ {
+  "name": "Stanza Living",
+  "domain": "stanzaliving.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Nestaway",
+  "domain": "nestaway.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Livspace",
+  "domain": "livspace.com",
+  "aliases": "",
+  "file": "livspace.png",
+  "hex": "#FAEDF0",
+  "src": 144,
+  "from": "site"
+ },
+ {
+  "name": "HomeLane",
+  "domain": "homelane.com",
+  "aliases": "",
+  "file": "homelane.png",
+  "hex": "#EAD9DA",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Snabbit",
+  "domain": "snabbit.com",
+  "aliases": "",
+  "file": "snabbit.png",
+  "hex": "#F82787",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Furlenco",
+  "domain": "furlenco.com",
+  "aliases": "",
+  "file": "furlenco.png",
+  "hex": "#1DA5B2",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Rentomojo",
+  "domain": "rentomojo.com",
+  "aliases": "",
+  "file": "rentomojo.png",
+  "hex": "#F7D2D0",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Shiprocket",
+  "domain": "shiprocket.in",
+  "aliases": "",
+  "file": "shiprocket.png",
+  "hex": "#685592",
+  "src": 160,
+  "from": "site"
+ },
+ {
+  "name": "Ekart",
+  "domain": "ekartlogistics.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#EAE8BE",
+  "src": 192,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Xpressbees",
+  "domain": "xpressbees.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "FedEx",
+  "domain": "fedex.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "DHL",
+  "domain": "dhl.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "UPS",
+  "domain": "ups.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Walmart",
+  "domain": "walmart.com",
+  "aliases": "",
+  "file": "walmart.png",
+  "hex": "#FFF8E7",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Target",
+  "domain": "target.com",
+  "aliases": "",
+  "file": "target.png",
+  "hex": "#DC4F4F",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Costco",
+  "domain": "costco.com",
+  "aliases": "",
+  "file": null,
+  "hex": "#F192A0",
+  "src": 152,
+  "from": "site",
+  "rejected": "checked by eye: wrong or doubtful icon"
+ },
+ {
+  "name": "Best Buy",
+  "domain": "bestbuy.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "eBay",
+  "domain": "ebay.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Etsy",
+  "domain": "etsy.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "AliExpress",
+  "domain": "aliexpress.com",
+  "aliases": "",
+  "file": "aliexpress.png",
+  "hex": "#EB4E1A",
+  "src": 192,
+  "from": "gstatic"
+ },
+ {
+  "name": "Shein",
+  "domain": "shein.in",
+  "aliases": "shein",
+  "file": "shein.png",
+  "hex": "#1C1C1C",
+  "src": 144,
+  "from": "gstatic"
+ },
+ {
+  "name": "Temu",
+  "domain": "temu.com",
+  "aliases": "",
+  "file": "temu.png",
+  "hex": "#FF8429",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Lululemon",
+  "domain": "lululemon.com",
+  "aliases": "",
+  "file": "lululemon.png",
+  "hex": "#9D9B9A",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Gap",
+  "domain": "gap.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Burberry",
+  "domain": "burberry.com",
+  "aliases": "",
+  "file": "burberry.png",
+  "hex": "#E1E2FA",
+  "src": 1024,
+  "from": "site"
+ },
+ {
+  "name": "Gucci",
+  "domain": "gucci.com",
+  "aliases": "",
+  "file": "gucci.png",
+  "hex": "#D2D2D2",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Louis Vuitton",
+  "domain": "louisvuitton.com",
+  "aliases": "lv",
+  "file": "louis-vuitton.png",
+  "hex": "#DFDFDF",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Tesla",
+  "domain": "tesla.com",
+  "aliases": "",
+  "file": "tesla.png",
+  "hex": "#F8DDDD",
+  "src": 152,
+  "from": "gstatic"
+ },
+ {
+  "name": "Lime",
+  "domain": "li.me",
+  "aliases": "lime scooter",
+  "file": "lime.png",
+  "hex": "#CFF9CF",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Grab",
+  "domain": "grab.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Careem",
+  "domain": "careem.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Bolt",
+  "domain": "bolt.eu",
+  "aliases": "",
+  "file": "bolt.png",
+  "hex": "#56B084",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "DoorDash",
+  "domain": "doordash.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Deliveroo",
+  "domain": "deliveroo.co.uk",
+  "aliases": "",
+  "file": "deliveroo.png",
+  "hex": "#4DDCD0",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Talabat",
+  "domain": "talabat.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Noon",
+  "domain": "noon.com",
+  "aliases": "",
+  "file": "noon.png",
+  "hex": "#EDE89D",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Instacart",
+  "domain": "instacart.com",
+  "aliases": "",
+  "file": "instacart.png",
+  "hex": "#F8F3E8",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Chipotle",
+  "domain": "chipotle.com",
+  "aliases": "",
+  "file": "chipotle.png",
+  "hex": "#D8B4AF",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Five Guys",
+  "domain": "fiveguys.com",
+  "aliases": "",
+  "file": "five-guys.png",
+  "hex": "#DB3D59",
+  "src": 140,
+  "from": "gstatic"
+ },
+ {
+  "name": "Shake Shack",
+  "domain": "shakeshack.com",
+  "aliases": "",
+  "file": "shake-shack.png",
+  "hex": "#E8F3E0",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Pret",
+  "domain": "pret.com",
+  "aliases": "pret a manger",
+  "file": "pret.png",
+  "hex": "#DCAEBB",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Nando’s",
+  "domain": "nandos.com",
+  "aliases": "nandos",
+  "file": null
+ },
+ {
+  "name": "Papa John’s",
+  "domain": "papajohns.com",
+  "aliases": "papa johns",
+  "file": null
+ },
+ {
+  "name": "Hulu",
+  "domain": "hulu.com",
+  "aliases": "",
+  "file": "hulu.png",
+  "hex": "#1AD579",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "HBO Max",
+  "domain": "max.com",
+  "aliases": "max,hbo",
+  "file": "hbo-max.png",
+  "hex": "#545454",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Paramount+",
+  "domain": "paramountplus.com",
+  "aliases": "paramount plus",
+  "file": "paramount.png",
+  "hex": "#4990FF",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Peacock",
+  "domain": "peacocktv.com",
+  "aliases": "",
+  "file": "peacock.png",
+  "hex": "#3E3D3E",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Tidal",
+  "domain": "tidal.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Deezer",
+  "domain": "deezer.com",
+  "aliases": "",
+  "file": "deezer.png",
+  "hex": "#F1E1FF",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "SoundCloud",
+  "domain": "soundcloud.com",
+  "aliases": "",
+  "file": "soundcloud.png",
+  "hex": "#FFD0B5",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Venmo",
+  "domain": "venmo.com",
+  "aliases": "",
+  "file": "venmo.png",
+  "hex": "#DEF0FF",
+  "src": 258,
+  "from": "site"
+ },
+ {
+  "name": "Cash App",
+  "domain": "cash.app",
+  "aliases": "cashapp",
+  "file": null
+ },
+ {
+  "name": "Zelle",
+  "domain": "zellepay.com",
+  "aliases": "",
+  "file": "zelle.png",
+  "hex": "#8069AF",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Stripe",
+  "domain": "stripe.com",
+  "aliases": "",
+  "file": "stripe.png",
+  "hex": "#7B68FE",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Klarna",
+  "domain": "klarna.com",
+  "aliases": "",
+  "file": "klarna.png",
+  "hex": "#C984A7",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Afterpay",
+  "domain": "afterpay.com",
+  "aliases": "",
+  "file": "afterpay.png",
+  "hex": "#DEF1EB",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Coinbase",
+  "domain": "coinbase.com",
+  "aliases": "",
+  "file": "coinbase.png",
+  "hex": "#4D8BC2",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Robinhood",
+  "domain": "robinhood.com",
+  "aliases": "",
+  "file": "robinhood.png",
+  "hex": "#ADD703",
+  "src": 152,
+  "from": "site"
+ },
+ {
+  "name": "Trip.com",
+  "domain": "trip.com",
+  "aliases": "",
+  "file": "trip-com.png",
+  "hex": "#B6C2FF",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Hotels.com",
+  "domain": "hotels.com",
+  "aliases": "",
+  "file": "hotels-com.png",
+  "hex": "#F2695E",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Vrbo",
+  "domain": "vrbo.com",
+  "aliases": "",
+  "file": "vrbo.png",
+  "hex": "#2661EE",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Ryanair",
+  "domain": "ryanair.com",
+  "aliases": "",
+  "file": "ryanair.png",
+  "hex": "#CBA629",
+  "src": 152,
+  "from": "site"
+ },
+ {
+  "name": "easyJet",
+  "domain": "easyjet.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Delta",
+  "domain": "delta.com",
+  "aliases": "delta air lines",
+  "file": null
+ },
+ {
+  "name": "United Airlines",
+  "domain": "united.com",
+  "aliases": "",
+  "file": "united-airlines.png",
+  "hex": "#6262E1",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "American Airlines",
+  "domain": "aa.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Southwest",
+  "domain": "southwest.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Hertz",
+  "domain": "hertz.com",
+  "aliases": "",
+  "file": "hertz.png",
+  "hex": "#DEBE3F",
+  "src": 256,
+  "from": "gstatic"
+ },
+ {
+  "name": "Avis",
+  "domain": "avis.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "7-Eleven",
+  "domain": "7-eleven.com",
+  "aliases": "7 eleven",
+  "file": null
+ },
+ {
+  "name": "Tesco",
+  "domain": "tesco.com",
+  "aliases": "",
+  "file": "tesco.png",
+  "hex": "#F1E4E6",
+  "src": 180,
+  "from": "gstatic"
+ },
+ {
+  "name": "Sainsbury’s",
+  "domain": "sainsburys.co.uk",
+  "aliases": "sainsburys",
+  "file": null
+ },
+ {
+  "name": "Aldi",
+  "domain": "aldi.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Lidl",
+  "domain": "lidl.com",
+  "aliases": "",
+  "file": "lidl.png",
+  "hex": "#999945",
+  "src": 512,
+  "from": "site"
+ },
+ {
+  "name": "Carrefour",
+  "domain": "carrefour.com",
+  "aliases": "",
+  "file": null
+ },
+ {
+  "name": "Whole Foods",
+  "domain": "wholefoodsmarket.com",
+  "aliases": "",
+  "file": "whole-foods.png",
+  "hex": "#ECF6E4",
+  "src": 180,
+  "from": "site"
+ },
+ {
+  "name": "Trader Joe’s",
+  "domain": "traderjoes.com",
+  "aliases": "trader joes",
+  "file": "trader-joes.png",
+  "hex": "#EDB5B7",
+  "src": 180,
+  "from": "site"
+ }
+]

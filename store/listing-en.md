@@ -1,32 +1,32 @@
-# Store listing (English, India): Privacy-First edition
+# Google Play store listing (English)
 
-**App name (30):** Kharchi: Expense & Split
-**Short description (80):** Track expenses and split bills. Private: your data never leaves your phone.
+**App name (max 30):** BruhMe: Spend & Split
+**Short description (max 80):** Track spending, split bills, get paid back. No sign-up, entries stay on phone.
 
 **Full description:**
-Kharchi tracks your money and splits bills with friends, and keeps everything on your phone. No account. No ads. No tracking. The app does not even have internet permission.
+BruhMe is the money app for everyday life. Track what you spend, split shared costs fairly, and get paid back without the awkward ask. No sign-up, no ads, and your entries stay on your phone.
 
-**Know where your money goes**
-• Add an expense in about 3 seconds from a home-screen widget or a launcher shortcut.
-• **Scan a bill**: at the supermarket or a restaurant, snap the bill from a widget. Later, tap who had what, item by item. Tax and discounts are shared fairly. The bill is read on your phone.
-• Paste or share a bank or UPI message and it turns into an expense in two seconds. You confirm what it was for.
-• Budgets with progress, category donut, monthly trends, daily heatmap, subscription finder and spending forecasts.
-• Ask the built-in assistant: "How much on food last month?", "Can I save this month?", "Who do I owe?". It runs offline.
+**Log it in seconds**
+• Tap +, type the amount, done. Hundreds of places get their own icon as you type.
+• Snap a bill or a receipt instead of typing; fill in the details later.
+• Paste or share a bank message and it becomes an entry in two seconds. You confirm it.
+• Budgets, goals, recurring payments and a clear monthly picture.
 
-**Split with anyone, free**
-• Unlimited groups, friends and expenses. No daily limits, no paywall.
-• Equal, exact, percentage, shares, adjustment and itemised splits, including **bill scanning**; multiple payers; multi-currency.
-• "Simplify debts" finds the fewest payments to settle up. Pay a friend by UPI in one tap.
-• Your share of every group bill appears in your personal tracker automatically.
+**Split anything, fairly**
+• Groups for trips, rent, dinners and office lunches. Equal, exact, percentage, shares and item-by-item splits, multiple payers and currencies.
+• Fewest payments to settle everyone. Trip mode with a daily budget.
+• Send a pay card with a QR that anyone can scan with any UPI app, the amount already filled in. Pick the tone: polite, playful, firm and more.
 
-**Private by design**
-• Everything is stored on your device. We cannot see your data.
-• No ads, no analytics, no third-party tracking.
-• App lock with fingerprint/face. Export, import or delete all your data anytime.
+**See where it all went**
+• Month by month, this month's pace, top places, repeating charges and the days that cost you most.
+• Tap any number to see the entries behind it.
 
-English and हिन्दी.
+**Your money, your phone**
+• No account. No BruhMe server. No ads or tracking.
+• App lock with fingerprint or face. Export, restore or delete everything any time.
 
-**Category:** Finance. **Tags:** expense tracker, budget, split bills, UPI, money manager.
-**Content rating:** Everyone. **Contains ads:** No. **In-app purchases:** No (v1.0).
+**BruhMe Pro (optional, through Google Play):** Vault, automatic encrypted backups to your own Google Drive or folder, with a recovery code for a new phone, plus more features as they arrive.
 
-**Screenshots to capture (More → Developer → demo data):** Home; Add expense; Insights donut; Group balances; Assistant answer; Quick add panel; Dark mode Home.
+**Category:** Finance · **Contains ads:** No · **In-app purchases:** Yes (BruhMe Pro), if Pro is enabled for this release · **Target audience:** 18+
+
+**Screenshots:** capture from the app with sample data (More, Developer, Reset to the latest demo). Use Home, Add, Insights, a group, the pay card, onboarding. Do not show other companies' logos: before capturing, keep merchant names generic or use screens without them.
