@@ -558,6 +558,41 @@ Renaming these is a one-time change best done together with the new package id, 
 
 *Written 20 Oct 2026 at the end of a long session, for whoever continues (another Claude session or a developer). Read section 1 (constitution) and this section before touching anything; the rest of this file is the reference.*
 
+### 24.0 LIVE HANDOFF (20 Oct 2026, late night): read before touching anything
+A previous session ran out of context in the middle of a large redesign. This is exactly where it stopped.
+
+**Branch state:** `main`, several local commits **not pushed** (latest: "Profile and Spaces rebuilt, free aura week, quieter Home"). The founder must say "push" before any `git push`. Commit as `fermormain <fermormain@gmail.com>` via `GIT_AUTHOR_*`/`GIT_COMMITTER_*` env vars, with the Co-Authored-By line.
+
+**Run and check:** Node 22 (`export PATH=~/.nvm/versions/node/v22.23.3/bin:$PATH`); `npx tsc --noEmit`, `npx eslint src --quiet`, `npx jest` (419 tests pass). Browser preview: `KHARCHI_PREVIEW=1 npx expo start --web --port 8101` (after any npm install run `npm i sql.js --no-save --legacy-peer-deps`); screenshots with `playwright-cli` from `~/Desktop/Fermor/kharchi-screens` (`playwright-cli goto http://localhost:8101/<route>` then `playwright-cli screenshot --filename=...`). The dev Pro switch is on in `__DEV__`.
+
+**The founder's standing design rules (binding, learned the hard way this session):**
+- Nothing that looks AI-generated: **no gradients, glows, lighting, sparkles, waves, dots, confetti; no stock emojis as visuals**; no decorative elements that carry no meaning. Flat colour, strong type, real data. They rated the profile 5/100 and the Pro UI "very bad": aim much higher, think like Strava, Hinge, Bumble, Snapchat, but never copy brands.
+- No robotic copy. Never "Your September, wrapped · 67 spends logged". Nobody posts a log. Share content must make the *viewer* think "good habit" (like a Strava run): streaks, spent-less percentages, no-spend days, rank. **No amounts on share cards by default.**
+- No repeated taglines ("bro, pay me back", "made with BruhMe") on cards; the BruhMe mark alone is the attribution.
+- Big numbers never wrap (handled globally by `isFigure` in `src/components/ui.tsx`; posters use `Num`).
+- Audience is everyone, all ages; never "for friends/Gen Z only" in copy. Say "any UPI app", never name UPI apps. No other companies' logos anywhere.
+- Professional wording, no gimmicks. Do not touch legal/compliance or add permissions.
+- Never push without consent; never seed or wipe real accounts.
+
+**What exists now (this session):**
+- Tabs: Home, Activity, Groups, Insights, **Pro** (`src/app/(tabs)/club.tsx`). Settings is `/settings` (`src/app/settings/index.tsx`), opened from the gear on Home, Profile and the Pro tab.
+- Home top row (`src/features/profile/StatusRow.tsx`): avatar (monogram on chosen colour), gear, chips for streak and aura only (space chip only while inside a space). `HomePins` shows Pro pins (Coming up card with date blocks, pinned strip). The aura card on Home was removed at the founder's request.
+- Pro tab: dark flat surface, aura hero in the rank's flat colour, at-a-glance numbers, tools grouped (You, Plan ahead, Protect, Understand, Work and tax) with live lines (`src/features/pro/widgets.ts` `useProStats`), pin editor (`proPins`). **Founder says the Pro UI still needs a 20x upgrade. This is the top open task** (see the plan below).
+- Main Character Energy: `src/features/mce/aura.ts` (engine, tested), `AuraOrb.tsx` (flat ring + `RankMark` six-bar mark), `freeWeek.ts` (free users: basic score/rank for 7 days from first view, then locked; never the reasons/moves), screen `src/app/mce.tsx` (Today / Era / Aura card / History).
+- Profile `src/app/me.tsx` (rebuilt): avatar + streak/aura/badges, persona line, Persona / Roast / Badges / Records tabs, edit sheet (name, avatar colour, poster colour).
+- Spaces `src/app/spaces.tsx` (rebuilt): current-space card, per-kind numbers, starter tiles, letter tiles.
+- Posters `src/components/story/Poster.tsx` are flat colour now.
+
+**In progress when the session ended: Story maker (Strava-style sharing).**
+- Done: `src/features/story/stickers.ts` + tests: `dayTrack`, `runLength`, `monthLines` (this month's running spend vs last month, scaled, `pct`), `monthCells` (no-spend calendar), `worthSharing` (only flattering stickers).
+- To build: `src/features/story/Stickers.tsx`: transparent stickers in white with a soft text shadow so they read on any photo; each = one big number + one short line + a "track" drawing + small BruhMe mark. Types: **Streak** (big day count, 30-dot track), **Spent less** (e.g. "−18%" "vs Sept", this month's line solid over last month's dashed line, the Strava-route equivalent), **No-spend days** (count + mini month grid), **Aura** (ring + rank). No amounts.
+- Then: screen `src/app/story.tsx`: 9:16 frame, background = user's photo (`expo-image-picker` `launchImageLibraryAsync`, already installed) or a flat colour; sticker carousel; position Top/Middle/Bottom; Share (ViewShot capture → expo-sharing) and "Sticker only" (transparent PNG). Streak sticker free, others Pro.
+- Then: make Wrapped lead with **Make a story**, and rewrite every Wrapped slide line from log-style to brag-style (e.g. "Spent 18% less than August", "21 days, every single one logged"), hide amounts by default.
+
+**Plan for the Pro tab "20x" upgrade (next after the Story maker):** make it feel like a members' area with real value on first glance: a weekly "Pro brief" (what Pro caught for you this week: renewals flagged, price rises, money saved vs last month, claims ready); the Story maker as a hero entry; large type-led cards with live data instead of a tool list; a clear membership header (plan, since when). Keep it flat, no gradients, no emojis.
+
+**Other open requests:** Goals master-level redesign (screen `src/app/goals.tsx`); Budgets UI; stronger Bump Pro (card designer, auto follow-ups); native widgets and app icon variants need a device build. Team tasks in 24.5b (EAS build, Play products, testers).
+
 ### 24.1 Where things stand
 - **Repo:** `gunanjr/kharchi`, local clone `~/Desktop/Fermor/kharchi` (inside the user's `Fermor` folder; the Fermor repo itself is a different product, do not touch it). Expo SDK 57, React Native 0.86, TypeScript, Expo Router (`src/app`), local SQLite, no backend.
 - **App name shown to users:** **BruhMe** (capital B, capital M, as in the wordmark). Identifiers still `kharchi` (section 23).
