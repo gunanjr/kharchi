@@ -57,6 +57,7 @@ export default function More() {
             {item('Goals', 'Save for a trip, a phone or a rainy day', 'target', '/goals')}
             {item('Monthly review', 'Your month in one card', 'chart', '/review')}
             {item('Wrapped', 'Your week, month and year as share cards', 'ribbon', '/wrapped')}
+            {showPro() ? item('Your profile', 'Money persona, streaks, Bruh score, Roast or toast (Pro)', 'person', '/me') : null}
             {item('Budgets', 'Set a monthly limit and see how close you are', 'target', '/budgets')}
             {item('Categories', 'Add or edit icons and colours', 'tag', '/settings/categories')}
             {item('Accounts', 'Cash, bank, UPI, cards, wallets', 'wallet', '/settings/accounts')}

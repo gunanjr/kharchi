@@ -27,6 +27,10 @@ export type Settings = {
   bumpSticker: string;
   spaces: import('@/features/spaces/spaces').Space[]; // Pro: separate books
   activeSpace: string; // '' = Personal
+  personaOn: boolean;
+  personaPrev: string; // last shown persona key, keeps it stable month to month
+  roastOn: boolean; // opt-in; toast is the default
+  roastTone: 'gentle' | 'playful' | 'savage';
   hideAmounts: boolean; // masks every amount (for public places); the eye on Home
 };
 
@@ -56,6 +60,10 @@ export const defaultSettings: Settings = {
   bumpSticker: '',
   spaces: [],
   activeSpace: '',
+  personaOn: true,
+  personaPrev: '',
+  roastOn: false,
+  roastTone: 'playful',
 };
 
 type Store = Settings & {
