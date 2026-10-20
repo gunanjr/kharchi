@@ -136,7 +136,7 @@ export default function BillScreen() {
               <View style={{ flex: 1 }}><Field label="Store / description" value={store} onChangeText={setStore} placeholder="Where was this?" /></View>
             </Row>
 
-            {warnings.map((w) => WARN[w] ? <Card key={w} style={{ backgroundColor: colors.primarySoft }}><Text v="small">⚠️ {WARN[w]}</Text></Card> : null)}
+            {warnings.map((w) => WARN[w] ? <Card key={w} style={{ backgroundColor: colors.primarySoft }}><Text v="small">{WARN[w]}</Text></Card> : null)}
 
             <Text v="caps" color={colors.textMuted}>GROUP</Text>
             <Row style={{ flexWrap: 'wrap', gap: space.sm }}>

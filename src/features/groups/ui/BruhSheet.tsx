@@ -268,8 +268,8 @@ export function BruhSheet({ input: given, onClose }: { input: NudgeInput | Nudge
                 </View>
               ) : null}
               <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: space.sm }}>
-                {TONES.map((t) => <Chip key={t.key} label={locked(t.key) ? `${t.label} 🔒` : t.label} selected={tone === t.key} onPress={() => { if (locked(t.key)) return goPro(); setTone(t.key); setVariant(0); haptic.tap(); }} />)}
-                {showPro() ? <Chip label={pro ? 'My lines ✍️' : 'My lines 🔒'} selected={tone === 'mine'} onPress={() => { if (!pro) return goPro(); setTone('mine'); setVariant(0); haptic.tap(); }} /> : null}
+                {TONES.map((t) => <Chip key={t.key} label={locked(t.key) ? `${t.label} · Pro` : t.label} selected={tone === t.key} onPress={() => { if (locked(t.key)) return goPro(); setTone(t.key); setVariant(0); haptic.tap(); }} />)}
+                {showPro() ? <Chip label={pro ? 'My lines' : 'My lines · Pro'} selected={tone === 'mine'} onPress={() => { if (!pro) return goPro(); setTone('mine'); setVariant(0); haptic.tap(); }} /> : null}
               </ScrollView>
               <Card tone="inset" style={{ gap: space.md }}>
                 <Text accessibilityLabel={`Message preview: ${text}`}>{text}</Text>

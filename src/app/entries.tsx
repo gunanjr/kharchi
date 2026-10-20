@@ -50,7 +50,7 @@ export default function Entries() {
         <RoundButton icon="back" label="Back" onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
         <View style={{ flex: 1 }}>
           <Text v="h2" numberOfLines={1} accessibilityRole="header">{title}</Text>
-          {q.data ? <Text v="small" color={colors.textMuted}>{q.data.length} {q.data.length === 1 ? 'entry' : 'entries'} · {formatMoney(total, 'INR', { trimZeros: true })}</Text> : null}
+          {q.data ? <Text v="small" color={colors.textMuted}>{q.data.length} {q.data.length === 1 ? 'entry' : 'entries'} · {formatMoney(Math.round(total / 100) * 100, 'INR', { trimZeros: true })}</Text> : null}
         </View>
       </View>
       {q.error ? <ErrorState error={q.error} onRetry={q.refetch} /> : null}

@@ -70,7 +70,7 @@ export default function Pro() {
     setBusy(true);
     const r = await purchasePro(plan, { friendCode: offer || undefined });
     setBusy(false);
-    if (r === 'purchased') toast('Welcome to BruhMe Pro 🎉');
+    if (r === 'purchased') toast('Welcome to BruhMe Pro');
     else if (r === 'unavailable') toast('Purchases work in the BruhMe app from Google Play, not in this test build.');
     else if (r === 'pending') toast('Payment pending. Pro turns on when Google Play confirms it.');
     else if (r === 'error') toast('Google Play could not complete the purchase. You were not charged.');

@@ -23,7 +23,7 @@ export const en = {
   'settings.language': 'Language',
   'settings.developer': 'Developer',
   'empty.tx.title': 'Nothing here yet',
-  'empty.tx.body': 'Log your first spend, or load sample data from More, Developer to see how it all works.',
+  'empty.tx.body': 'Log your first spend and this fills up with your own numbers.',
   'onb.0.title': "Meet BruhMe",
   'onb.0.body': "One app for everyday money: track spending, split shared costs and get paid back without the awkward ask.",
   'onb.1.title': "Log it before you forget",
@@ -39,7 +39,7 @@ export const en = {
   'onb.skip': "Skip",
   'onb.upiLabel': "Your UPI ID",
   'onb.demo': "Explore with sample data first",
-  'onb.demoHint': "You can clear it anytime in More, Export & backup.",
+  'onb.demoHint': "You can clear it any time in Settings, Export & backup.",
   'onb.next': 'Next',
   'onb.start': 'Let’s go',
 } as const;

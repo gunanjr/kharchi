@@ -27,6 +27,10 @@ import { IconPickerSheet } from '@/features/brands/IconPickerSheet';
 import { resolveBrand } from '@/features/brands/match';
 import { useMerchantPhoto } from '@/features/brands/custom';
 
+// how an entry got here, in plain words (no internal codes on screen)
+const SOURCE: Record<string, string> = { manual: 'Added by hand', sms: 'From a bank message', notification: 'From a bank message', share: 'From a shared message', quick: 'Quick add', group: 'From a group split', import: 'Imported', recurring: 'Recurring' };
+const PAY: Record<string, string> = { upi: 'UPI', card: 'card', cash: 'cash', netbanking: 'net banking', wallet: 'wallet' };
+
 export default function TxDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const db = useDb();
@@ -156,7 +160,7 @@ export default function TxDetail() {
               </View>
             )}
             <Card style={{ gap: 4 }}>
-              <Text v="small" color={colors.textMuted}>Source: {tx.source}{tx.payment_method ? ` · ${tx.payment_method}` : ''}</Text>
+              <Text v="small" color={colors.textMuted}>{SOURCE[tx.source] ?? 'Added'}{tx.payment_method ? ` · paid by ${PAY[tx.payment_method] ?? tx.payment_method}` : ''}</Text>
               {readOnly && <Text v="small" color={colors.textMuted}>This is your share of a group expense. Edit it from the group.</Text>}
             </Card>
           </>

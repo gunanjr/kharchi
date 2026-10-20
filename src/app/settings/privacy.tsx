@@ -25,7 +25,7 @@ const POINTS: [string, string][] = [
       : 'The app never reads your messages in the background. A message is only looked at when you paste or share it in, and its text is not kept.',
   ],
   ['What is kept', 'The amount, merchant, account last-4, date, your notes and categories, and a one-way hash used to avoid duplicates.'],
-  ['You are in control', 'Export a backup, import a CSV, or erase the app’s data with Delete all my data (More, Export and backup). That removes what is stored in the app; copies you exported or shared elsewhere stay where you put them.'],
+  ['You are in control', 'Export a backup, import a CSV, or erase the app’s data with Delete everything (Settings, Export & backup). That removes what is stored in the app; copies you exported or shared elsewhere stay where you put them.'],
 ];
 
 export default function Privacy() {

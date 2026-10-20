@@ -52,10 +52,10 @@ export default function Insights() {
       {q.error ? <ErrorState error={q.error} onRetry={q.refetch} /> : null}
       {q.loading && !d ? <SkeletonList n={4} /> : null}
       {d && d.all.length === 0 ? (
-        <EmptyState art="chart" title="Nothing to chart yet" body="Log a few spends and this page turns into a story about your money. Or load sample data from More, Developer." action="Add expense" onAction={() => router.push('/add')} />
+        <EmptyState art="chart" title="Nothing to chart yet" body="Log a few spends and this page turns into a story about your money." action="Add expense" onAction={() => router.push('/add')} />
       ) : d && r ? (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, paddingTop: space.sm, gap: space.xl, paddingBottom: 168 }}>
-          <Segmented options={(['1M', '3M', '6M', '1Y'] as Range[]).map((k) => ({ key: k, label: (k === '6M' || k === '1Y') && showPro() && !isPro ? `${SHORT[k]} 🔒` : SHORT[k] }))} value={range} onChange={(k) => { if ((k === '6M' || k === '1Y') && showPro() && !isPro) { router.push('/pro'); return; } setRange(k); setMonthSel(null); }} />
+          <Segmented options={(['1M', '3M', '6M', '1Y'] as Range[]).map((k) => ({ key: k, label: (k === '6M' || k === '1Y') && showPro() && !isPro ? `${SHORT[k]} · Pro` : SHORT[k] }))} value={range} onChange={(k) => { if ((k === '6M' || k === '1Y') && showPro() && !isPro) { router.push('/pro'); return; } setRange(k); setMonthSel(null); }} />
 
           <Row style={{ gap: space.sm }}>
             {([['ribbon', 'Wrapped', { pathname: '/wrapped', params: { tab: 'month', off: '1' } }], ['target', 'Goals', '/goals'], ['wallet', 'Budgets', '/budgets']] as const).map(([icon, title, href]) => (

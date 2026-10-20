@@ -603,6 +603,21 @@ A previous session ran out of context in the middle of a large redesign. This is
 - **Challenges revamped:** shared `src/features/challenges/ChallengeBoard.tsx` (Pro tab section and the Challenges screen): accent hero card with a dot calendar and today's dashed dot, colour tiles with one big number each and a level, "Make your own" builder, medal trophy shelf.
 - **Story fix:** all four stickers always selectable in the maker; the rail previews only stickers worth showing.
 
+**UI audit (21 Oct), screen by screen in the browser preview; fixed:**
+- Home: Bills this week shows real overdue and renewal dates (no "19 Oct · Today"), renamed from a second "Coming up", no empty gap; Pro pin label renamed.
+- Money format: compact figures are whole rupees app-wide (`formatMoney` compact never shows paise); day totals, entries totals, Insights summaries, Radar figures rounded.
+- Insights: Income in the headline no longer clipped; rent, bills and subscriptions are not "Top places".
+- Goals rebuilt (summary, milestones, quick add +₹500/+₹1k/+₹5k, reached state, remove inside the goal with confirm). Budgets rebuilt (monthly summary with on-track/close/over, status tags, edit sheet with remove).
+- Accounts, Categories, Recurring: list first, New in the header (sheet), destructive actions behind a confirm; plain labels; no cut-off names.
+- Entry detail: source shown in words ("From a bank message"), never internal codes like "sms".
+- Settings: Developer only in development builds; Vault back under Your data.
+- Copy: every "More, …" path updated to Settings; empty states no longer point to Developer.
+- Bills: no duplicate Scan button. Import review: no endless "Loading…" without a message.
+- Radar: "was due" / "renews today" wording, "Remind me" button fits. Warranties: no stock emoji. Reimbursements: buttons fit. Decorative emojis removed from chips and toasts.
+- Report card and Customise Pro reworked (see above). Lint: zero warnings.
+
+**Known and left as is:** onboarding chat bubbles and bump lines keep emojis inside message text (founder-approved copy); a web-only developer warning about a button inside a tappable card (does not exist on Android).
+
 **Retention layer (built after the founder said Pro would churn):**
 - **Challenges** (Pro): `src/features/challenges/challenges.ts` (tested): 7 no-spend days in 14, 30 days logged, a lighter week (20% under the usual week, fixed costs ignored), calm weekend; start after noon means tomorrow; missed only when the goal is out of reach; at most 2 running; wins go to a trophy shelf (`challenges`, `challengeWins` in settings). Screen `src/app/challenges.tsx`; Challenge card on the Pro tab; widget `challenges` (pinnable). Demo seeds one running and one won.
 - **Aura seasons:** `seasonsFor`, `seasonDaysLeft` in `aura.ts` (tested): each month is a season with a kept final rank; shelf in MCE History; countdown on the Pro tab aura card.

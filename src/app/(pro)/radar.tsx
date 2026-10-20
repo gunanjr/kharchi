@@ -17,7 +17,10 @@ import { morningBefore, notifyAt, notifyMessage } from '@/lib/notify';
 import { useTheme } from '@/theme/ThemeProvider';
 import { space } from '@/theme/tokens';
 
-const inr = (n: number) => formatMoney(n, 'INR', { trimZeros: true });
+// summary figures in whole rupees
+const inr = (n: number) => formatMoney(Math.round(n / 100) * 100, 'INR', { trimZeros: true });
+const sod = (t: number) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
+const nextLine = (at: number) => { const d = Math.round((sod(at) - sod(Date.now())) / 86_400_000); return d < 0 ? `was due ${formatDay(at)}` : d === 0 ? 'renews today' : d === 1 ? 'renews tomorrow' : `next ${formatDay(at)}`; };
 
 /** Subscription radar (Pro): every repeating charge, what it costs a year, what renews next, and what went up. */
 export default function Radar() {
@@ -61,7 +64,7 @@ export default function Radar() {
                   <View style={{ flex: 1 }}>
                     <Text v="title" numberOfLines={1}>{v.name}</Text>
                     <Text v="small" color={colors.textMuted}>
-                      {v.status === 'stopped' ? `No charge since ${formatDay(v.lastAt)}` : v.cancelled && !v.chargedAfterCancel ? 'Marked cancelled' : `Every ${periodLabel(v.period)} · next ${formatDay(v.nextExpected)}${v.renewsInDays >= 0 && v.renewsInDays <= 3 ? ` (in ${v.renewsInDays} ${v.renewsInDays === 1 ? 'day' : 'days'})` : ''}`}
+                      {v.status === 'stopped' ? `No charge since ${formatDay(v.lastAt)}` : v.cancelled && !v.chargedAfterCancel ? 'Marked cancelled' : `Every ${periodLabel(v.period)} · ${nextLine(v.nextExpected)}`}
                     </Text>
                   </View>
                   <View style={{ alignItems: 'flex-end' }}>
@@ -76,7 +79,7 @@ export default function Radar() {
                 ) : null}
                 {v.status === 'active' ? (
                   <Row style={{ gap: space.sm }}>
-                    <Button title={state[v.key]?.remind ? 'Reminder set' : 'Remind me the day before'} kind="secondary" size="sm" icon="bell" onPress={() => remind(v)} style={{ flex: 1 }} />
+                    <Button title={state[v.key]?.remind ? 'Reminder set' : 'Remind me'} kind="secondary" size="sm" icon="bell" onPress={() => remind(v)} style={{ flex: 1 }} />
                     <Button title={v.cancelled ? 'Undo cancelled' : 'I cancelled it'} kind="ghost" size="sm" onPress={() => toggleCancel(v)} />
                   </Row>
                 ) : null}

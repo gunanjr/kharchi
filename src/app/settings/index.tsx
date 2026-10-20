@@ -91,9 +91,10 @@ export default function Settings() {
         </Enter>
         <Enter i={4}>
           <Group title="Your data">
+            {showPro() ? item('Vault', isPro ? 'Encrypted backups to a folder you pick' : 'Encrypted backups to a folder you pick (Pro)', 'lock', '/settings/vault') : null}
             {item('Export & backup', 'Save a copy, move to a new phone, or open in Excel', 'download', '/settings/data')}
             {item('Privacy', 'What stays on your phone', 'shield', '/settings/privacy')}
-            {item(t('settings.developer'), 'Demo data and a message simulator for trying things out', 'code', '/settings/developer')}
+            {__DEV__ ? item(t('settings.developer'), 'Demo data and a message simulator for trying things out', 'code', '/settings/developer') : null}
           </Group>
         </Enter>
         <Enter i={5}>

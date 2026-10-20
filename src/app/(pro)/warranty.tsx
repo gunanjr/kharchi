@@ -1,3 +1,4 @@
+import { Icon } from '@/components/Icon';
 import React, { useState } from 'react';
 import { Alert, Image, Modal, ScrollView, View } from 'react-native';
 import { SubScreen, Card, Text, Row, Button, Field, Chip, Press } from '@/components/ui';
@@ -100,7 +101,7 @@ export default function WarrantyScreen() {
           return (
             <Press key={w.id} onPress={() => setEditing(w)} accessibilityLabel={`${w.item}, ${st.status}`}>
               <Card style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, opacity: st.status === 'expired' ? 0.6 : 1 }}>
-                {w.receipt ? <Image source={{ uri: w.receipt }} style={{ width: 48, height: 48, borderRadius: 12 }} /> : <View style={{ width: 48, height: 48, borderRadius: 12, backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontSize: 22 }}>🧾</Text></View>}
+                {w.receipt ? <Image source={{ uri: w.receipt }} style={{ width: 48, height: 48, borderRadius: 12 }} /> : <View style={{ width: 48, height: 48, borderRadius: 12, backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center' }}><Icon name="shield" size={22} color={colors.primary} /></View>}
                 <View style={{ flex: 1 }}>
                   <Text v="title" numberOfLines={1}>{w.item}</Text>
                   <Text v="small" color={st.status === 'ending' ? colors.link : colors.textMuted}>{st.status === 'expired' ? `Ended ${formatDay(st.end)}` : st.status === 'ending' ? `Ends in ${st.daysLeft} ${st.daysLeft === 1 ? 'day' : 'days'} · ${formatDay(st.end)}` : `Covered until ${formatDay(st.end)}`}{w.store ? ` · ${w.store}` : ''}</Text>

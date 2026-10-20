@@ -11,10 +11,10 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { space } from '@/theme/tokens';
 
 const FAQ: [string, string][] = [
-  ['Where is my data?', 'Only on this phone. There is no account and no server. Back up from More, Export and backup.'],
+  ['Where is my data?', 'Only on this phone. There is no account and no server. Back up from Settings, Export & backup, or turn on Vault.'],
   ['How do I move to a new phone?', 'Create a full backup file on this phone, keep it somewhere safe, and restore it on the new phone from the same screen.'],
   ['Can anyone see my entries?', 'No. Nothing is uploaded. If you send us feedback, only the words you write are in the email.'],
-  ['How do I delete everything?', 'More, Export and backup, Delete all my data. It cannot be undone.'],
+  ['How do I delete everything?', 'Settings, Export & backup, Delete everything. It cannot be undone.'],
 ];
 
 export default function Feedback() {

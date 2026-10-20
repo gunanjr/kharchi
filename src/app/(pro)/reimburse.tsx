@@ -99,7 +99,7 @@ export default function Reimburse() {
             </Card>
             <Field label="Your name on the claim (optional)" value={name} onChangeText={setName} placeholder="Asha Rao" maxLength={60} />
             <Row style={{ gap: space.sm }}>
-              <Button title="PDF with receipts" icon="download" onPress={pdf} loading={busy} disabled={!rows.length} style={{ flex: 1 }} />
+              <Button title="PDF" icon="download" onPress={pdf} loading={busy} disabled={!rows.length} style={{ flex: 1 }} />
               <Button title="Spreadsheet" kind="secondary" onPress={() => shareTextFile(`bruhme-claim-${m.getFullYear()}-${m.getMonth() + 1}.csv`, claimCsv(rows), 'text/csv')} disabled={!rows.length} style={{ flex: 1 }} />
             </Row>
             {rows.some((r) => !r.claimed) ? <Button title="Mark these as claimed" kind="ghost" onPress={markAllClaimed} /> : null}

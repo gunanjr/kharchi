@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { EmptyState } from '@/components/Feedback';
 import { SubScreen, Text } from '@/components/ui';
 import { ToastHost, toast } from '@/components/Toast';
 import { DraftEditor, type Draft } from '@/features/capture/DraftEditor';
@@ -24,7 +25,8 @@ export default function ImportReview() {
 
   useEffect(() => {
     (async () => {
-      const row = await db.get<PendingTx>(`SELECT * FROM pending_transactions WHERE id=?`, [id]);
+      // opened without a message (or a stale link): show the "nothing to review" state instead of loading forever
+      const row = id ? await db.get<PendingTx>(`SELECT * FROM pending_transactions WHERE id=?`, [id]).catch(() => null) : null;
       setP(row ?? null);
       if (!row) return;
       const s = await suggestCategory(db, row.merchant);
@@ -50,7 +52,7 @@ export default function ImportReview() {
   return (
     <SubScreen title="Review message">
       {p === undefined ? <Text color={colors.textMuted}>Loading…</Text> : null}
-      {p === null ? <Text color={colors.textMuted}>This item is no longer available. It may already be saved.</Text> : null}
+      {p === null ? <EmptyState art="inbox" title="Nothing to review" body="This message is no longer waiting. It may already be saved." action="Back" onAction={close} /> : null}
       {p && p.status !== 'pending' ? <Text color={colors.textMuted}>This message was already handled.</Text> : null}
       {p && p.status === 'pending' && draft ? (
         <>

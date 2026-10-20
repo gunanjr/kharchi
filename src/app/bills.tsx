@@ -41,7 +41,7 @@ export default function Bills() {
       {d?.waiting.map((b, i) => <Row_ key={b.id} b={b} i={i} />)}
       {d && d.done.length > 0 && <Text v="caps" color={colors.textMuted} style={{ marginTop: space.md }}>ALREADY SPLIT</Text>}
       {d?.done.map((b, i) => <Row_ key={b.id} b={b} i={i} />)}
-      <Row style={{ marginTop: space.md }}><Button title="Scan a bill" icon="camera" onPress={() => router.push('/scan-bill')} /></Row>
+      {d && (d.waiting.length > 0 || d.done.length > 0) ? <Row style={{ marginTop: space.md }}><Button title="Scan a bill" icon="camera" onPress={() => router.push('/scan-bill')} /></Row> : null}
       <ToastHost />
     </SubScreen>
   );
