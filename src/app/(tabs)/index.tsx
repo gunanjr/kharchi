@@ -63,7 +63,7 @@ export default function Home() {
       >
         <Header title="BruhMe" titleNode={<Wordmark height={38} />} subtitle={new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })} right={<View style={{ flexDirection: 'row', gap: space.sm }}><RoundButton icon="settings" label="Settings" onPress={() => router.push('/settings')} /><Avatar /></View>} />
         <View style={{ marginTop: -space.md }}>
-          <StatusRow lead={spaces.length > 0 ? (
+          <StatusRow lead={activeSpaceId && spaces.some((x) => x.id === activeSpaceId) ? (
             <StatusChip onPress={() => router.push('/spaces')} label={`Space: ${spaceName}. Tap to switch`} tint={colors.surfaceAlt}>
               <Text v="small" style={{ fontFamily: 'Geist_600SemiBold' }}>{spaceName}</Text>
               <Icon name="chevron" size={14} color={colors.textMuted} />

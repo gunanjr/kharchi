@@ -28,12 +28,11 @@ export function ProStrip({ tab, bleed = 20, exclude = [], title }: { tab: PinTab
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -bleed }} contentContainerStyle={{ paddingHorizontal: bleed, gap: space.sm }}>
       {ids.map((id) => widget(id)).filter((w) => !!w).map((w) => (
         <Press key={w.id} onPress={() => router.push(w.href)} accessibilityLabel={`${w.title}${pro ? '' : ', Pro'}`}
-          style={{ width: 156, borderRadius: 20, backgroundColor: colors.hero, padding: space.md, gap: 8 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}><Icon name={w.icon} size={17} color="#FFFFFF" /></View>
+          style={{ width: 156, minHeight: 92, borderRadius: 20, backgroundColor: colors.hero, padding: space.md, gap: 8 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 6 }}>
+            <Text style={{ flex: 1, fontFamily: fonts.bold, fontSize: 15, color: colors.onHero }} numberOfLines={1}>{w.title}</Text>
             {pro ? null : <Icon name="lock" size={14} color={colors.onHeroMuted} />}
           </View>
-          <Text style={{ fontFamily: fonts.bold, fontSize: 15, color: colors.onHero }} numberOfLines={1}>{w.title}</Text>
           <Text v="small" color={colors.onHeroMuted} numberOfLines={2}>{pro && stats ? stats.stat[w.id] : w.sub}</Text>
         </Press>
       ))}

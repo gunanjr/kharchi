@@ -142,8 +142,8 @@ export default function TxDetail() {
               <Card style={{ gap: space.sm }}>
                 <Text v="caps" color={colors.textMuted}>SPACE</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.sm }}>
-                  <Chip label="🙂 Personal" selected={!tx.space_id} onPress={async () => { await updateTransaction(db, tx.id, { space_id: '' }); bumpData(); toast('Moved to Personal'); }} />
-                  {spaces.map((sp) => <Chip key={sp.id} label={`${sp.emoji} ${sp.name}`} selected={tx.space_id === sp.id} onPress={async () => { await updateTransaction(db, tx.id, { space_id: sp.id }); bumpData(); toast(`Moved to ${sp.name}`); }} />)}
+                  <Chip label="Personal" selected={!tx.space_id} onPress={async () => { await updateTransaction(db, tx.id, { space_id: '' }); bumpData(); toast('Moved to Personal'); }} />
+                  {spaces.map((sp) => <Chip key={sp.id} label={sp.name} selected={tx.space_id === sp.id} onPress={async () => { await updateTransaction(db, tx.id, { space_id: sp.id }); bumpData(); toast(`Moved to ${sp.name}`); }} />)}
                 </ScrollView>
               </Card>
             ) : null}

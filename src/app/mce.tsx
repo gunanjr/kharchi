@@ -15,6 +15,7 @@ import { listTransactions } from '@/features/tracker/repo';
 import { auraDays, auraScore, eraFor, movesFor, promptsFor, weekCompare, RANKS } from '@/features/mce/aura';
 import { AuraOrb, RankMark, auraColors } from '@/features/mce/AuraOrb';
 import { useIsPro } from '@/features/pro/store';
+import { useAuraAccess } from '@/features/mce/freeWeek';
 import { useSettings } from '@/store/settings';
 import { formatMoney } from '@/domain/money';
 import { fonts, layout, space } from '@/theme/tokens';
@@ -49,6 +50,7 @@ const Label = ({ children, color = SOFT }: { children: React.ReactNode; color?: 
 export default function MainCharacterEnergy() {
   const router = useRouter();
   const pro = useIsPro();
+  const { access, daysLeft } = useAuraAccess();
   const { width } = useWindowDimensions();
   const name = useSettings((s) => s.profileName);
   const eraShot = useRef<React.ElementRef<typeof ViewShot>>(null);
@@ -85,17 +87,8 @@ export default function MainCharacterEnergy() {
     } catch { toast('Couldn’t create the image'); }
   }
 
-  const today = (
+  const deep = (
     <>
-      <View style={{ alignItems: 'center', gap: space.sm }}>
-        <AuraOrb rank={a.rank.key} score={a.score} size={Math.min(220, width * 0.56)} />
-        <Text style={{ fontFamily: fonts.brandBlack, fontSize: 34, lineHeight: 42, color: INK, letterSpacing: -1 }} numberOfLines={1} adjustsFontSizeToFit>{a.rank.title}</Text>
-        <Row style={{ gap: 8 }}>
-          <View style={{ backgroundColor: light, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 }}><Text style={{ fontFamily: fonts.bold, fontSize: 13, color: '#14181F' }}>+{a.today?.points ?? 0} today</Text></View>
-          {a.toNext !== null ? <View style={{ backgroundColor: CARD, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 }}><Text style={{ fontFamily: fonts.semibold, fontSize: 13, color: SOFT }}>{a.toNext} to {RANKS[rankIdx + 1]?.title}</Text></View> : null}
-        </Row>
-      </View>
-
       {/* moves: the useful part, what earns aura today */}
       <View style={{ backgroundColor: CARD, borderRadius: 28, padding: space.lg, gap: space.md, borderWidth: 1, borderColor: LINE }}>
         <Row style={{ justifyContent: 'space-between' }}>
@@ -148,6 +141,30 @@ export default function MainCharacterEnergy() {
           <Text style={{ fontFamily: fonts.medium, fontSize: 12, color: SOFT }}>days with aura</Text>
         </View>
       </Row>
+    </>
+  );
+
+  const today = access === 'locked' ? (
+    <Locked pro={false} title="Your free aura week is over" onUnlock={goPro}>
+      <View style={{ alignItems: 'center', gap: space.sm, paddingVertical: space.xl }}>
+        <AuraOrb rank={a.rank.key} score={a.score} size={Math.min(220, width * 0.56)} />
+        <Text style={{ fontFamily: fonts.brandBlack, fontSize: 34, lineHeight: 42, color: INK }}>{a.rank.title}</Text>
+      </View>
+    </Locked>
+  ) : (
+    <>
+      <View style={{ alignItems: 'center', gap: space.sm }}>
+        <AuraOrb rank={a.rank.key} score={a.score} size={Math.min(220, width * 0.56)} />
+        <Text style={{ fontFamily: fonts.brandBlack, fontSize: 34, lineHeight: 42, color: INK, letterSpacing: -1 }} numberOfLines={1} adjustsFontSizeToFit>{a.rank.title}</Text>
+        <Row style={{ gap: 8 }}>
+          <View style={{ backgroundColor: light, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 }}><Text style={{ fontFamily: fonts.bold, fontSize: 13, color: '#14181F' }}>+{a.today?.points ?? 0} today</Text></View>
+          {access === 'full' && a.toNext !== null ? <View style={{ backgroundColor: CARD, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 }}><Text style={{ fontFamily: fonts.semibold, fontSize: 13, color: SOFT }}>{a.toNext} to {RANKS[rankIdx + 1]?.title}</Text></View> : null}
+        </Row>
+      </View>
+      {access === 'full' ? deep : (
+        <Locked pro={false} title={`Why you’re at ${a.score}, and how to reach Main character`} onUnlock={goPro}>{deep}</Locked>
+      )}
+      {access === 'basic' ? <Text style={{ fontFamily: fonts.medium, fontSize: 12, color: SOFT, textAlign: 'center' }}>Free aura for {daysLeft} more {daysLeft === 1 ? 'day' : 'days'}. Pro keeps it, with the reasons and your moves.</Text> : null}
     </>
   );
 
@@ -263,7 +280,7 @@ export default function MainCharacterEnergy() {
             <Press key={x.key} onPress={() => setSection(x.key)} accessibilityLabel={x.label} accessibilityState={{ selected: on }}
               style={{ flexDirection: 'row', alignItems: 'center', gap: 6, borderRadius: 999, paddingHorizontal: 16, paddingVertical: 9, backgroundColor: on ? INK : CARD }}>
               <Text style={{ fontFamily: fonts.bold, fontSize: 14, color: on ? '#14181F' : INK }}>{x.label}</Text>
-              {!pro && x.key !== 'today' ? <Icon name="lock" size={12} color={on ? '#14181F' : SOFT} /> : null}
+              {!pro && (x.key !== 'today' || access === 'locked') ? <Icon name="lock" size={12} color={on ? '#14181F' : SOFT} /> : null}
             </Press>
           );
         })}

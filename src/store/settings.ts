@@ -39,6 +39,7 @@ export type Settings = {
   profileName: string; // shown on the profile and on shared posters ('' = none)
   profileColor: string; // avatar colour behind the first letter of the name ('' = ink)
   posterPalette: string; // '' = the persona's own colours, or a palette key from components/story/Poster
+  auraStartedAt: number; // first time the aura was shown; free users get a basic aura for 7 days from here
   proPins: Record<'home' | 'insights' | 'groups', string[]>; // Pro widgets pinned to other tabs (ids from features/pro/widgets)
 };
 
@@ -79,7 +80,8 @@ export const defaultSettings: Settings = {
   profileName: '',
   profileColor: '',
   posterPalette: '',
-  proPins: { home: ['aura', 'comingUp'], insights: ['radar', 'deepdive', 'dues', 'wrappedYear'], groups: ['spaces', 'bruh', 'reimburse'] },
+  auraStartedAt: 0,
+  proPins: { home: ['comingUp'], insights: ['radar', 'deepdive', 'dues', 'wrappedYear'], groups: ['spaces', 'bruh', 'reimburse'] },
 };
 
 type Store = Settings & {

@@ -125,13 +125,12 @@ export default function ProTab() {
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
                 {items.map((w, i) => (
                   <Press key={w.id} onPress={() => router.push(w.href)} accessibilityLabel={w.title}
-                    style={{ width: items.length % 2 === 1 && i === items.length - 1 ? cardW : (cardW - space.sm) / 2, minHeight: 112, backgroundColor: CARD, borderRadius: 22, padding: space.md, gap: 6, borderWidth: 1, borderColor: LINE }}>
-                    <Row style={{ justifyContent: 'space-between' }}>
-                      <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: 'rgba(255,129,6,0.16)', alignItems: 'center', justifyContent: 'center' }}><Icon name={w.icon} size={18} color={colors.primary} /></View>
+                    style={{ width: items.length % 2 === 1 && i === items.length - 1 ? cardW : (cardW - space.sm) / 2, minHeight: 96, backgroundColor: CARD, borderRadius: 22, padding: space.md, gap: 10, borderWidth: 1, borderColor: LINE }}>
+                    <Row style={{ justifyContent: 'space-between', gap: space.sm }}>
+                      <Text style={{ flex: 1, fontFamily: fonts.bold, fontSize: 15, color: INK }} numberOfLines={1}>{w.title}</Text>
                       {pro ? <Icon name="chevron" size={16} color={SOFT} /> : <Icon name="lock" size={14} color={SOFT} />}
                     </Row>
-                    <Text style={{ fontFamily: fonts.bold, fontSize: 15, color: INK }} numberOfLines={1}>{w.title}</Text>
-                    <Text style={{ fontFamily: fonts.medium, fontSize: 12.5, color: SOFT }} numberOfLines={2}>{pro && stats ? stats.stat[w.id] : w.sub}</Text>
+                    <Text style={{ fontFamily: fonts.medium, fontSize: 13, lineHeight: 18, color: SOFT, marginTop: 'auto' }} numberOfLines={2}>{pro && stats ? stats.stat[w.id] : w.sub}</Text>
                   </Press>
                 ))}
               </View>
@@ -155,11 +154,11 @@ export default function ProTab() {
             <Text v="h3">Pin to your tabs</Text>
             <Text v="small" color={colors.textMuted}>Choose which Pro tools show up on Home, Insights and Groups.</Text>
             <ScrollView style={{ maxHeight: 420 }} contentContainerStyle={{ gap: space.md }}>
-              {WIDGETS.map((w) => (
+              {WIDGETS.filter((w) => w.id !== 'aura').map((w) => (
                 <View key={w.id} style={{ gap: 6 }}>
                   <Text v="title">{w.title}</Text>
                   <Row style={{ gap: space.sm }}>
-                    {PIN_TABS.filter((t) => t.key === 'home' || (w.id !== 'aura' && w.id !== 'comingUp')).map((t) => <Chip key={t.key} label={t.label} selected={pins[t.key].includes(w.id)} onPress={() => togglePin(t.key, w.id)} />)}
+                    {PIN_TABS.filter((t) => (w.id === 'comingUp' ? t.key === 'home' : true)).map((t) => <Chip key={t.key} label={t.label} selected={pins[t.key].includes(w.id)} onPress={() => togglePin(t.key, w.id)} />)}
                   </Row>
                 </View>
               ))}

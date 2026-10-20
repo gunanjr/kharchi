@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Press, Text } from '@/components/ui';
 import { Icon } from '@/components/Icon';
@@ -8,6 +8,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { fonts, layout, space } from '@/theme/tokens';
 import { useStatus } from './useStatus';
 import { RankMark } from '@/features/mce/AuraOrb';
+import { useAuraAccess } from '@/features/mce/freeWeek';
 
 /** Avatar colours: solid, each with dark or white ink that reads on it. */
 export const AVATAR_COLORS: { bg: string; ink: string }[] = [
@@ -39,30 +40,27 @@ export function Chip({ onPress, label, children, tint }: { onPress: () => void; 
   );
 }
 
-/** Home status row: streak, aura and Bruh score as compact chips, each opening its own screen. */
+/** Home status row: logging streak and aura, nothing else. A space chip leads only while a space is active. */
 export function StatusRow({ lead }: { lead?: React.ReactNode }) {
   const router = useRouter();
   const { colors } = useTheme();
   const q = useStatus();
+  const { access } = useAuraAccess();
   if (!q.data) return null;
-  const { streak, aura, bruh } = q.data;
+  const { streak, aura } = q.data;
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: layout.gutter, gap: space.sm }}>
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: layout.gutter, gap: space.sm }}>
       {lead}
       <Chip onPress={() => router.push('/me')} label={`${streak} day logging streak`}>
-        <Icon name="flame" size={16} color={streak > 0 ? '#FF6A00' : colors.textSubtle} />
+        <Icon name="flame" size={16} color={streak > 0 ? colors.primary : colors.textSubtle} />
         <Text v="small" style={{ fontFamily: fonts.bold }}>{streak}</Text>
         <Text v="small" color={colors.textMuted}>day streak</Text>
       </Chip>
-      <Chip onPress={() => router.push('/mce')} label={`${aura.score} aura, ${aura.rank.title}`}>
-        <RankMark rank={aura.rank.key} size={15} off={colors.track} />
-        <Text v="small" style={{ fontFamily: fonts.bold }}>{aura.score}</Text>
+      <Chip onPress={() => router.push('/mce')} label={access === 'locked' ? 'Aura, locked' : `${aura.score} aura, ${aura.rank.title}`}>
+        {access === 'locked' ? <Icon name="lock" size={14} color={colors.textMuted} /> : <RankMark rank={aura.rank.key} size={15} color={colors.ink} off={colors.track} />}
+        {access === 'locked' ? null : <Text v="small" style={{ fontFamily: fonts.bold }}>{aura.score}</Text>}
         <Text v="small" color={colors.textMuted}>aura</Text>
       </Chip>
-      <Chip onPress={() => router.push('/me')} label={`Bruh score ${bruh ?? 'not yet'}`}>
-        <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: bruh ? colors.income : colors.textSubtle }} />
-        <Text v="small" style={{ fontFamily: fonts.bold }}>{bruh ?? 'Bruh score'}</Text>
-      </Chip>
-    </ScrollView>
+    </View>
   );
 }
