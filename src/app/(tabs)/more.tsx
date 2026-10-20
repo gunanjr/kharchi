@@ -63,6 +63,8 @@ export default function More() {
             {item('Accounts', 'Cash, bank, UPI, cards, wallets', 'wallet', '/settings/accounts')}
             {item('Recurring', 'Rent, subscriptions, SIPs', 'repeat', '/settings/recurring')}
             {showPro() ? item('Reimbursements', 'Work spends as a PDF claim with receipts (Pro)', 'receipt', '/reimburse') : null}
+            {showPro() ? item('Warranties', 'Bills and warranty end dates with reminders (Pro)', 'shield', '/warranty') : null}
+            {showPro() ? item('Tax-time totals', 'Yearly totals for your CA (Pro)', 'chart', '/tax') : null}
             {showPro() ? item('Spaces', 'Side hustle, home, trips and events kept apart (Pro)', 'wallet', '/spaces') : null}
             {showPro() ? item('Due dates', 'Card, rent, EMI and bills with reminders (Pro)', 'calendar', '/dues') : null}
             {showPro() ? item('Subscription radar', 'Every repeating charge, renewals and price rises (Pro)', 'repeat', '/radar') : null}

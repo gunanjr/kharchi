@@ -31,6 +31,7 @@ export type Settings = {
   personaPrev: string; // last shown persona key, keeps it stable month to month
   roastOn: boolean; // opt-in; toast is the default
   roastTone: 'gentle' | 'playful' | 'savage';
+  warranties: import('@/features/warranty/warranty').Warranty[]; // Pro: warranty vault
   hideAmounts: boolean; // masks every amount (for public places); the eye on Home
 };
 
@@ -64,6 +65,7 @@ export const defaultSettings: Settings = {
   personaPrev: '',
   roastOn: false,
   roastTone: 'playful',
+  warranties: [],
 };
 
 type Store = Settings & {
