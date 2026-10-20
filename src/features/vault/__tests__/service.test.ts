@@ -1,3 +1,4 @@
+/* eslint-disable import/first -- the phone stand-ins must be mocked before the modules that use them are imported */
 import { randomBytes } from 'crypto';
 
 // --- in-memory stand-ins for the phone: secure mockKeystore, random bytes, and the user's picked folder ---

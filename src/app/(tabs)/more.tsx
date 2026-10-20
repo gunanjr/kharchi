@@ -60,6 +60,7 @@ export default function More() {
             {item('Categories', 'Add or edit icons and colours', 'tag', '/settings/categories')}
             {item('Accounts', 'Cash, bank, UPI, cards, wallets', 'wallet', '/settings/accounts')}
             {item('Recurring', 'Rent, subscriptions, SIPs', 'repeat', '/settings/recurring')}
+            {showPro() ? item('Due dates', 'Card, rent, EMI and bills with reminders (Pro)', 'calendar', '/dues') : null}
             {showPro() ? item('Subscription radar', 'Every repeating charge, renewals and price rises (Pro)', 'repeat', '/radar') : null}
           </Group>
         </Enter>
