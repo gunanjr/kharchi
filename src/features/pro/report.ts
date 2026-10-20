@@ -15,6 +15,13 @@ export interface Report { month: string; total: number; grade: string; habits: H
 const GRADES: [number, string][] = [[90, 'A+'], [80, 'A'], [70, 'B+'], [60, 'B'], [50, 'C']];
 export const gradeOf = (n: number) => GRADES.find(([min]) => n >= min)?.[1] ?? 'D';
 
+/** One line that says what the grade means, and how close the next grade is. */
+export function verdict(total: number): { line: string; next: string | null; toNext: number } {
+  const LINES: Record<string, string> = { 'A+': 'Main character month.', A: 'Strong month.', 'B+': 'Good month.', B: 'Solid month.', C: 'Getting there.', D: 'Fresh start. Small steps count.' };
+  const up = [...GRADES].reverse().find(([min]) => min > total);
+  return { line: LINES[gradeOf(total)], next: up ? up[1] : null, toNext: up ? up[0] - total : 0 };
+}
+
 /** Report for the month containing `now` (so far), or a past month when `now` is after it. */
 export function reportCard(txs: Tx[], dues: DueItem[], year: number, month: number, now: number): Report {
   const from = new Date(year, month, 1).getTime();

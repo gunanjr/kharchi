@@ -34,3 +34,11 @@ describe('month forecast', () => {
     expect(f.forecast).toBe(f.soFar + 6000 * 11 + 500000);
   });
 });
+
+describe('verdict', () => {
+  const { verdict } = jest.requireActual('../report') as typeof import('../report');
+  it('says how far the next grade is', () => {
+    expect(verdict(57)).toEqual({ line: 'Getting there.', next: 'B', toNext: 3 });
+    expect(verdict(95).next).toBeNull();
+  });
+});

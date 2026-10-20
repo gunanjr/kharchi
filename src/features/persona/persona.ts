@@ -1,4 +1,5 @@
 import type { Transaction } from '@/domain/types';
+import { LINES } from './roastLines';
 
 /**
  * Money persona, streaks and Roast or toast (Pro). Fixed rules on the user's own entries, built to never feel unfair
@@ -168,7 +169,6 @@ export function roastFacts(all: Tx[], from: number, to: number, prevSpent = 0): 
   return out;
 }
 
-import { LINES } from './roastLines';
 export { LINES };
 
 export function roastLine(f: RoastFact, tone: RoastTone, money: (n: number) => string, variant = 0): string {

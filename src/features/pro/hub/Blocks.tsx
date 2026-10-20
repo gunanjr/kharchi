@@ -52,7 +52,6 @@ export function Bento({ t, stats, locked }: { t: SeasonTheme; stats: Stats; lock
   const router = useRouter();
   const go = (h: Href) => () => router.push(h);
   const ch = stats.running[0];
-  const now = Date.now();
   const renewing = stats.radar.items.filter((v) => v.status === 'active' && !v.cancelled && v.renewsInDays >= 0 && v.renewsInDays <= 7);
   const out = stats.dues.reduce((a, d) => a + (d.amount ?? 0), 0) + renewing.reduce((a, v) => a + v.amount, 0);
   const next3 = [...stats.dues.map((d) => d.due), ...renewing.map((r) => r.nextExpected)].sort((a, b) => a - b).slice(0, 3);
