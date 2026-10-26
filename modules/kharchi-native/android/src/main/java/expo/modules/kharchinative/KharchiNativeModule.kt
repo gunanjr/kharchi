@@ -110,6 +110,14 @@ class KharchiNativeModule : Module() {
     /** Local reminder at an absolute time (ms since epoch). Returns an id. */
     Function("scheduleReminder") { atMs: Double, title: String, body: String -> Reminders.schedule(ctx, atMs.toLong(), title, body) }
 
+    Function("setSecureScreen") { on: Boolean ->
+      val a = appContext.currentActivity ?: return@Function
+      a.runOnUiThread {
+        if (on) a.window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+        else a.window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+      }
+    }
+
     Function("pinScanWidget") {
       val mgr = AppWidgetManager.getInstance(ctx)
       if (Build.VERSION.SDK_INT >= 26 && mgr.isRequestPinAppWidgetSupported) {

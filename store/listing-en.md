@@ -35,4 +35,4 @@ Yearly includes a 7-day free trial. Cancel any time in Google Play.
 
 **Category:** Finance · **Contains ads:** No · **In-app purchases:** Yes (BruhMe Pro) · **Target audience:** 18+
 
-**Screenshots:** capture from a development build with sample data (Settings, Developer, Reset to the latest demo; the Developer page exists only in development builds). Use Home, Add, Insights, a group, the pay card, onboarding. Do not show other companies' logos: before capturing, keep merchant names generic or use screens without them.
+**Screenshots (phone, at least 2, best 6 to 8):** install the store test build, and on the last onboarding screen tap "Try sample data". Capture Home, Add, Insights, a group, the pay card, the scan-a-bill review screen and onboarding. Afterwards use Settings, Export & backup, Delete everything. Do not show other companies' logos in screenshots or the listing.

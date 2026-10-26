@@ -298,12 +298,14 @@ Snap a bill from the Scan bill widget, shortcut or in-app; the app reads items o
 27. Insights drill-downs use a stack screen (`/entries`), not the Activity tab, so Back returns to where the user was.
 28. Merchant icons ship with the app (no network). Pictures are each merchant's own public site icon, fetched once at build time from its official domain (not from icon marketplaces); anything unavailable is a glyph or monogram.
 29. Speed: anomaly detection bounded to the 200 prior entries per category; the 40,000-entry guard is part of the test suite.
+34. **Screenshot blocking moved into our own Kotlin module (26 Oct, release-blocker fixed).** `expo-screen-capture` registered a screenshot observer at startup on Android 14+, which needs `DETECT_SCREEN_CAPTURE`; the store config removes that permission, so the **store build crashed on launch** on Android 14+. Found by running the exact store build on an Android 16 emulator (Jest and the browser preview cannot see it). The package is removed; `setSecureScreen` in `KharchiNativeModule.kt` sets FLAG_SECURE with no permission (verified: screenshots come out black when the setting is on). Never reintroduce a library that needs a permission the manifest strips.
+35. Final upload guide is `PLAY_STORE_STEPS.md` (two-pass build: placeholder `PLAY_LICENSE_KEY` first so Play unlocks products, real key second).
 
 ---
 
 ## 15. Publish to Google Play
 
-Commands go in the Terminal in the project folder. **Not ready to submit until the checklist in section 18 is complete.**
+Commands go in the Terminal in the project folder. **The beginner step-by-step is `PLAY_STORE_STEPS.md` (26 Oct); follow that.** Not ready to submit until the checklist in section 18 is complete.
 
 **You need:** a Google account; a Play Developer account (US$25 once, ID check 1 to 3 days); an Expo account; the GitHub repo (hosts the policy page); a support email (now `bollugunwanth@gmail.com`); an Android phone; and, for a personal account created after 13 Nov 2023, 12 testers for 14 days. No website, backend or SMS declaration.
 
@@ -335,7 +337,10 @@ The database is **not encrypted** (it lives in app-private storage other apps ca
 
 ---
 
-## 18. Release checklist (state as of 21 Oct 2026)
+## 18. Release checklist (state as of 26 Oct 2026)
+
+**26 Oct verification:** `tsc` clean, lint zero warnings, 441 tests pass; store build (`STORE_BUILD=1`, placeholder key) compiled with Gradle; `npm run audit:manifest` PASSED (INTERNET, POST_NOTIFICATIONS, RECEIVE_BOOT_COMPLETED, USE_BIOMETRIC, VIBRATE, BILLING; target SDK 36); that APK ran on an Android 16 emulator: onboarding, sample data, Home, Insights, Settings, Pro hub, purchase failure message ("You were not charged"), bill scan from the system photo picker with on-device OCR reading the store, items and total, and Hide from screenshots. Not verified: a physical phone, a real Play purchase (needs the products in Play Console), widgets after the fix, reminders, app lock, Vault.
+
 
 **Scope:** core use works for one person without an account (done) · no Crew (done) · no Social (done) · no speculative backend or auth scaffolding (done) · no payment custody or bank linking (done) · local split clearly separate from payment (done).
 **Privacy and data:** core functions offline (to verify in airplane mode) · no unapproved network calls or telemetry (app code clean; verify SDKs on a build) · no analytics, ads or tracking SDK (clean) · no SMS or listener permission in the store build (clean; Full edition pending) · final manifest verified (open) · storage, export, backup, restore and deletion tested (logic tested; device test open) · no sensitive production logs (clean in code) · every relevant dependency reviewed (direct ones done; ML Kit and transitive open) · privacy policy accurate (needs the name, publisher and wording update) · Data safety matches the build (open).

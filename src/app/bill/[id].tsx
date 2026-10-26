@@ -114,7 +114,7 @@ export default function BillScreen() {
           <Card style={{ alignItems: 'center', gap: space.md, padding: space.xl }}>
             <ActivityIndicator color={colors.primary} />
             <Text v="title">Reading your bill…</Text>
-            <Text v="small" color={colors.textMuted}>On your phone, no internet. A few seconds.</Text>
+            <Text v="small" color={colors.textMuted}>Read on your phone, never uploaded. A few seconds.</Text>
           </Card>
         )}
         {phase === 'error' && (

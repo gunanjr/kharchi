@@ -31,6 +31,8 @@ export interface KharchiNativeModule {
   notificationListenerCompiledIn(): boolean;
   setPersistentAddNotification(enabled: boolean): void;
   scheduleReminder(atMs: number, title: string, body: string): number;
+  /** Blocks screenshots / recent-apps preview (FLAG_SECURE). No permission needed. */
+  setSecureScreen(on: boolean): void;
   pinWidget(): boolean | void;
   /** Pin the "Scan bill" widget (falls back to the widgets list on launchers that cannot pin). */
   pinScanWidget(): boolean | void;

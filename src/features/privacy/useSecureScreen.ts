@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
-import * as ScreenCapture from 'expo-screen-capture';
+import { native } from '@/features/native/module';
 import { useSettings } from '@/store/settings';
 
 /**
@@ -11,6 +11,10 @@ export function useSecureScreen() {
   const on = useSettings((s) => s.secureScreen);
   useEffect(() => {
     if (Platform.OS !== 'android') return;
-    (on ? ScreenCapture.preventScreenCaptureAsync('bruhme') : ScreenCapture.allowScreenCaptureAsync('bruhme')).catch(() => {});
+    try {
+      native?.setSecureScreen?.(on); // our own Kotlin module sets/clears FLAG_SECURE; absent in Expo Go (then nothing happens)
+    } catch {
+      /* never let a privacy nicety crash the app */
+    }
   }, [on]);
 }

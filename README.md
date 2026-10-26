@@ -7,6 +7,8 @@ BruhMe is a personal expense tracker and bill splitter for Android, built with R
 - **Free:** expenses and income, paste or share a bank message to log it, quick add, groups and friends with six split types and debt simplification, settle-up pay cards with a UPI link (any UPI app), Insights, goals, budgets, weekly and monthly Wrapped, a tap-only on-device assistant, CSV and backup.
 - **BruhMe Pro** (Google Play Billing, amendment A1): the Pro tab (season theme, challenges, report card, month-end estimate, story maker, Main Character Energy), Vault encrypted backups to a folder the user picks, subscription radar, due dates, spaces, reimbursements, warranties, tax totals, profile and roasts.
 
+**Publishing to Google Play: follow [`PLAY_STORE_STEPS.md`](PLAY_STORE_STEPS.md).**
+
 ## Run it
 ```bash
 npm install

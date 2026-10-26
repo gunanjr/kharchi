@@ -49,7 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'android.permission.ACCESS_FINE_LOCATION',
       'android.permission.ACCESS_COARSE_LOCATION',
       'com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE',
-      // expo-screen-capture declares these; only its FLAG_SECURE screen blocking is used, which needs no permission
+      // Defensive: no library should ever add these (screenshot blocking is done in our own native module)
       'android.permission.READ_MEDIA_IMAGES',
       'android.permission.DETECT_SCREEN_CAPTURE',
       // Amendment A1 (20 Oct): store builds keep INTERNET so Google Play Billing works; BruhMe still sends no entries anywhere.

@@ -87,7 +87,7 @@ export default function ScanBill() {
       ) : (
         <View style={{ gap: space.md }}>
           <Text color={colors.textMuted}>
-            Snap the bill now. The app reads the items on your phone (no internet) and you choose who had what later.
+            Snap the bill now. The app reads the items on your phone (the photo is never uploaded) and you choose who had what later.
           </Text>
           <Row style={{ gap: space.sm }}>
             <Button title="Take photo" icon="camera" onPress={() => grab('camera')} loading={busy} disabled={!native?.captureBillPhoto} style={{ flex: 1 }} />
