@@ -14,7 +14,9 @@ const experimental = false;
 // Play Console > Monetisation setup > Licensing: the base64 public key. Used on the phone to verify every Pro purchase.
 // A store build without it would let nothing verify, so it refuses to build. Set it as an EAS environment variable.
 const playLicenseKey = process.env.PLAY_LICENSE_KEY ?? '';
-if (storeBuild && !playLicenseKey) throw new Error('PLAY_LICENSE_KEY is required for store builds (Play Console > Monetisation setup > Licensing).');
+// Enforced where the real build happens (Expo's build servers set EAS_BUILD=true and hold the variable). EAS CLI also reads this
+// file on the developer's own computer before uploading, where the cloud variable is not available, so it must not throw there.
+if (storeBuild && !playLicenseKey && process.env.EAS_BUILD === 'true') throw new Error('PLAY_LICENSE_KEY is required for store builds (Play Console > Monetisation setup > Licensing).');
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
