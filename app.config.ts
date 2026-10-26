@@ -73,5 +73,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ['./plugins/withKharchiNative', { variant, experimental }],
   ],
   experiments: { typedRoutes: true },
-  extra: { appVariant: variant, experimental, storeBuild, playLicenseKey, privacyPolicyUrl: appConfig.privacyPolicyUrl, supportEmail: appConfig.supportEmail, eas: { projectId: process.env.EAS_PROJECT_ID } },
+  extra: { appVariant: variant, experimental, storeBuild, playLicenseKey, privacyPolicyUrl: appConfig.privacyPolicyUrl, supportEmail: appConfig.supportEmail, eas: { projectId: process.env.EAS_PROJECT_ID ?? '7e69bcca-2b23-4f9c-943c-b92bd786d51d' } },
 });

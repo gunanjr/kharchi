@@ -32,10 +32,8 @@ Accounts, money, ID checks, Play Console forms, screenshots, the test with frien
 ## STEP 2: Create the free Expo account (builds the app in the cloud)
 1. Go to https://expo.dev/signup and make an account (remember the username and password).
 2. In the Terminal: `npx eas-cli login` → type your Expo email/username and password.
-3. `npx eas-cli init` → when it asks to create a project, choose **Yes**. It prints a **project ID** (letters and numbers with dashes). **Copy it.** If it says it cannot write the id to the config, ignore that message.
-4. Save the id as a cloud setting (replace `PASTE-ID` with yours):
-   `npx eas-cli env:create --name EAS_PROJECT_ID --value PASTE-ID --environment production --visibility plaintext`
-   (If it asks questions, accept the defaults.)
+3. `npx eas-cli init` → choose your account and **Yes** to create the project. It ends with a red "project:init command failed" message about the config file. **That is normal and harmless**: the project was still created. (Done once already: project `@raiden1234/kharchi`, id `7e69bcca-2b23-4f9c-943c-b92bd786d51d`, and the id is already written into `app.config.ts`, so nothing more to do.)
+4. Skip any `EAS_PROJECT_ID` cloud-variable step: the id is built into the app config. (It is not a secret.)
 
 ## STEP 3: Create the app in Google Play Console
 1. Go to https://play.google.com/console and sign in with your Play developer account. (No account yet? Follow Step 3A first.)
@@ -141,7 +139,7 @@ If your account does **not** need the closed test, skip to point 5.
 | Problem | What to do |
 |---|---|
 | Build fails with "PLAY_LICENSE_KEY is required" | Step 4.1 / Step 8.1: the cloud variable is missing. Run the `env:create` command again. |
-| Build fails with "EAS_PROJECT_ID" or "project not configured" | Step 2.3 and 2.4 again. |
+| Build fails with "project not configured" or asks which project | Make sure `npx eas-cli whoami` shows `raiden1234`, and that `app.config.ts` contains the project id from Step 2.3. |
 | "Package name already exists" in Play | Someone else uses `com.bruhme.app`. Tell me; I change it and rebuild. |
 | Pro purchase says "could not complete" | Product IDs or the licence key are wrong, or the phone's Gmail is not a licence tester or internal tester (Step 8.4). |
 | Privacy link shows 404 | https://github.com/gunanjr/kharchi → Settings → Pages → Branch `main`, folder `/docs`. |
