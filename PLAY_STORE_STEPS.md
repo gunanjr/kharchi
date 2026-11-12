@@ -82,7 +82,7 @@ In Play Console go to **Monetize with Play → Products**.
   2. Offer ID `friend` · eligibility **Developer determined** · phase **Single payment, discounted: ₹699 for the first year** (30% off) · **Tag: `friend`**. **Activate**.
 
 **C. Lifetime** → **One-time products → Create** (it may be called "In-app products")
-- Product ID: `bruhme_pro_lifetime` · Name: BruhMe Pro Lifetime · price **₹2,999** · **Activate**.
+- Product ID: `bruhme_pro_lifetimee` (as created in Play; the app uses this exact spelling) · Name: BruhMe Pro Lifetime · price **₹2,999** · **Activate**.
 
 Also switch on in subscription settings, if offered: **grace period** and **account hold** (recovers failed payments automatically).
 

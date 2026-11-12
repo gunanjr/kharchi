@@ -12,7 +12,7 @@ import { useProStore } from './store';
  * preview, where every call says so plainly. Play Console must have:
  * - subscriptions `bruhme_pro_monthly` (₹129) and `bruhme_pro_yearly` (₹999) with a base plan each; on the yearly base
  *   plan an offer tagged `trial` (7 days free) and a developer-determined offer tagged `friend` (30% off the first year);
- * - a one-time product `bruhme_pro_lifetime` (₹2,999).
+ * - a one-time product `bruhme_pro_lifetimee` (₹2,999; the double e is a permanent typo in Play, see BRUHME.md 24.0).
  */
 const available = () => !!requireOptionalNativeModule('ExpoIap');
 export const billingAvailable = available;

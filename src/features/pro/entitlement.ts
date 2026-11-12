@@ -11,7 +11,7 @@
 export const PRODUCTS = {
   monthly: 'bruhme_pro_monthly',
   yearly: 'bruhme_pro_yearly',
-  lifetime: 'bruhme_pro_lifetime',
+  lifetime: 'bruhme_pro_lifetimee',
 } as const;
 export type ProductId = (typeof PRODUCTS)[keyof typeof PRODUCTS];
 const KNOWN = new Set<string>(Object.values(PRODUCTS));
@@ -68,7 +68,7 @@ export function checkPurchase(p: PlayPurchase, deps: VerifyDeps): Reason {
 }
 
 /** Lifetime beats yearly beats monthly when several valid purchases exist. */
-const RANK: Record<ProductId, number> = { bruhme_pro_lifetime: 3, bruhme_pro_yearly: 2, bruhme_pro_monthly: 1 };
+const RANK: Record<ProductId, number> = { bruhme_pro_lifetimee: 3, bruhme_pro_yearly: 2, bruhme_pro_monthly: 1 };
 
 export interface Entitlement {
   pro: boolean;
