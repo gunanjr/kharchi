@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Screen, Header, Text, Card, Enter, Press, SectionHeader, IconTile, Button, RoundButton } from '@/components/ui';
+import { Screen, Header, Text, Card, Enter, Press, SectionHeader, IconTile, RoundButton } from '@/components/ui';
 import { Wordmark } from '@/components/Wordmark';
 import { PrivateRow } from '@/components/PrivateRow';
 import { splitPrivate, usePrivateUnlock } from '@/features/privacy/private';
@@ -14,12 +14,11 @@ import { Icon } from '@/components/Icon';
 import { PendingStack } from '@/features/pending/PendingStack';
 import { BillsCard } from '@/features/bills/BillsCard';
 import { BudgetStrip } from '@/features/tracker/ui/BudgetStrip';
-import { loadCompleteDemo } from '@/features/dev/loadDemo';
 import { PulseWidgets } from '@/features/tracker/ui/PulseWidgets';
 import { Avatar, StatusRow, Chip as StatusChip } from '@/features/profile/StatusRow';
 import { HomePins } from '@/features/pro/HomePins';
 import { ToastHost } from '@/components/Toast';
-import { useDb, useQuery, bumpData } from '@/db/provider';
+import { useQuery } from '@/db/provider';
 import { listTransactions, totalsBetween } from '@/features/tracker/repo';
 import { useCategories } from '@/features/tracker/hooks';
 import { endOfMonth, startOfMonth } from '@/lib/date';
@@ -34,8 +33,6 @@ export default function Home() {
   const activeSpaceId = useSettings((st) => st.activeSpace);
   const spaceName = activeSpaceId ? (() => { const x = spaces.find((y) => y.id === activeSpaceId); return x ? x.name : 'Personal'; })() : 'Personal';
   const router = useRouter();
-  const db = useDb();
-  const [loadingDemo, setLoadingDemo] = useState(false);
   const [exploring, setExploring] = useState(false); // the hero chart is being slid along: the page must not scroll
   const { colors } = useTheme();
   const t = useT();
@@ -101,7 +98,6 @@ export default function Home() {
               {d.recent.length === 0 ? (
                 <>
                   <EmptyState art="wallet" title={t('empty.tx.title')} body={t('empty.tx.body')} action={t('add.title')} onAction={() => router.push('/add')} />
-                  <Button title="Explore with sample data" kind="secondary" icon="play" loading={loadingDemo} onPress={async () => { setLoadingDemo(true); try { await loadCompleteDemo(db); bumpData(); } finally { setLoadingDemo(false); } }} />
                 </>
               ) : (
                 <Card pad={false} style={{ paddingHorizontal: space.lg, paddingVertical: space.xs }}>

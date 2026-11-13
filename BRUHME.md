@@ -569,6 +569,9 @@ If these are renamed, do it in one change before the first Play upload, run `npx
 
 ### 24.0 LIVE HANDOFF (20 Oct 2026, late night): read before touching anything
 
+**13 Nov 2026, production hardening (after the app went live on Play):** removed both sample-data entry points from store builds (onboarding "Try sample data" and Home "Explore with sample data"); onboarding no longer loads demo data except in `__DEV__`; `/settings/developer` now redirects Home outside `__DEV__` so a deep link cannot open the demo and SMS-simulator tools. Beta/internal label on a tester's phone is Play's closed-test enrolment (tester leaves the program, or the alpha/internal tracks are paused), not an app issue. Next release is versionCode 5. **Emulator walkthrough (13 Nov, Android 16, store-config APK):** onboarding (no sample-data link), empty Home/Activity/Groups/Insights/Pro, add expense, create group and split (₹600 → ₹300 each, balances right), CSV export share sheet, Pro screen and a purchase attempt without Play (no crash, button recovers), Delete everything, `kharchi:///settings/developer` deep link lands on Home; zero crashes in logcat. Fixed a false claim in `PrivacyNote.tsx`: the store build does keep INTERNET (Play Billing, Vault), so the line now says so instead of "can't even use the internet".
+
+
 **12 Nov 2026, Play product id typo (permanent):** the Lifetime one-time product exists in Play Console as `bruhme_pro_lifetimee` (double e; the correct id was taken by a stray empty subscription of the same name). Product ids cannot be renamed, so the app now uses `bruhme_pro_lifetimee` (`src/features/pro/entitlement.ts`). Production access was granted on 12 Nov; the production release must use a build made after this change (version code 4 or higher). Batch any other code changes before that one rebuild.
 
 A previous session ran out of context in the middle of a large redesign. This is exactly where it stopped.

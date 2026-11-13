@@ -9,8 +9,8 @@ import { layout, radius, space } from '@/theme/tokens';
 
 /**
  * Foot of Home. Short, in the app's voice, and every line is a fact about this build: no account, no server, entries
- * are kept on the phone, and nothing leaves unless the user exports or shares it. (The store build also has no internet
- * permission.) No absolute claims such as "unhackable".
+ * are kept on the phone, and nothing leaves unless the user exports or shares it. (The store build keeps the internet permission only
+ * for Google Play Billing and the Vault backup folder.) No absolute claims such as "unhackable".
  */
 export function PrivacyNote() {
   const router = useRouter();
@@ -29,7 +29,7 @@ export function PrivacyNote() {
         <View style={{ gap: 6 }}>
           {[
             ['No account', 'no sign-up, no login, nobody to hand your details to.'],
-            ['No server', `we don’t run one, so there’s nothing to send your entries to${store ? ' (this build can’t even use the internet)' : ''}.`],
+            ['No server', `we don’t run one, so there’s nothing to send your entries to${store ? ' (the internet is used only for Google Play purchases and backups you choose)' : ''}.`],
             ['You decide', 'export, share or email something and it goes exactly where you pick.'],
           ].map(([k, v]) => (
             <Text key={k} v="small" color={colors.textMuted}>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Redirect } from 'expo-router';
 import { Alert, Switch, View } from 'react-native';
 import { SubScreen, Card, Text, Button, Field, Chip, Row } from '@/components/ui';
 import { useProStore } from '@/features/pro/store';
@@ -16,7 +17,7 @@ import { useSettings } from '@/store/settings';
 import { useTheme } from '@/theme/ThemeProvider';
 import { space } from '@/theme/tokens';
 
-export default function Developer() {
+function Developer() {
   const db = useDb();
   const { colors } = useTheme();
   const allow = useSettings((s) => s.senderAllowlist);
@@ -79,4 +80,9 @@ export default function Developer() {
       <ToastHost />
     </SubScreen>
   );
+}
+
+/** Developer tools exist in development builds only; in a store build a deep link to this route goes Home. */
+export default function DeveloperGate() {
+  return __DEV__ ? <Developer /> : <Redirect href="/" />;
 }

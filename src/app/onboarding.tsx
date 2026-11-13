@@ -303,16 +303,15 @@ export default function Onboarding() {
     if (k !== i) setI(k);
   };
 
-  async function finish(withDemo: boolean) {
+  async function finish() {
     if (busy) return;
     const v = upi.trim();
     if (v && !isUpiId(v)) return toast('That doesn’t look like a UPI ID. It looks like yourname@okaxis.');
     setBusy(true);
     try {
       if (v) await set(db, 'myUpi', v);
-      // Development builds (Expo Go) always start with the complete sample data so every screen has content; the team sees
-      // the same app. In store builds sample data only loads when the user asks for it.
-      if ((withDemo || __DEV__) && !(await hasAnyData(db))) { await loadCompleteDemo(db); bumpData(); }
+      // Development builds (Expo Go) start with the complete sample data so every screen has content. Store builds never load sample data.
+      if (__DEV__ && !(await hasAnyData(db))) { await loadCompleteDemo(db); bumpData(); }
       haptic.success();
       await set(db, 'onboarded', true);
     } finally {
@@ -347,7 +346,7 @@ export default function Onboarding() {
             return (
               <View style={{ width, height: listH || undefined, paddingHorizontal: layout.gutter + 4, justifyContent: 'center' }}>
                 <View style={{ height: visualH, alignItems: 'stretch', justifyContent: 'center' }}>
-                  <V key={`${item.id}-${active}`} active={active} upi={upi} setUpi={setUpi} onDone={() => finish(false)} />
+                  <V key={`${item.id}-${active}`} active={active} upi={upi} setUpi={setUpi} onDone={() => finish()} />
                 </View>
                 <View style={{ gap: space.sm, marginTop: space.lg, height: 124 }}>
                   <Text accessibilityRole="header" numberOfLines={2} adjustsFontSizeToFit style={{ fontFamily: fonts.brandBlack, fontSize: 32, lineHeight: 36, letterSpacing: -1, color: colors.text }}>{t(item.t)}</Text>
@@ -369,12 +368,8 @@ export default function Onboarding() {
         </Row>
         {last ? (
           <View style={{ gap: space.sm }}>
-            <Button title={upi.trim() ? t('onb.start') : `${t('onb.start')} · skip UPI for now`} kind="accent" onPress={() => finish(false)} loading={busy} />
+            <Button title={upi.trim() ? t('onb.start') : `${t('onb.start')} · skip UPI for now`} kind="accent" onPress={() => finish()} loading={busy} />
             <Row style={{ justifyContent: 'center', gap: space.lg }}>
-              <Press onPress={() => finish(true)} accessibilityLabel={t('onb.demo')} hitSlop={8} style={{ paddingVertical: 6 }}>
-                <Text v="small" color={colors.link} style={{ fontFamily: 'Geist_600SemiBold' }}>Try sample data</Text>
-              </Press>
-              <Text v="small" color={colors.textSubtle}>·</Text>
               <Press onPress={restore.start} accessibilityLabel="Restore from a backup" hitSlop={8} style={{ paddingVertical: 6 }}>
                 <Text v="small" color={colors.link} style={{ fontFamily: 'Geist_600SemiBold' }}>Restore a backup</Text>
               </Press>
